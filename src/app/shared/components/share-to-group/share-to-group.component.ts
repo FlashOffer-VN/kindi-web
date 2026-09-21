@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { AppService } from '@core/services/app.service';
+import { isBrowser } from '@core/utils/platform';
 import { BusinessGroup, ForwardedGroup, GroupPostType } from '@core/models/business-group.model';
 import { ButtonComponent, ButtonSize } from '@shared/components/button/button.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
@@ -157,6 +158,9 @@ export class ShareToGroupComponent implements OnDestroy {
      * nhảy vị trí và nhấp nháy liên tục. Ra body thì luôn neo theo viewport.
      */
     private escapeFromAncestors(): void {
+        // SSR: prerender chạy trên Node, không có document
+        if (!isBrowser()) return;
+
         if (!this.modalEl) {
             this.modalEl = this._el.nativeElement.querySelector('app-modal') as HTMLElement | undefined;
         }
