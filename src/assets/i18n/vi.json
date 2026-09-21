@@ -801,7 +801,6 @@
         "WHATS_NEW": "Hôm nay, Bạn biết cơ hội gì?",
         "LOADING": "Đang tải...",
         "TRENDING": "Thịnh hành",
-        "ONLINE": "Đang online",
         "UPCOMING_EVENTS": "Sự kiện sắp tới",
         "POPULAR_GROUPS": "Nhóm phổ biến",
         "LIKE": "Thích",
@@ -872,7 +871,11 @@
         "GROUP_BUYING_DESC": "Các nhóm mua chung đang mở — bạn có thể tham gia để cùng chốt giá tốt hơn.",
         "GROUP_BUYING_OPEN": "Mua chung đang mở",
         "GROUP_BUYING_EMPTY": "Chưa có nhóm mua chung nào đang mở",
-        "GROUP_BUYING_MINE": "Nhóm của tôi"
+        "GROUP_BUYING_MINE": "Nhóm của tôi",
+        "MY_GROUPS": "Nhóm ngành của bạn",
+        "MY_GROUPS_EMPTY": "Bạn chưa tham gia nhóm ngành nào",
+        "VIEW_ALL_GROUPS": "Xem tất cả nhóm",
+        "GROUPS_EMPTY": "Chưa có nhóm ngành nào"
     },
     "TOAST": {
         "SUCCESS": "Thành công",

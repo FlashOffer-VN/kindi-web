@@ -1,4 +1,4 @@
-// social.component.ts
+﻿// social.component.ts
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule } from 'ngx-quill';
 import { AppService } from '@core/services/app.service';
 import { SocialPost, SocialMember, SocialGroup } from '@core/models/social.model';
+import { BusinessGroup } from '@core/models/business-group.model';
 import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
 import { PostType, PrivacyType } from '@core/models/social.model';
 import { UserRole } from '@core/models/auth.model';
@@ -54,6 +55,10 @@ export class SocialComponent implements OnInit, AfterViewInit {
 
     posts: SocialPost[] = [];
     members: SocialMember[] = [];
+
+    /** Sidebar: nhóm theo lĩnh vực người dùng đã tham gia + nhóm nổi bật (dữ liệu thật) */
+    myGroups: BusinessGroup[] = [];
+    featuredGroups: BusinessGroup[] = [];
     groupBuyings: GroupBuyingFeedItem[] = [];
     groups: SocialGroup[] = [];
     trendingTopics: string[] = [];
@@ -135,6 +140,7 @@ export class SocialComponent implements OnInit, AfterViewInit {
         this.loadMembers();
         this.loadGroupBuyings();
         this.loadGroups();
+        this.loadSidebarGroups();
         this.loadTrendingTopics();
     }
 
@@ -168,6 +174,36 @@ export class SocialComponent implements OnInit, AfterViewInit {
                 this.isLoadingPosts = false;
                 this._appService.showError(this._appService.trans('SOCIAL.LOAD_ERROR'));
             }
+        });
+    }
+
+    /**
+     * Sidebar "Nhóm ngành của bạn" + "Nhóm phổ biến": lấy từ API nhóm theo lĩnh vực
+     * (thay cho danh sách online/mock trước đây). Lỗi ở đây không chặn trang social.
+     */
+    loadSidebarGroups(): void {
+        this._appService.businessGroupService.getPublic({ page: 1, pageSize: 20 }).subscribe({
+            next: (response) => {
+                const groups = response?.data ?? [];
+                this.featuredGroups = [...groups].sort((a, b) => b.membersCount - a.membersCount).slice(0, 3);
+
+                if (!this._appService.isAuthenticated()) {
+                    this.myGroups = [];
+                    return;
+                }
+
+                const mine = groups.filter(group => group.isMember);
+                if (mine.length) {
+                    this.myGroups = mine.slice(0, 3);
+                } else {
+                    // Có thể đang chờ duyệt → hỏi riêng danh sách nhóm của mình
+                    this._appService.businessGroupService.getPublic({ page: 1, pageSize: 3, mineOnly: true }).subscribe({
+                        next: (res) => { this.myGroups = res?.data ?? []; },
+                        error: () => { this.myGroups = []; }
+                    });
+                }
+            },
+            error: () => { /* sidebar im lặng khi API lỗi */ }
         });
     }
 

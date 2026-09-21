@@ -1,28 +1,40 @@
-// components/social-sidebar/social-sidebar.component.ts
+﻿// components/social-sidebar/social-sidebar.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { SocialMember, SocialGroup } from '@core/models/social.model';
+import { RouterLink } from '@angular/router';
+import { SocialGroup } from '@core/models/social.model';
 import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
+import { BusinessGroup } from '@core/models/business-group.model';
 
 @Component({
     selector: 'app-social-sidebar',
     standalone: true,
-    imports: [CommonModule, TranslateModule],
+    imports: [CommonModule, RouterLink, TranslateModule],
     template: `
-        <!-- Online Members -->
+        <!-- Nhóm ngành của bạn (dữ liệu thật từ API nhóm) -->
         <div class="sidebar-card mb-2">
-            <h3><i class="fas fa-circle online-dot"></i> {{ 'SOCIAL.ONLINE' | translate }}</h3>
-            <div class="online-members">
-                <div *ngFor="let member of onlineMembers" class="online-member">
-                    <img [src]="member.avatar" [alt]="member.name">
-                    <div>
-                        <span class="name">{{ member.name }}</span>
-                        <span class="role">{{ member.role }}</span>
-                    </div>
-                    <span class="online-status"></span>
-                </div>
+            <h3><i class="fas fa-people-roof"></i> {{ 'SOCIAL.MY_GROUPS' | translate }}</h3>
+
+            <div *ngIf="!myGroups.length" class="groups-empty">
+                {{ 'SOCIAL.MY_GROUPS_EMPTY' | translate }}
             </div>
+
+            <a *ngFor="let group of myGroups | slice:0:3" [routerLink]="['/groups', group.id]" class="group-link">
+                <i class="fas fa-people-group"></i>
+                <div class="group-link__info">
+                    <span class="name">{{ group.name }}</span>
+                    <span class="meta">
+                        {{ group.membersCount }} {{ 'GROUPS.MEMBERS' | translate }} ·
+                        {{ group.postsCount }} {{ 'GROUPS.POSTS' | translate }}
+                    </span>
+                </div>
+                <i class="fas fa-chevron-right group-link__chevron"></i>
+            </a>
+
+            <a routerLink="/groups" class="groups-cta">
+                {{ 'SOCIAL.VIEW_ALL_GROUPS' | translate }} <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
         <!-- Mua chung đang mở -->
@@ -48,19 +60,26 @@ import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
             </div>
         </div>
 
-        <!-- Popular Groups -->
+        <!-- Nhóm ngành nổi bật (dữ liệu thật) -->
         <div class="sidebar-card mb-2">
             <h3><i class="fas fa-layer-group"></i> {{ 'SOCIAL.POPULAR_GROUPS' | translate }}</h3>
-            <div *ngFor="let group of groups | slice:0:3" class="group-item">
-                <i [class]="group.icon"></i>
-                <div>
-                    <span class="name">{{ group.name }}</span>
-                    <span class="members">{{ group.members }} thành viên</span>
-                </div>
-                <button class="join-btn" [class.joined]="group.isJoined" (click)="joinGroup.emit(group)">
-                    {{ group.isJoined ? 'Đã tham gia' : 'Tham gia' }}
-                </button>
+
+            <div *ngIf="!featuredGroups.length" class="groups-empty">
+                {{ 'SOCIAL.GROUPS_EMPTY' | translate }}
             </div>
+
+            <a *ngFor="let group of featuredGroups | slice:0:3" [routerLink]="['/groups', group.id]" class="group-link">
+                <i class="fas fa-people-group"></i>
+                <div class="group-link__info">
+                    <span class="name">{{ group.name }}</span>
+                    <span class="meta">
+                        {{ group.businessFieldName || ('GROUPS.LABEL' | translate) }} ·
+                        {{ group.membersCount }} {{ 'GROUPS.MEMBERS' | translate }}
+                    </span>
+                </div>
+                <span *ngIf="group.isMember" class="group-link__badge">{{ 'GROUPS.JOINED' | translate }}</span>
+                <i *ngIf="!group.isMember" class="fas fa-chevron-right group-link__chevron"></i>
+            </a>
         </div>
     `,
     styles: [`
@@ -94,62 +113,13 @@ import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
             gap: 8px;
         }
 
-        .sidebar-card h3 .online-dot {
-            color: #10B981;
-            font-size: 10px;
-        }
 
-        .online-members {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
 
-        .online-member {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 4px 0;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-            cursor: pointer;
-        }
 
-        .online-member:hover {
-            background: #f3f4f6;
-        }
 
-        .online-member img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #e5e7eb;
-        }
 
-        .online-member .name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #1F2937;
-            display: block;
-            line-height: 1.3;
-        }
 
-        .online-member .role {
-            font-size: 12px;
-            color: #6B7280;
-            display: block;
-        }
 
-        .online-member .online-status {
-            margin-left: auto;
-            width: 10px;
-            height: 10px;
-            background: #10B981;
-            border-radius: 50%;
-            flex-shrink: 0;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-        }
 
         .gb-item {
             display: flex;
@@ -223,73 +193,14 @@ import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
             font-weight: 600;
         }
 
-        .group-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
 
-        .group-item:last-child {
-            border-bottom: none;
-        }
 
-        .group-item i {
-            font-size: 28px;
-            color: #7C3AED;
-            width: 36px;
-            text-align: center;
-            flex-shrink: 0;
-        }
 
-        .group-item .name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #1F2937;
-            display: block;
-            line-height: 1.3;
-        }
 
-        .group-item .members {
-            font-size: 12px;
-            color: #6B7280;
-            display: block;
-        }
 
-        .group-item .join-btn {
-            margin-left: auto;
-            padding: 5px 16px;
-            border: 1.5px solid #7C3AED;
-            border-radius: 999px;
-            background: transparent;
-            color: #7C3AED;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
 
-        .group-item .join-btn:hover {
-            background: #7C3AED;
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
-        }
 
-        .group-item .join-btn.joined {
-            background: #d1fae5;
-            border-color: #10B981;
-            color: #059669;
-        }
 
-        .group-item .join-btn.joined:hover {
-            background: #a7f3d0;
-            border-color: #059669;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
-        }
 
         @media (max-width: 992px) {
             .social-sidebar {
@@ -313,22 +224,12 @@ import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
                 padding: 14px 16px;
             }
 
-            .online-member .name {
-                font-size: 13px;
-            }
 
             .event-info .title {
                 font-size: 13px;
             }
 
-            .group-item .name {
-                font-size: 13px;
-            }
 
-            .group-item .join-btn {
-                padding: 4px 12px;
-                font-size: 11px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -341,10 +242,6 @@ import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
                 padding: 12px 14px;
             }
 
-            .online-member img {
-                width: 32px;
-                height: 32px;
-            }
 
             .event-date {
                 min-width: 40px;
@@ -359,22 +256,93 @@ import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
                 font-size: 10px;
             }
 
-            .group-item i {
-                font-size: 24px;
-                width: 30px;
-            }
         }
+
+        /* Nhóm ngành (dữ liệu thật từ API nhóm) */
+        .groups-empty {
+            font-size: 13px;
+            color: #9CA3AF;
+            padding: 4px 0 8px;
+        }
+
+        .group-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 8px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .group-link:hover {
+            background: #F3F4F6;
+        }
+
+        .group-link > i {
+            font-size: 18px;
+            color: #0d9488;
+        }
+
+        .group-link__info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .group-link__info .name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1F2937;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .group-link__info .meta {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        .group-link__chevron {
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+
+        .group-link__badge {
+            font-size: 10px;
+            font-weight: 700;
+            color: #047857;
+            background: #ECFDF5;
+            border-radius: 999px;
+            padding: 3px 8px;
+        }
+
+        .groups-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #0d9488;
+            text-decoration: none;
+        }
+
     `]
 })
 export class SocialSidebarComponent {
-    @Input() members: SocialMember[] = [];
     @Input() groupBuying: GroupBuyingFeedItem[] = [];
-    @Input() groups: SocialGroup[] = [];
+    /** Nhóm theo lĩnh vực mà người đang xem đã tham gia */
+    @Input() myGroups: BusinessGroup[] = [];
+    /** Nhóm theo lĩnh vực nổi bật (nhiều thành viên nhất) */
+    @Input() featuredGroups: BusinessGroup[] = [];
 
-    @Output() joinGroup = new EventEmitter<SocialGroup>();
     @Output() openGroupBuying = new EventEmitter<GroupBuyingFeedItem>();
 
-    get onlineMembers(): SocialMember[] {
-        return this.members.filter(m => m.isOnline);
-    }
+    /** Giữ lại cho tab "Nhóm" của trang social (dữ liệu từ socialService) */
+    @Input() groups: SocialGroup[] = [];
+    @Output() joinGroup = new EventEmitter<SocialGroup>();
 }

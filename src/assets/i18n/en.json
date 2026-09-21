@@ -845,7 +845,6 @@
         "WHATS_NEW": "What's on your mind?",
         "LOADING": "Loading...",
         "TRENDING": "Trending",
-        "ONLINE": "Online",
         "UPCOMING_EVENTS": "Upcoming Events",
         "POPULAR_GROUPS": "Popular Groups",
         "LIKE": "Like",
@@ -916,7 +915,11 @@
         "GROUP_BUYING_DESC": "Open group buying requests — join to get a better price together.",
         "GROUP_BUYING_OPEN": "Open group buying",
         "GROUP_BUYING_EMPTY": "No open group buying yet",
-        "GROUP_BUYING_MINE": "My groups"
+        "GROUP_BUYING_MINE": "My groups",
+        "MY_GROUPS": "Your industry groups",
+        "MY_GROUPS_EMPTY": "You have not joined any industry group yet",
+        "VIEW_ALL_GROUPS": "View all groups",
+        "GROUPS_EMPTY": "No industry groups yet"
     },
     "TOAST": {
         "SUCCESS": "Success",

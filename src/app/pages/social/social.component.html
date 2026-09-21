@@ -1,4 +1,4 @@
-<div class="social-container">
+﻿<div class="social-container">
     <app-social-header></app-social-header>
 
     <div class="social-tabs">
@@ -97,8 +97,8 @@
             }
         </div>
 
-        <app-social-sidebar [members]="members" [groupBuying]="groupBuyings" [groups]="groups"
-            (joinGroup)="joinGroup($event)" (openGroupBuying)="openGroupBuying($event)">
+        <app-social-sidebar [groupBuying]="groupBuyings" [myGroups]="myGroups" [featuredGroups]="featuredGroups"
+            (openGroupBuying)="openGroupBuying($event)">
         </app-social-sidebar>
     </div>
 </div>
