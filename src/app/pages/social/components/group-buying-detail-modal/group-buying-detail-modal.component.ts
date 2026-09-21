@@ -1,4 +1,4 @@
-// components/group-buying-detail-modal/group-buying-detail-modal.component.ts
+﻿// components/group-buying-detail-modal/group-buying-detail-modal.component.ts
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,12 +8,13 @@ import { finalize } from 'rxjs/operators';
 
 import { AppService } from '@core/services/app.service';
 import { GroupBuyingDetail, GroupBuyingStatus, JoinGroupBuyingResult } from '@core/models/group-buying-request.model';
+import { AccountCreatedNoticeComponent } from '@shared/components/account-created-notice/account-created-notice.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 
 @Component({
     selector: 'app-group-buying-detail-modal',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, TranslateModule, LoadingComponent],
+    imports: [CommonModule, ReactiveFormsModule, TranslateModule, LoadingComponent, AccountCreatedNoticeComponent],
     templateUrl: './group-buying-detail-modal.component.html',
     styleUrls: ['./group-buying-detail-modal.component.css']
 })

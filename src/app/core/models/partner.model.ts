@@ -1,8 +1,9 @@
-// ==============================
+﻿// ==============================
 // 1. ENUMS
 // ==============================
 
 import { BusinessInfo } from './business-info.model';
+import { AccountCredentials } from './account.model';
 
 export enum BusinessType {
     SME = 1,
@@ -166,6 +167,8 @@ export interface PartnerRegisterResponse {
         partnerCode: string;
         status: PartnerStatus;
         registeredAt: string;
+        /** Tài khoản vừa tạo/dùng lại khi đăng ký công khai (username user<sđt>, mật khẩu = SĐT) */
+        account?: AccountCredentials | null;
     };
     errors: string[] | null;
     timestamp: string;

@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '@core/services/app.service';
+import { ChangeCredentialsFormComponent } from '@shared/components/change-credentials-form/change-credentials-form.component';
 
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, RouterLink, TranslateModule],
+    imports: [CommonModule, RouterLink, TranslateModule, ChangeCredentialsFormComponent],
     template: `
         <main class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 px-4 py-8">
             <div class="mx-auto flex min-h-[80vh] max-w-3xl items-center justify-center">
@@ -35,6 +36,20 @@ import { AppService } from '@core/services/app.service';
                             </div>
                         </div>
 
+                        <!-- Đổi tên đăng nhập + mật khẩu -->
+                        <div class="rounded-2xl border border-slate-200 p-5 sm:p-6">
+                            <div class="mb-5">
+                                <h2 class="text-lg font-semibold text-slate-800">
+                                    {{ 'CHANGE_CREDENTIALS.SECTION_TITLE' | translate }}
+                                </h2>
+                                <p class="mt-1 text-sm text-slate-500">
+                                    {{ 'CHANGE_CREDENTIALS.SECTION_DESCRIPTION' | translate }}
+                                </p>
+                            </div>
+
+                            <app-change-credentials-form (changed)="onCredentialsChanged()"></app-change-credentials-form>
+                        </div>
+
                         <div class="rounded-2xl border border-dashed border-cyan-200 bg-cyan-50 p-5 text-center text-cyan-900">
                             <i class="fas fa-rocket mb-3 text-2xl text-primary"></i>
                             <p class="font-medium">{{ 'USER.COMING_SOON' | translate }}</p>
@@ -58,6 +73,11 @@ export class ProfileComponent {
     user: ReturnType<AppService['getCurrentUser']>;
 
     constructor(private readonly appService: AppService) {
+        this.user = this.appService.getCurrentUser();
+    }
+
+    onCredentialsChanged(): void {
+        // Tên đăng nhập hiển thị lại lấy từ user đã cập nhật sau khi đổi
         this.user = this.appService.getCurrentUser();
     }
 

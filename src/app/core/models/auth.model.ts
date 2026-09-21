@@ -1,4 +1,4 @@
-// src/app/core/models/auth.model.ts
+﻿// src/app/core/models/auth.model.ts
 
 export interface User {
     id: any;
@@ -6,6 +6,8 @@ export interface User {
     email: string;
     role: UserRole | string;
     fullName?: string;
+    /** Tài khoản tạo tự động từ form công khai → bắt buộc đổi tên đăng nhập + mật khẩu ở lần đăng nhập đầu */
+    mustChangeCredentials?: boolean;
     status?: UserStatus;
     createdAt?: string;
     updatedAt?: string;
@@ -34,6 +36,14 @@ export interface RegisterRequest {
     password: string;
 }
 
+/** Đổi tên đăng nhập + mật khẩu (lần đăng nhập đầu hoặc ở trang người dùng) */
+export interface ChangeCredentialsRequest {
+    currentPassword: string;
+    newUsername: string;
+    newPassword: string;
+    confirmNewPassword: string;
+}
+
 // ✅ AuthResponse có thể chứa data
 export interface AuthResponse {
     success: boolean;
@@ -47,6 +57,7 @@ export interface AuthResponse {
         fullName: string;
         role: string;
         email?: string;
+        mustChangeCredentials?: boolean;
     };
     errors: string[] | null;
     timestamp: string;

@@ -1,4 +1,4 @@
-// pages/partner-register/partner-register.component.ts
+﻿// pages/partner-register/partner-register.component.ts
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -10,20 +10,23 @@ import { AppService } from '../../core/services/app.service';
 import { isBrowser } from '../../core/utils/platform';
 import { PartnerRegisterService } from '../../core/services/partner-register.service';
 import { PartnerFormComponent } from './components/partner-form/partner-form.component';
+import { AccountCreatedNoticeComponent } from '@shared/components/account-created-notice/account-created-notice.component';
+import { AccountCredentials } from '@core/models/account.model';
 
 @Component({
   selector: 'app-partner-register',
   standalone: true,
   imports: [
-    CommonModule,
-    PartnerHeroComponent,
-    PartnerStepsComponent,
-    PartnerFormComponent
+    CommonModule, PartnerHeroComponent, PartnerStepsComponent, PartnerFormComponent,
+    AccountCreatedNoticeComponent,
   ],
   templateUrl: './partner-register.component.html',
   styleUrls: ['./partner-register.component.css']
 })
 export class PartnerRegisterComponent {
+  /** Tài khoản vừa tạo/dùng lại khi đăng ký công khai (hiện khối thông tin đăng nhập) */
+  registeredAccount: AccountCredentials | null = null;
+
   @ViewChild(PartnerFormComponent) formComponent!: PartnerFormComponent;
 
   currentStep = 1;
@@ -41,6 +44,10 @@ export class PartnerRegisterComponent {
   }
 
   // partner-register/partner-register.component.ts
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+
   onSubmit(): void {
     if (this.isLoading) {
       // console.log('⏳ Already loading, skip');
@@ -117,7 +124,13 @@ export class PartnerRegisterComponent {
             response.message || this._appService.trans('PARTNER.REGISTER_SUCCESS')
           );
 
-          this.router.navigate(['/home']);
+          // Form công khai: API trả tài khoản vừa tạo (username user<sđt>, mật khẩu = SĐT)
+          this.registeredAccount = response?.data?.account ?? null;
+
+          // Có tài khoản vừa tạo → ở lại trang để người đăng ký thấy thông tin đăng nhập
+          if (!this.registeredAccount) {
+            this.router.navigate(['/home']);
+          }
         }
       },
       error: (err: HttpErrorResponse) => {

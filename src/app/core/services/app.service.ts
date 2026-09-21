@@ -1,4 +1,4 @@
-// core/services/app.service.ts
+﻿// core/services/app.service.ts
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth.service';
@@ -11,7 +11,7 @@ import { GroupBuyingRequestService } from './group-buying-request.service';
 import { OfferRequestService } from './offer-request.service';
 import { PartnerService } from './partner.service';
 import { SocialService } from './social.service';
-import { UserRole } from '@core/models/auth.model';
+import { ChangeCredentialsRequest, UserRole } from '@core/models/auth.model';
 import { storageSet } from '../utils/storage';
 import { ModalService } from './modal.service';
 import { CollaboratorService } from './collaborator.service';
@@ -54,6 +54,13 @@ export class AppService {
 
     getCurrentUser() {
         return this.auth.getCurrentUser();
+    }
+
+    /**
+     * Đổi tên đăng nhập + mật khẩu (lần đăng nhập đầu hoặc ở trang người dùng)
+     */
+    changeCredentials(payload: ChangeCredentialsRequest) {
+        return this.auth.changeCredentials(payload);
     }
 
     isAuthenticated() {

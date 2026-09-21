@@ -1,4 +1,6 @@
-import { BusinessInfo } from './business-info.model';
+﻿import { BusinessInfo } from './business-info.model';
+
+import { AccountCredentials } from './account.model';
 
 export interface Collaborator {
     id: string;
@@ -17,6 +19,8 @@ export interface Collaborator {
     parentCollaboratorId?: string;
     businessFieldId?: string | null;
     businessFieldName?: string | null;
+    /** Chỉ có ở response đăng ký công khai: tài khoản vừa tạo/dùng lại (username user<sđt>, mật khẩu = SĐT) */
+    account?: AccountCredentials | null;
     level: number;
     referralCode?: string;
     status: CollaboratorStatus;

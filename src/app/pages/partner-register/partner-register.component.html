@@ -1,7 +1,20 @@
-<!-- pages/partner-register/partner-register.component.html -->
+﻿<!-- pages/partner-register/partner-register.component.html -->
 <div class="partner-register-container">
     <!-- Hero Section -->
     <app-partner-hero></app-partner-hero>
+
+    <!-- Thông tin đăng nhập vừa tạo cho người đăng ký -->
+    <section class="partner-form-section" *ngIf="registeredAccount">
+        <div class="partner-form-wrapper">
+            <app-account-created-notice
+                [isNewAccount]="registeredAccount.isNewAccount"
+                [accountAlreadyExisted]="registeredAccount.accountAlreadyExisted"
+                [username]="registeredAccount.username"
+                [passwordIsPhone]="registeredAccount.passwordIsPhone"
+                (loginClick)="goToLogin()">
+            </app-account-created-notice>
+        </div>
+    </section>
 
     <!-- Form Section -->
     <section class="partner-form-section">

@@ -1,4 +1,4 @@
-<div class="gb-modal-overlay" *ngIf="visible" (click)="close()">
+﻿<div class="gb-modal-overlay" *ngIf="visible" (click)="close()">
     <div class="gb-modal" (click)="stopPropagation($event)">
         <!-- Header -->
         <div class="gb-modal-head">
@@ -125,31 +125,15 @@
                     </div>
                 </div>
 
-                <!-- Kết quả đăng ký: tài khoản vừa tạo -->
-                <div class="account-box" *ngIf="joinResult?.isNewAccount">
-                    <h4><i class="fas fa-circle-check"></i> {{ 'GROUP_BUYING.ACCOUNT.CREATED_TITLE' | translate }}</h4>
-                    <p>{{ 'GROUP_BUYING.ACCOUNT.CREATED_DESC' | translate }}</p>
-                    <div class="credential">
-                        <span class="label">{{ 'GROUP_BUYING.ACCOUNT.USERNAME' | translate }}</span>
-                        <code>{{ joinResult?.username }}</code>
-                    </div>
-                    <div class="credential">
-                        <span class="label">{{ 'GROUP_BUYING.ACCOUNT.PASSWORD' | translate }}</span>
-                        <code>{{ 'GROUP_BUYING.ACCOUNT.PASSWORD_IS_PHONE' | translate }}</code>
-                    </div>
-                    <button class="btn-primary" (click)="goToLogin()">
-                        <i class="fas fa-right-to-bracket"></i> {{ 'GROUP_BUYING.ACCOUNT.LOGIN_NOW' | translate }}
-                    </button>
-                </div>
-
-                <!-- Đã tham gia nhưng SĐT đã có tài khoản từ trước -->
-                <div class="account-box note" *ngIf="joinResult && !joinResult.isNewAccount && joinResult.accountAlreadyExisted">
-                    <h4><i class="fas fa-circle-info"></i> {{ 'GROUP_BUYING.ACCOUNT.EXISTS_TITLE' | translate }}</h4>
-                    <p>{{ 'GROUP_BUYING.ACCOUNT.EXISTS_DESC' | translate }}</p>
-                    <button class="btn-primary" (click)="goToLogin()">
-                        <i class="fas fa-right-to-bracket"></i> {{ 'GROUP_BUYING.ACCOUNT.LOGIN_NOW' | translate }}
-                    </button>
-                </div>
+                <!-- Kết quả đăng ký: tài khoản vừa tạo / đã có tài khoản (dùng chung component) -->
+                <app-account-created-notice
+                    *ngIf="joinResult"
+                    [isNewAccount]="joinResult.isNewAccount === true"
+                    [accountAlreadyExisted]="joinResult.accountAlreadyExisted === true"
+                    [username]="joinResult.username"
+                    [passwordIsPhone]="joinResult.passwordIsPhone"
+                    (loginClick)="goToLogin()">
+                </app-account-created-notice>
 
                 <!-- Khu vực đăng ký -->
                 <div class="section join-section" *ngIf="!joinResult?.isNewAccount">

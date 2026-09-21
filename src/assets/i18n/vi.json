@@ -1261,5 +1261,42 @@
             "EDIT_TITLE": "Sửa yêu cầu mua chung",
             "UPDATE_SUCCESS": "Cập nhật yêu cầu mua chung thành công"
         }
+    },
+    "CHANGE_CREDENTIALS": {
+        "SECTION_TITLE": "Đổi tên đăng nhập và mật khẩu",
+        "SECTION_DESCRIPTION": "Đổi tên đăng nhập (thay cho số điện thoại) và mật khẩu đăng nhập của bạn.",
+        "FIRST_LOGIN_LABEL": "Lần đăng nhập đầu tiên",
+        "FIRST_LOGIN_TITLE": "Đổi tên đăng nhập và mật khẩu",
+        "FIRST_LOGIN_DESCRIPTION": "Tài khoản của bạn được tạo tự động khi đăng ký, vui lòng đổi tên đăng nhập và mật khẩu để tiếp tục sử dụng.",
+        "FIRST_LOGIN_NOTE": "Bạn phải đổi tên đăng nhập và mật khẩu trước khi dùng các chức năng khác.",
+        "CURRENT_PASSWORD": "Mật khẩu hiện tại",
+        "CURRENT_PASSWORD_PLACEHOLDER": "Nhập mật khẩu hiện tại",
+        "NEW_USERNAME": "Tên đăng nhập mới",
+        "NEW_USERNAME_PLACEHOLDER": "Ví dụ: nguyenvana",
+        "NEW_USERNAME_HINT": "Chỉ gồm chữ, số và các ký tự . _ - (3-50 ký tự)",
+        "NEW_PASSWORD": "Mật khẩu mới",
+        "NEW_PASSWORD_PLACEHOLDER": "Tối thiểu 6 ký tự",
+        "CONFIRM_PASSWORD": "Xác nhận mật khẩu mới",
+        "CONFIRM_PASSWORD_PLACEHOLDER": "Nhập lại mật khẩu mới",
+        "SUBMIT": "Lưu thay đổi",
+        "SUCCESS": "Đổi tên đăng nhập và mật khẩu thành công",
+        "ERROR_CURRENT_PASSWORD_REQUIRED": "Vui lòng nhập mật khẩu hiện tại",
+        "ERROR_USERNAME_REQUIRED": "Vui lòng nhập tên đăng nhập mới",
+        "ERROR_USERNAME_PATTERN": "Tên đăng nhập chỉ gồm chữ, số và các ký tự . _ -",
+        "ERROR_USERNAME_LENGTH": "Tên đăng nhập phải có từ 3 đến 50 ký tự",
+        "ERROR_PASSWORD_REQUIRED": "Vui lòng nhập mật khẩu mới",
+        "ERROR_PASSWORD_MIN_LENGTH": "Mật khẩu phải có ít nhất 6 ký tự",
+        "ERROR_PASSWORD_MISMATCH": "Mật khẩu xác nhận không khớp"
+    },
+    "ACCOUNT_NOTICE": {
+        "CREATED_TITLE": "Tài khoản của bạn đã được tạo",
+        "CREATED_DESC": "Dùng thông tin dưới đây để đăng nhập vào Kindi và theo dõi các hoạt động của bạn.",
+        "USERNAME": "Tên đăng nhập",
+        "PASSWORD": "Mật khẩu",
+        "PASSWORD_IS_PHONE": "Là số điện thoại bạn vừa nhập",
+        "FIRST_LOGIN_HINT": "Lần đăng nhập đầu tiên bạn sẽ được yêu cầu đổi tên đăng nhập và mật khẩu.",
+        "LOGIN_NOW": "Đăng nhập ngay",
+        "EXISTS_TITLE": "Số điện thoại này đã có tài khoản Kindi",
+        "EXISTS_DESC": "Thông tin của bạn đã được ghi nhận. Hãy đăng nhập bằng tài khoản cũ để theo dõi (nếu quên mật khẩu, dùng chức năng Quên mật khẩu)."
     }
 }

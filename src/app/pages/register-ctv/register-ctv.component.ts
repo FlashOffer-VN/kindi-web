@@ -1,4 +1,4 @@
-// src/app/pages/register-ctv/register-ctv.component.ts
+﻿// src/app/pages/register-ctv/register-ctv.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -7,16 +7,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '@core/services/app.service';
 import { CreateCollaboratorRequest, SalesChannelOption } from '@core/models/collaborator.model';
 import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wrapper.component';
+import { AccountCreatedNoticeComponent } from '@shared/components/account-created-notice/account-created-notice.component';
+import { AccountCredentials } from '@core/models/account.model';
 
 @Component({
     selector: 'app-register-ctv',
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        NgSelectWrapperComponent,
-        RouterLink
+        CommonModule, ReactiveFormsModule, TranslateModule, NgSelectWrapperComponent, RouterLink,
+        AccountCreatedNoticeComponent
     ],
     templateUrl: './register-ctv.component.html',
     styleUrls: ['./register-ctv.component.css']
@@ -27,12 +26,18 @@ export class RegisterCtvComponent implements OnInit {
     salesChannels: SalesChannelOption[] = [];
     touched = false;
     submitted = false;
+    /** Tài khoản vừa tạo/dùng lại khi đăng ký công khai (hiện khối thông tin đăng nhập) */
+    registeredAccount: AccountCredentials | null = null;
 
     constructor(
         private fb: FormBuilder,
         private _appService: AppService,
         private router: Router
     ) { }
+
+    goToLogin(): void {
+        this.router.navigate(['/login']);
+    }
 
     ngOnInit(): void {
         this.salesChannels = this._appService.collaboratorService.getSalesChannels();
@@ -147,6 +152,9 @@ export class RegisterCtvComponent implements OnInit {
                 this.isSubmitting = false;
                 this._appService.showSuccess(this._appService.trans('CTV_FORM.SUCCESS_REGISTER'));
 
+                // Form công khai: API trả tài khoản vừa tạo (username user<sđt>, mật khẩu = SĐT)
+                this.registeredAccount = response?.data?.account ?? null;
+
                 // ✅ Reset form
                 // ✅ Reset từng control
                 this.ctvForm.get('fullName')?.reset('');
@@ -163,7 +171,11 @@ export class RegisterCtvComponent implements OnInit {
                 this.ctvForm.markAsPristine();
                 this.ctvForm.markAsUntouched();
                 this.ctvForm.updateValueAndValidity();
-                this.router.navigate(['/']);
+
+                // Có tài khoản vừa tạo → ở lại trang để người đăng ký thấy thông tin đăng nhập
+                if (!this.registeredAccount) {
+                    this.router.navigate(['/']);
+                }
             },
             error: (error: any) => {
                 this.isSubmitting = false;

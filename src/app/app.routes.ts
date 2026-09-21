@@ -1,9 +1,9 @@
-// app.routes.ts
+﻿// app.routes.ts
 import { Routes } from '@angular/router';
 import { AdminLayoutComponent } from './shared/components/layouts/admin-layout/admin-layout.component';
 import { GuestLayoutComponent } from './shared/components/layouts/guest-layout/guest-layout.component';
 import { UserLayoutComponent } from './shared/components/layouts/user-layout/user-layout.component';
-import { AdminGuard, AuthGuard, GuestGuard } from './core/guards';
+import { AdminGuard, AuthGuard, CredentialsGuard, GuestGuard } from './core/guards';
 
 export const routes: Routes = [
     // Guest routes (chưa đăng nhập)
@@ -72,7 +72,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminLayoutComponent,
-        canActivate: [AdminGuard],
+        canActivate: [AdminGuard, CredentialsGuard],
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
@@ -104,7 +104,16 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
             { path: '', redirectTo: 'profile', pathMatch: 'full' },
-            { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
+            // Bắt buộc đổi tên đăng nhập + mật khẩu ở lần đăng nhập đầu (không gắn CredentialsGuard để tránh vòng lặp)
+            {
+                path: 'change-credentials',
+                loadComponent: () => import('./pages/profile/change-credentials/change-credentials.component').then(m => m.ChangeCredentialsPageComponent)
+            },
+            {
+                path: 'profile',
+                canActivate: [CredentialsGuard],
+                loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
+            },
         ]
     },
 
