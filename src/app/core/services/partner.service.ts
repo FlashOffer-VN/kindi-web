@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import {
@@ -16,7 +16,9 @@ import {
     getBusinessTypeLabel,
     getCompanySizeLabel,
     getCommissionTypeLabel,
-    getProductCategoryLabel
+    getProductCategoryLabel,
+    PublicPartner,
+    PublicPartnerQuery
 } from '../models/partner.model';
 import { ApiResponse, PagedResponse } from '../models/paged-response.model';
 
@@ -27,6 +29,21 @@ export class PartnerService {
     private readonly _baseUrl = 'partners';
 
     constructor(private _apiService: ApiService) { }
+
+    /**
+     * Nguồn cung công khai (trang /suppliers): chỉ trả đối tác doanh nghiệp đã được duyệt.
+     * Chỉ gửi param có giá trị — HttpParams serialize undefined thành chuỗi "undefined".
+     */
+    getPublicSuppliers(query: PublicPartnerQuery = {}): Observable<PagedResponse<PublicPartner>> {
+        const params: Record<string, unknown> = {
+            page: query.page ?? 1,
+            pageSize: query.pageSize ?? 12
+        };
+        if (query.search?.trim()) params['search'] = query.search.trim();
+        if (query.businessFieldId) params['businessFieldId'] = query.businessFieldId;
+
+        return this._apiService.get<PagedResponse<PublicPartner>>(`${this._baseUrl}/public`, params);
+    }
 
     // ==============================
     // GET LIST

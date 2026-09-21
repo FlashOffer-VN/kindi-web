@@ -1,4 +1,4 @@
-:host {
+﻿:host {
     display: block;
     min-height: 100vh;
     background: #f8fafc;
@@ -566,4 +566,65 @@
         flex-direction: column;
         gap: 8px;
     }
+}
+
+/* ===== Trang Nguồn cung: dữ liệu thật từ danh sách đối tác doanh nghiệp đã duyệt ===== */
+.suppliers-loading {
+    display: flex;
+    justify-content: center;
+    padding: 48px 0;
+}
+
+.supplier-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.meta-tag {
+    background: #E6FFFB;
+    color: #0d9488;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.supplier-card__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.supplier-card__logo i {
+    font-size: 22px;
+    color: #0d9488;
+}
+
+.supplier-card__category i {
+    margin-right: 4px;
+    color: #0d9488;
+}
+
+.suppliers-clear-filter {
+    margin-top: 12px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.suppliers-clear-filter:hover {
+    background: #f3f4f6;
+}
+
+.suppliers-pagination {
+    margin-top: 24px;
 }

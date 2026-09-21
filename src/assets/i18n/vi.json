@@ -1332,7 +1332,9 @@
             "PRIVATE_HINT": "Yêu cầu kín do thành viên gửi riêng cho admin, các thành viên khác không đọc được.",
             "NO_PRIVATE": "Chưa có yêu cầu kín",
             "NO_POSTS": "Chưa có bài nào"
-        }
+        },
+        "LOGOUT_TITLE": "Đăng xuất khỏi trang quản trị?",
+        "LOGOUT_MESSAGE": "Bạn sẽ cần đăng nhập lại để tiếp tục quản trị."
     },
     "CHANGE_CREDENTIALS": {
         "SECTION_TITLE": "Đổi tên đăng nhập và mật khẩu",
@@ -1433,5 +1435,6 @@
         "TYPE_SUPPLIER": "Tìm nhà cung cấp",
         "TYPE_ANNOUNCEMENT": "Thông báo",
         "ERROR_CONTACT_REQUIRED": "Vui lòng nhập họ tên và số điện thoại"
-    }
+    },
+    "SUPPLIERS_CLEAR_FILTER": "Xoá bộ lọc"
 }

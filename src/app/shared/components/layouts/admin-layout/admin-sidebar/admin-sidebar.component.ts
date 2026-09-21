@@ -36,10 +36,19 @@ export class AdminSidebarComponent {
         this.toggle.emit();
     }
 
+    /** Đăng xuất khỏi trang quản trị — có dialog xác nhận (bỏ confirm() mặc định của trình duyệt) */
     logout(): void {
-        if (confirm('Are you sure you want to logout?')) {
-            this._appService.auth.logout();
-        }
+        this._appService.modal.confirm({
+            title: this._appService.trans('ADMIN.LOGOUT_TITLE'),
+            message: this._appService.trans('ADMIN.LOGOUT_MESSAGE'),
+            confirmText: this._appService.trans('ADMIN.SIDEBAR.LOGOUT'),
+            cancelText: this._appService.trans('COMMON.BUTTON.CANCEL'),
+            confirmVariant: 'danger'
+        }).then(confirmed => {
+            if (confirmed) {
+                this._appService.auth.logoutToAdmin();
+            }
+        });
     }
 }
 

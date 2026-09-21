@@ -1369,7 +1369,9 @@
             "PRIVATE_HINT": "Private requests are sent by members to admins only.",
             "NO_PRIVATE": "No private requests",
             "NO_POSTS": "No posts yet"
-        }
+        },
+        "LOGOUT_TITLE": "Sign out of the admin area?",
+        "LOGOUT_MESSAGE": "You will need to sign in again to continue managing."
     },
     "CHANGE_CREDENTIALS": {
         "SECTION_TITLE": "Change username and password",
@@ -1470,5 +1472,6 @@
         "TYPE_SUPPLIER": "Supplier request",
         "TYPE_ANNOUNCEMENT": "Announcement",
         "ERROR_CONTACT_REQUIRED": "Please enter your full name and phone number"
-    }
+    },
+    "SUPPLIERS_CLEAR_FILTER": "Clear filters"
 }

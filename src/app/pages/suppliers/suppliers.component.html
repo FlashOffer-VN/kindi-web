@@ -14,43 +14,59 @@
             <h2>{{ 'SUPPLIERS_LIST_TITLE' | translate }}</h2>
             <p>{{ 'SUPPLIERS_LIST_DESC' | translate }}</p>
         </div>
+
         <div class="suppliers-filters">
             <label class="supplier-search">
                 <i class="fas fa-search"></i>
-                <input type="search" [(ngModel)]="searchTerm"
+                <input type="search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchInput()"
                     [placeholder]="'SUPPLIERS_SEARCH_PLACEHOLDER' | translate">
             </label>
-            <app-ng-select-wrapper class="supplier-category-select" [items]="categoryOptions"
-                [(ngModel)]="selectedCategory" [placeholder]="'SUPPLIERS_CATEGORY_PLACEHOLDER' | translate"
-                [clearable]="true" [searchable]="false" appendTo="body"
-                (valueChange)="selectedCategory = $event">
+
+            <app-ng-select-wrapper class="supplier-category-select" [items]="businessFieldOptions"
+                [(ngModel)]="selectedBusinessFieldId" [placeholder]="'SUPPLIERS_CATEGORY_PLACEHOLDER' | translate"
+                [clearable]="true" [searchable]="true" appendTo="body"
+                (valueChange)="onFilterChange()">
             </app-ng-select-wrapper>
+
             <span class="supplier-result-count">
-                {{ filteredSuppliers.length }} {{ 'SUPPLIERS_RESULTS' | translate }}
+                {{ totalCount }} {{ 'SUPPLIERS_RESULTS' | translate }}
             </span>
         </div>
-        <div class="suppliers-grid">
-            <div class="supplier-card" *ngFor="let supplier of filteredSuppliers">
+
+        <div class="suppliers-loading" *ngIf="isLoading">
+            <app-loading></app-loading>
+        </div>
+
+        <div class="suppliers-grid" *ngIf="!isLoading">
+            <div class="supplier-card" *ngFor="let supplier of suppliers">
                 <div class="supplier-card__header">
-                    <div class="supplier-card__logo">{{ supplier.logo }}</div>
-                    <div class="supplier-card__rating">
-                        <span class="stars">
-                            <span *ngFor="let star of getStars(supplier.rating)">★</span>
-                        </span>
-                        <span class="rating-number">{{ supplier.rating }}</span>
+                    <div class="supplier-card__logo">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="supplier-card__meta">
+                        <span class="meta-tag" *ngIf="supplier.businessFieldName">{{ supplier.businessFieldName }}</span>
+                        <span class="meta-tag">{{ businessTypeText(supplier) }}</span>
                     </div>
                 </div>
+
                 <div class="supplier-card__body">
-                    <h3>{{ supplier.name }}</h3>
-                    <span class="supplier-card__category">{{ supplier.category }}</span>
-                    <div class="supplier-card__products">
-                        <span class="product-tag" *ngFor="let product of supplier.products">
+                    <h3>{{ supplier.companyName }}</h3>
+                    <span class="supplier-card__category" *ngIf="supplier.companyAddress">
+                        <i class="fas fa-location-dot"></i> {{ supplier.companyAddress }}
+                    </span>
+                    <span class="supplier-card__category">
+                        <i class="fas fa-users"></i> {{ companySizeText(supplier) }}
+                    </span>
+
+                    <div class="supplier-card__products" *ngIf="supplier.products.length">
+                        <span class="product-tag" *ngFor="let product of supplier.products | slice:0:4">
                             {{ product }}
                         </span>
                     </div>
                 </div>
+
                 <div class="supplier-card__footer">
-                    <span class="supplier-card__verified" *ngIf="supplier.verified">
+                    <span class="supplier-card__verified">
                         ✅ {{ 'SUPPLIERS_VERIFIED' | translate }}
                     </span>
                     <a class="supplier-card__cta" routerLink="/find-supplier">
@@ -59,9 +75,18 @@
                 </div>
             </div>
         </div>
-        <div class="empty-state" *ngIf="filteredSuppliers.length === 0">
+
+        <div class="empty-state" *ngIf="!isLoading && suppliers.length === 0">
             <i class="fas fa-search"></i>
             <p>{{ 'SUPPLIERS_EMPTY' | translate }}</p>
+            <button type="button" class="suppliers-clear-filter" (click)="clearFilters()">
+                {{ 'SUPPLIERS_CLEAR_FILTER' | translate }}
+            </button>
+        </div>
+
+        <div class="suppliers-pagination" *ngIf="!isLoading && totalCount > 0">
+            <app-pagination [pageNumber]="page" [pageSize]="pageSize" [totalCount]="totalCount"
+                [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-pagination>
         </div>
     </section>
 </div>

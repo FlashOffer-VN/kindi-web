@@ -347,3 +347,25 @@ export function getPartnerStatusVariant(status: PartnerStatus): string {
     };
     return variants[status] || 'secondary';
 }
+/** Đối tác doanh nghiệp đã được duyệt — dùng cho trang Nguồn cung công khai */
+export interface PublicPartner {
+    id: string;
+    partnerCode: string;
+    companyName: string;
+    businessFieldName?: string | null;
+    businessType: BusinessType;
+    companySize: CompanySize;
+    companyWebsite?: string | null;
+    companyAddress?: string | null;
+    contactName: string;
+    position?: string | null;
+    products: string[];
+    createdAt: string;
+}
+
+export interface PublicPartnerQuery {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    businessFieldId?: string | null;
+}
