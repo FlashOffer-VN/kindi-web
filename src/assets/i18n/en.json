@@ -1,4 +1,4 @@
-{
+﻿{
     "APP_TITLE": "Kindi",
     "APP_NAME": "Kindi - SME Platform",
     "NAV_SOLUTIONS": "Solutions",
@@ -429,7 +429,7 @@
         "ERROR_EMAIL_INVALID": "Invalid email (e.g., example@gmail.com)",
         "ERROR_FORM_INVALID": "Please check your information",
         "ERROR_REGISTER_FAILED": "Registration failed, please try again",
-        "SUCCESS_REGISTER": "collaborator registration successful!",
+        "SUCCESS_REGISTER": "Collaborator registration successful!",
         "REGISTER_CTV_SECURE_NOTE": "Your information is completely secure"
     },
     "SELECT_COMPONENT": {
@@ -1156,11 +1156,11 @@
             "DELETED_SUCCESS": "Post deleted successfully"
         },
         "CTV": {
-            "TITLE": "collaborator Management",
-            "LIST_TITLE": "collaborator List",
+            "TITLE": "Collaborator Management",
+            "LIST_TITLE": "Collaborator List",
             "SEARCH_PLACEHOLDER": "Search by name, email, phone, field...",
             "FILTER_STATUS": "Filter by status",
-            "CODE": "collaborator Code",
+            "CODE": "Collaborator Code",
             "FULL_NAME": "Full Name",
             "EMAIL": "Email",
             "PHONE": "Phone",
@@ -1170,7 +1170,7 @@
             "PERSONAL_INFO": "Personal Information",
             "REGISTRATION_INFO": "Registration Information",
             "SYSTEM_INFO": "System Information",
-            "DETAIL_TITLE": "collaborator Detail",
+            "DETAIL_TITLE": "Collaborator Detail",
             "ZALO": "Zalo",
             "EXPERIENCE": "Experience",
             "SKILLS": "Skills",
@@ -1179,11 +1179,11 @@
             "APPROVED_AT": "Approved At",
             "APPROVE": "Approve collaborator",
             "REJECT": "Reject collaborator",
-            "RESTORED_SUCCESS": "collaborator restored successfully",
+            "RESTORED_SUCCESS": "Collaborator restored successfully",
             "DELETE_CONFIRM": "Are you sure you want to delete collaborator \"{{name}}\"?",
-            "DELETED_SUCCESS": "collaborator deleted successfully",
+            "DELETED_SUCCESS": "Collaborator deleted successfully",
             "EDIT_TITLE": "Edit collaborator",
-            "UPDATED_SUCCESS": "collaborator updated successfully"
+            "UPDATED_SUCCESS": "Collaborator updated successfully"
         },
         "BUSINESS_INFO": {
             "TITLE": "Business Information",
