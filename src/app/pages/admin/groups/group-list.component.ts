@@ -1,7 +1,7 @@
 ﻿import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '@core/services/app.service';
 import { BusinessGroup, BusinessGroupType, CreateBusinessGroupRequest, GroupApprovalStatus } from '@core/models/business-group.model';
@@ -16,7 +16,7 @@ import { StatusTabItem, StatusTabsComponent } from '@shared/components/status-ta
 @Component({
     selector: 'app-admin-group-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent,
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, ButtonComponent,
         InputComponent, LoadingComponent, ModalComponent, PaginationComponent, StatusTabsComponent],
     templateUrl: './group-list.component.html',
 })

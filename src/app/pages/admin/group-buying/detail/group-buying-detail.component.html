@@ -5,7 +5,7 @@
 
     <ng-container *ngIf="!isLoading && detail">
         <!-- Header -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <div class="flex flex-col lg:flex-row lg:items-center gap-5">
                 <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary-light text-white flex items-center justify-center text-2xl font-bold flex-shrink-0">
                     {{ detail.productName.charAt(0).toUpperCase() }}
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Info cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <p class="text-xs font-semibold text-gray-500 uppercase">{{ 'ADMIN.GROUP_BUYING.TARGET_PRICE' | translate }}</p>
                 <p class="text-lg font-bold text-primary mt-1">{{ formatPrice(detail.targetPrice) }}</p>
@@ -83,7 +83,7 @@
         </div>
 
         <!-- Progress -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div class="h-full bg-gradient-to-r from-primary to-primary-light rounded-full transition-all"
                     [style.width.%]="percent()"></div>
@@ -92,7 +92,7 @@
         </div>
 
         <!-- Product + Requester info -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="text-base font-bold text-gray-800 mb-4">
                     <i class="fas fa-box mr-2 text-primary"></i>{{ 'ADMIN.GROUP_BUYING.PRODUCT_INFO' | translate }}

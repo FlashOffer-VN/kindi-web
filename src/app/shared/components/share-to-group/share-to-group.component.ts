@@ -5,11 +5,11 @@ import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { AppService } from '@core/services/app.service';
+import { isBrowser } from '@core/utils/platform';
 import { BusinessGroup, ForwardedGroup, GroupPostType } from '@core/models/business-group.model';
 import { ButtonComponent, ButtonSize } from '@shared/components/button/button.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
-import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wrapper.component';
 
 /**
  * Nút "Chuyển tiếp vào nhóm ngành": gửi 1 yêu cầu của hệ thống (mua chung / tìm nhà cung cấp)
@@ -19,7 +19,7 @@ import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wr
 @Component({
     selector: 'app-share-to-group',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent, LoadingComponent, ModalComponent, NgSelectWrapperComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent, LoadingComponent, ModalComponent],
     templateUrl: './share-to-group.component.html',
     host: {
         // Component thường nằm trong row/card có (click) điều hướng (bảng admin, card bảng tin).
@@ -55,11 +55,6 @@ export class ShareToGroupComponent implements OnDestroy {
     submitting = false;
     groups: BusinessGroup[] = [];
     form: FormGroup;
-
-    /** Danh sách nhóm cho select của app (label/value) */
-    get groupOptions(): { label: string; value: string }[] {
-        return this.groups.map(g => ({ label: g.name, value: g.id }));
-    }
 
     /** Nhóm đã chọn khi gửi nhiều nhóm */
     selectedGroupIds: string[] = [];
@@ -116,6 +111,19 @@ export class ShareToGroupComponent implements OnDestroy {
         return this.selectedGroupIds.includes(groupId);
     }
 
+    /** Nhóm đang được chọn khi gửi 1 nhóm */
+    isChosen(groupId: string): boolean {
+        return this.form.get('groupId')?.value === groupId;
+    }
+
+    /** Chọn 1 nhóm (chế độ gửi 1 nhóm) */
+    selectGroup(groupId: string): void {
+        if (this.isAlreadySent(groupId)) return;
+
+        this.form.patchValue({ groupId });
+        this.form.get('groupId')?.markAsTouched();
+    }
+
     toggleGroup(groupId: string): void {
         if (this.isAlreadySent(groupId)) return;
 
@@ -150,6 +158,9 @@ export class ShareToGroupComponent implements OnDestroy {
      * nhảy vị trí và nhấp nháy liên tục. Ra body thì luôn neo theo viewport.
      */
     private escapeFromAncestors(): void {
+        // SSR: prerender chạy trên Node, không có document
+        if (!isBrowser()) return;
+
         if (!this.modalEl) {
             this.modalEl = this._el.nativeElement.querySelector('app-modal') as HTMLElement | undefined;
         }

@@ -20,7 +20,6 @@ import { CreatePostComponent } from './components/create-post/create-post.compon
 import { PostCardComponent } from './components/post-card/post-card.component';
 import { TrendingTopicsComponent } from './components/trending-topics/trending-topics.component';
 import { SocialSidebarComponent } from './components/social-sidebar/social-sidebar.component';
-import { GroupCardComponent } from './components/group-card/group-card.component';
 import { GroupBuyingCardComponent } from './components/group-buying-card/group-buying-card.component';
 import { GroupBuyingDetailModalComponent } from './components/group-buying-detail-modal/group-buying-detail-modal.component';
 import { MemberCardComponent } from './components/member-card/member-card.component';
@@ -36,7 +35,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
     selector: 'app-social',
     standalone: true,
     imports: [
-        CommonModule, FormsModule, TranslateModule, QuillModule, SocialHeaderComponent, CreatePostComponent, PostCardComponent, TrendingTopicsComponent, SocialSidebarComponent, GroupCardComponent, GroupBuyingCardComponent, GroupBuyingDetailModalComponent, MemberCardComponent,
+        CommonModule, FormsModule, TranslateModule, QuillModule, SocialHeaderComponent, CreatePostComponent, PostCardComponent, 
+        TrendingTopicsComponent, SocialSidebarComponent, GroupBuyingCardComponent, GroupBuyingDetailModalComponent, MemberCardComponent,
         ReactiveFormsModule,
         InputComponent,
         ButtonComponent,

@@ -1,4 +1,4 @@
-<div class="suppliers-container">
+﻿<div class="suppliers-container">
     <!-- Hero Section -->
     <div class="suppliers-hero">
         <div class="suppliers-hero__content">
@@ -45,7 +45,7 @@
                     </div>
                     <div class="supplier-card__meta">
                         <span class="meta-tag" *ngIf="supplier.businessFieldName">{{ supplier.businessFieldName }}</span>
-                        <span class="meta-tag">{{ businessTypeText(supplier) }}</span>
+                        <span class="meta-tag">{{ businessTypeText(supplier) | translate }}</span>
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@
                         <i class="fas fa-location-dot"></i> {{ supplier.companyAddress }}
                     </span>
                     <span class="supplier-card__category">
-                        <i class="fas fa-users"></i> {{ companySizeText(supplier) }}
+                        <i class="fas fa-users"></i> {{ companySizeText(supplier) | translate }}
                     </span>
 
                     <div class="supplier-card__products" *ngIf="supplier.products.length">

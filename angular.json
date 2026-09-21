@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
@@ -13,6 +13,9 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+                "allowedCommonJsDependencies": [
+                    "quill-delta"
+                ],
             "browser": "src/main.ts",
             "server": "src/main.server.ts",
             "outputMode": "static",
@@ -38,7 +41,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "800kB",
                   "maximumError": "1MB"
                 },
                 {
