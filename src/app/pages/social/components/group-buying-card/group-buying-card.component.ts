@@ -98,9 +98,11 @@ import { ShareToGroupComponent } from '@shared/components/share-to-group/share-t
             height: 100%;
         }
 
+        /* KHÔNG dùng transform khi hover: card chứa modal (overlay position: fixed) nên transform
+           tạo containing block mới -> rời chuột là overlay nhảy theo, gây nhấp nháy modal liên tục */
         .gb-card:hover {
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
+            border-color: #d1d5db;
         }
 
         .gb-head {

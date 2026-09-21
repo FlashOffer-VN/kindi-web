@@ -1,5 +1,5 @@
 ﻿import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,7 +26,7 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
         '(click)': '$event.stopPropagation()'
     }
 })
-export class ShareToGroupComponent {
+export class ShareToGroupComponent implements OnDestroy {
     /** Id bản ghi gốc được chuyển tiếp */
     @Input({ required: true }) refId!: string;
     /** Mã bản ghi gốc (hiển thị trong bài viết để thành viên đối chiếu) */
@@ -63,9 +63,14 @@ export class ShareToGroupComponent {
     sentGroups: ForwardedGroup[] = [];
     loadingSentGroups = false;
 
+    /** Popup được tách ra document.body (xem escapeFromAncestors) */
+    private modalEl?: HTMLElement;
+    private modalAnchor?: Comment;
+
     constructor(
         private readonly fb: FormBuilder,
-        private readonly _appService: AppService
+        private readonly _appService: AppService,
+        private readonly _el: ElementRef<HTMLElement>
     ) {
         this.form = this.fb.group({
             groupId: ['', [Validators.required]],
@@ -124,12 +129,68 @@ export class ShareToGroupComponent {
         this.selectedGroupIds = [];
     }
 
+    ngOnDestroy(): void {
+        // Trả popup về chỗ cũ để Angular xoá component không bị lỗi "node is not a child"
+        if (this.modalEl && this.modalAnchor?.parentNode) {
+            this.modalAnchor.parentNode.insertBefore(this.modalEl, this.modalAnchor);
+            this.modalAnchor.remove();
+        }
+    }
+
+    /**
+     * Chuyển popup ra thẳng document.body.
+     * Popup là overlay `position: fixed`, nhưng nếu nằm trong phần tử có `transform`/`filter`
+     * (ví dụ card có hover transform) thì overlay bị neo theo phần tử đó -> rời chuột là popup
+     * nhảy vị trí và nhấp nháy liên tục. Ra body thì luôn neo theo viewport.
+     */
+    private escapeFromAncestors(): void {
+        if (!this.modalEl) {
+            this.modalEl = this._el.nativeElement.querySelector('app-modal') as HTMLElement | undefined;
+        }
+        if (!this.modalEl || this.modalEl.parentElement === document.body) return;
+
+        // Chỉ cần thoát khi có ancestor tạo containing block mới cho position: fixed.
+        // Không có (trường hợp bình thường) thì giữ nguyên vị trí trong DOM.
+        if (!this.hasTransformAncestor(this.modalEl)) return;
+
+        if (!this.modalAnchor) {
+            this.modalAnchor = document.createComment('app-share-to-group');
+            this.modalEl.parentElement?.insertBefore(this.modalAnchor, this.modalEl);
+        }
+
+        document.body.appendChild(this.modalEl);
+    }
+
+    /** Ancestor có transform/filter/perspective/contain:paint → overlay `position: fixed` bị neo theo nó */
+    private hasTransformAncestor(element: HTMLElement): boolean {
+        let parent = element.parentElement;
+
+        while (parent && parent !== document.body) {
+            const style = getComputedStyle(parent);
+
+            if (
+                (style.transform && style.transform !== 'none') ||
+                (style.filter && style.filter !== 'none') ||
+                (style.perspective && style.perspective !== 'none') ||
+                (style.backdropFilter && style.backdropFilter !== 'none') ||
+                (style.contain ?? '').includes('paint')
+            ) {
+                return true;
+            }
+
+            parent = parent.parentElement;
+        }
+
+        return false;
+    }
+
     open(): void {
         if (!this._appService.isAuthenticated()) {
             this._appService.showError(this._appService.trans('SHARE_TO_GROUP.LOGIN_REQUIRED'));
             return;
         }
 
+        this.escapeFromAncestors();
         this.visible = true;
         this.form.reset({ groupId: '', note: '' });
         this.selectedGroupIds = [];
