@@ -38,14 +38,18 @@ export class GroupBuyingRequestService {
      * GET /api/v1/GroupBuyingRequests/public
      */
     getPublic(query: GetPublicGroupBuyingQuery = {}): Observable<GroupBuyingFeedResponse> {
-        return this.apiService.get<GroupBuyingFeedResponse>(`${this.endpoint}/public`, {
+        // CHÚ Ý: không truyền param có giá trị undefined — HttpParams sẽ serialize thành chuỗi
+        // "undefined" và API lọc theo chuỗi đó (ra 0 kết quả / lỗi validate).
+        const params: Record<string, unknown> = {
             page: query.page ?? 1,
             pageSize: query.pageSize ?? 12,
-            search: query.search || undefined,
             sortBy: query.sortBy || 'CreatedAt',
             sortOrder: query.sortOrder || 'desc',
             mineOnly: query.mineOnly ?? false
-        });
+        };
+        if (query.search?.trim()) params['search'] = query.search.trim();
+
+        return this.apiService.get<GroupBuyingFeedResponse>(`${this.endpoint}/public`, params);
     }
 
     /**
@@ -80,14 +84,17 @@ export class GroupBuyingRequestService {
      * GET /api/v1/GroupBuyingRequests?page=&pageSize=&search=&status=
      */
     getData(query: GetAdminGroupBuyingQuery = {}): Observable<AdminGroupBuyingListResponse> {
-        return this.apiService.get<AdminGroupBuyingListResponse>(this.endpoint, {
+        // Chỉ gửi param có giá trị (xem chú thích ở getPublic).
+        const params: Record<string, unknown> = {
             page: query.page ?? 1,
             pageSize: query.pageSize ?? 10,
-            search: query.search || undefined,
-            status: query.status || undefined,
             sortBy: query.sortBy || 'CreatedAt',
             sortOrder: query.sortOrder || 'desc'
-        });
+        };
+        if (query.search?.trim()) params['search'] = query.search.trim();
+        if (query.status) params['status'] = query.status;
+
+        return this.apiService.get<AdminGroupBuyingListResponse>(this.endpoint, params);
     }
 
     /**
