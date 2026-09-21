@@ -1,4 +1,4 @@
-/* select/ng-select-wrapper.component.css */
+﻿/* select/ng-select-wrapper.component.css */
 
 /* ==========================================================
    Host & Container - Giữ nguyên
@@ -269,15 +269,15 @@
    Animation - Giữ nguyên
 ========================================================== */
 
+/* Chỉ fade opacity: transform trong animation làm vùng click của panel lệch chỗ
+   khi panel vừa mở -> click vào option không ăn. */
 @keyframes dropdownFade {
     from {
         opacity: 0;
-        transform: translateY(-6px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 

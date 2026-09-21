@@ -1,4 +1,4 @@
-// shared/components/modal/modal.component.ts
+﻿// shared/components/modal/modal.component.ts
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -59,9 +59,12 @@ import { CommonModule } from '@angular/common';
       from { opacity: 0; }
       to { opacity: 1; }
     }
+    /* KHÔNG dùng transform ở animation mở modal: trong lúc animation chạy, vùng click
+       nằm lệch theo transform -> click xuyên qua modal rơi xuống nội dung phía sau
+       (bấm nút/ô trong popup "không ăn", bị nhảy trang). Chỉ dùng opacity. */
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .animate-fadeIn {
       animation: fadeIn 0.2s ease-out;
