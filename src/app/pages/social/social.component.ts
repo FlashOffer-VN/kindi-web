@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule } from 'ngx-quill';
 import { AppService } from '@core/services/app.service';
-import { SocialPost, SocialMember, SocialEvent, SocialGroup } from '@core/models/social.model';
+import { SocialPost, SocialMember, SocialGroup } from '@core/models/social.model';
+import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
 import { PostType, PrivacyType } from '@core/models/social.model';
 import { UserRole } from '@core/models/auth.model';
 import { User } from '@core/models/auth.model';
@@ -17,7 +18,8 @@ import { PostCardComponent } from './components/post-card/post-card.component';
 import { TrendingTopicsComponent } from './components/trending-topics/trending-topics.component';
 import { SocialSidebarComponent } from './components/social-sidebar/social-sidebar.component';
 import { GroupCardComponent } from './components/group-card/group-card.component';
-import { EventCardComponent } from './components/event-card/event-card.component';
+import { GroupBuyingCardComponent } from './components/group-buying-card/group-buying-card.component';
+import { GroupBuyingDetailModalComponent } from './components/group-buying-detail-modal/group-buying-detail-modal.component';
 import { MemberCardComponent } from './components/member-card/member-card.component';
 import { ActivatedRoute } from '@angular/router';
 import { PostDetailModalComponent } from './components/post-detail-modal/post-detail-modal.component';
@@ -37,7 +39,8 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
         TrendingTopicsComponent,
         SocialSidebarComponent,
         GroupCardComponent,
-        EventCardComponent,
+        GroupBuyingCardComponent,
+        GroupBuyingDetailModalComponent,
         MemberCardComponent
     ],
     templateUrl: './social.component.html',
@@ -51,14 +54,20 @@ export class SocialComponent implements OnInit, AfterViewInit {
 
     posts: SocialPost[] = [];
     members: SocialMember[] = [];
-    events: SocialEvent[] = [];
+    groupBuyings: GroupBuyingFeedItem[] = [];
     groups: SocialGroup[] = [];
     trendingTopics: string[] = [];
     isLoadingPosts = false;
     isLoadingMembers = false;
-    isLoadingEvents = false;
+    isLoadingGroupBuyings = false;
     isLoadingGroups = false;
-    selectedTab: 'feed' | 'members' | 'events' | 'groups' = 'feed';
+    selectedTab: 'feed' | 'members' | 'group-buying' | 'groups' = 'feed';
+
+    // ===== Tab "Mua chung" =====
+    groupBuyingPageSize = 12;
+    groupBuyingMineOnly = false;
+    selectedGroupBuyingId: string | null = null;
+    showGroupBuyingModal = false;
     currentUser: User | null = null;
 
     // Post Detail Modal
@@ -124,7 +133,7 @@ export class SocialComponent implements OnInit, AfterViewInit {
         this.getCurrentUser();
         this.loadPosts();
         this.loadMembers();
-        this.loadEvents();
+        this.loadGroupBuyings();
         this.loadGroups();
         this.loadTrendingTopics();
     }
@@ -175,17 +184,55 @@ export class SocialComponent implements OnInit, AfterViewInit {
         });
     }
 
-    loadEvents(): void {
-        this.isLoadingEvents = true;
-        this._appService.socialService.getEvents().subscribe({
-            next: (events) => {
-                this.events = events;
-                this.isLoadingEvents = false;
+    /** Tab "Mua chung": lấy danh sách nhóm đã duyệt + nhóm của chính mình (kể cả chờ duyệt) */
+    loadGroupBuyings(): void {
+        this.isLoadingGroupBuyings = true;
+        this._appService.groupBuyingRequest.getPublic({
+            page: 1,
+            pageSize: this.groupBuyingPageSize,
+            mineOnly: this.groupBuyingMineOnly
+        }).subscribe({
+            next: (response) => {
+                this.groupBuyings = response?.data ?? [];
+                this.isLoadingGroupBuyings = false;
             },
-            error: () => {
-                this.isLoadingEvents = false;
+            error: (error) => {
+                this.isLoadingGroupBuyings = false;
+                this._appService.showError(error?.message || this._appService.trans('COMMON.ERROR.LOAD_FAILED'));
             }
         });
+    }
+
+    /** Lọc "Tất cả" / "Nhóm của tôi" trong tab Mua chung */
+    setGroupBuyingFilter(mineOnly: boolean): void {
+        if (this.groupBuyingMineOnly === mineOnly) return;
+        this.groupBuyingMineOnly = mineOnly;
+        this.loadGroupBuyings();
+    }
+
+    /** Tải thêm nhóm mua chung (tăng size rồi load lại) */
+    loadMoreGroupBuyings(): void {
+        this.groupBuyingPageSize += 12;
+        this.loadGroupBuyings();
+    }
+
+    openGroupBuying(item: GroupBuyingFeedItem): void {
+        this.selectedGroupBuyingId = item.id;
+        this.showGroupBuyingModal = true;
+    }
+
+    /** Bấm "Tham gia" trên card → mở modal chi tiết để đăng ký */
+    joinGroupBuying(item: GroupBuyingFeedItem): void {
+        this.openGroupBuying(item);
+    }
+
+    onGroupBuyingModalClosed(): void {
+        this.showGroupBuyingModal = false;
+        this.selectedGroupBuyingId = null;
+    }
+
+    onGroupBuyingJoined(): void {
+        this.loadGroupBuyings();
     }
 
     loadGroups(): void {
@@ -469,16 +516,6 @@ export class SocialComponent implements OnInit, AfterViewInit {
         this._appService.showSuccess(
             group.isJoined ? this._appService.trans('SOCIAL.JOIN_GROUP_SUCCESS') : this._appService.trans('SOCIAL.LEAVE_GROUP_SUCCESS')
         );
-    }
-
-    registerEvent(event: SocialEvent): void {
-        if (event.currentParticipants < event.maxParticipants) {
-            event.currentParticipants++;
-            event.isRegistered = true;
-            this._appService.showSuccess(this._appService.trans('SOCIAL.REGISTER_EVENT_SUCCESS'));
-        } else {
-            this._appService.showError(this._appService.trans('SOCIAL.EVENT_FULL'));
-        }
     }
 
     getTimeAgo(date: string): string {

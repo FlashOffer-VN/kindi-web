@@ -490,3 +490,110 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Tab Mua chung ===== */
+.group-buying-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.group-buying-head .desc {
+    margin: 0;
+    font-size: 14px;
+    color: #6B7280;
+}
+
+.filter-chips {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-chips .chip {
+    border: 1.5px solid #E5E7EB;
+    background: white;
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-chips .chip:hover {
+    border-color: #A855F7;
+    color: #7C3AED;
+}
+
+.filter-chips .chip.active {
+    background: #7C3AED;
+    border-color: #7C3AED;
+    color: white;
+}
+
+.group-buying-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.load-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-load-more {
+    border: 1.5px solid #7C3AED;
+    background: transparent;
+    color: #7C3AED;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 24px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-load-more:hover {
+    background: #7C3AED;
+    color: white;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 48px 16px;
+    color: #9CA3AF;
+    background: white;
+    border-radius: 16px;
+    border: 1px dashed #E5E7EB;
+}
+
+.empty-state i {
+    font-size: 34px;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.empty-state a {
+    color: #7C3AED;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+@media (max-width: 640px) {
+    .group-buying-grid {
+        grid-template-columns: 1fr;
+    }
+}

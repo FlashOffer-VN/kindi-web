@@ -20,11 +20,6 @@ export enum PriorityType {
     High = 3
 }
 
-export enum EventType {
-    Online = 'online',
-    Offline = 'offline'
-}
-
 // ===== INTERFACES =====
 export interface Author {
     id: string;
@@ -85,20 +80,6 @@ export interface SocialMember {
     isFollowing: boolean;
     isOnline: boolean;
     isVerified?: boolean;
-}
-
-export interface SocialEvent {
-    id: number;
-    title: string;
-    description: string;
-    date: Date;
-    location: string;
-    type: EventType;
-    maxParticipants: number;
-    currentParticipants: number;
-    image: string;
-    organizer: string;
-    isRegistered: boolean;
 }
 
 export interface SocialGroup {

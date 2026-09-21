@@ -559,7 +559,45 @@
             "FORM_INVALID": "Please check your information"
         },
         "SUCCESS": {
-            "SUBMIT": "Group buying created successfully! We will contact you soon."
+            "SUBMIT": "Group buying created successfully! We will contact you soon.",
+            "JOINED": "Joined the group buying request successfully"
+        },
+        "PEOPLE_UNIT": "people",
+        "PEOPLE": "Participants",
+        "NEEDED": "Still needed",
+        "NEED_MORE": "{{count}} more people needed",
+        "ENOUGH": "Enough people",
+        "JOIN": "Join group buying",
+        "JOINED": "Joined",
+        "MINE": "Your group",
+        "CREATED_AT": "Created at",
+        "JOIN_TITLE": "Join this group buy",
+        "JOIN_BLOCKED": "You cannot join this group right now",
+        "GUEST_HINT": "You are not signed in — fill in your details to join. An account will be created for you (username is user + phone number, password is your phone number).",
+        "STATUS": {
+            "PENDING": "Pending",
+            "ACTIVE": "In progress",
+            "COMPLETED": "Completed",
+            "CANCELLED": "Cancelled"
+        },
+        "DETAIL": {
+            "TITLE": "Group buying detail",
+            "NOTE": "Description / note",
+            "NOTE_PLACEHOLDER": "Note for the group owner...",
+            "PRODUCT_LINK": "Product link",
+            "CREATOR": "Group owner",
+            "PARTICIPANTS": "Participants",
+            "OWNER": "Owner",
+            "YOU": "You",
+            "LOGIN_TO_SEE_CONTACT": "Sign in to see the full phone/Zalo/email contact."
+        },
+        "ACCOUNT": {
+            "CREATED_TITLE": "Your account has been created",
+            "CREATED_DESC": "Use the credentials below to sign in and follow your group buying request.",
+            "USERNAME": "Username",
+            "PASSWORD": "Password",
+            "PASSWORD_IS_PHONE": "Your phone number",
+            "LOGIN_NOW": "Sign in now"
         }
     },
     "FIND_SUPPLIER": {
@@ -866,7 +904,12 @@
         "PINNED": "Pinned",
         "PIN_SUCCESS": "Post pinned to top successfully!",
         "UNPIN_SUCCESS": "Post unpinned successfully!",
-        "PIN_ERROR": "Failed to pin post"
+        "PIN_ERROR": "Failed to pin post",
+        "GROUP_BUYING": "Group buying",
+        "GROUP_BUYING_DESC": "Open group buying requests — join to get a better price together.",
+        "GROUP_BUYING_OPEN": "Open group buying",
+        "GROUP_BUYING_EMPTY": "No open group buying yet",
+        "GROUP_BUYING_MINE": "My groups"
     },
     "TOAST": {
         "SUCCESS": "Success",
@@ -922,7 +965,8 @@
             "CONFIRM": "Confirm",
             "APPLY": "Apply",
             "OK": "OK",
-            "RESTORE": "Restore"
+            "RESTORE": "Restore",
+            "SEE_MORE": "See more"
         },
         "ERROR": {
             "LOAD_FAILED": "An error occurred while loading data!",
@@ -957,7 +1001,8 @@
             "SETTINGS": "Settings",
             "BACK_TO_SITE": "Back to site",
             "CRM": "CRM",
-            "LOGOUT": "Logout"
+            "LOGOUT": "Logout",
+            "GROUP_BUYING": "Group buying requests"
         },
         "DASHBOARD": {
             "TITLE": "Admin overview",
@@ -1204,6 +1249,52 @@
             "NO_FILTER_RESULT": "No products match the filter",
             "NO_PRODUCTS": "No products yet",
             "SPECIAL_CONDITIONS": "Special conditions"
+        },
+        "GROUP_BUYING": {
+            "TITLE": "Group buying management",
+            "LIST_DESC": "Approve, track participants and handle group buying requests.",
+            "SEARCH_LABEL": "Search",
+            "SEARCH_PLACEHOLDER": "Code, product name, full name, phone...",
+            "PRODUCT": "Product",
+            "PRODUCT_LINK": "Product link",
+            "TARGET_PRICE": "Target price",
+            "TARGET_PEOPLE": "Target people",
+            "PEOPLE": "People",
+            "NEEDED": "Still needed",
+            "STATUS": "Status",
+            "CREATOR": "Group owner",
+            "CREATOR_INFO": "Group owner info",
+            "FULL_NAME": "Full name",
+            "PHONE": "Phone",
+            "ZALO": "Zalo",
+            "EMAIL": "Email",
+            "CREATED_AT": "Created at",
+            "APPROVED_AT": "Approved at",
+            "CLOSED_REASON": "Close/cancel reason",
+            "BUSINESS_FIELD": "Business field",
+            "PROGRESS": "group progress",
+            "PRODUCT_INFO": "Product info",
+            "PARTICIPANTS": "Participants",
+            "JOINED_AT": "Joined at",
+            "OWNER": "Owner",
+            "GUEST_ACCOUNT": "Auto-created account",
+            "APPROVE": "Approve",
+            "APPROVE_CONFIRM": "Approve this request so it shows publicly in the Group buying tab?",
+            "APPROVE_SUCCESS": "Group buying request approved",
+            "COMPLETE": "Mark as completed",
+            "COMPLETE_CONFIRM": "Mark this group buying request as completed?",
+            "COMPLETE_SUCCESS": "Marked as completed",
+            "REOPEN": "Reopen",
+            "CANCEL_REQUEST": "Cancel request",
+            "CANCEL_CONFIRM": "Cancel this group buying request? Participants will no longer be able to join.",
+            "CANCEL_REASON_PLACEHOLDER": "Enter the reason...",
+            "CANCEL_REASON_REQUIRED": "Please enter a cancellation reason",
+            "CANCEL_SUCCESS": "Group buying request cancelled",
+            "REMOVE_PARTICIPANT": "Remove from group",
+            "REMOVE_CONFIRM": "Remove {{name}} from this group buying request?",
+            "REMOVE_SUCCESS": "Participant removed",
+            "EDIT_TITLE": "Edit group buying request",
+            "UPDATE_SUCCESS": "Group buying request updated"
         }
     }
 }

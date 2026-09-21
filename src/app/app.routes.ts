@@ -82,6 +82,9 @@ export const routes: Routes = [
             // Purchase Request Management
             { path: 'purchase-requests', loadComponent: () => import('./pages/admin/purchase-requests/purchase-request-list.component').then(m => m.AdminPurchaseRequestListComponent) },
             { path: 'purchase-requests/:id', loadComponent: () => import('./pages/admin/purchase-requests/detail/purchase-request-detail.component').then(m => m.AdminPurchaseRequestDetailComponent) },
+            // Group Buying Management
+            { path: 'group-buying', loadComponent: () => import('./pages/admin/group-buying/group-buying-list.component').then(m => m.AdminGroupBuyingListComponent) },
+            { path: 'group-buying/:id', loadComponent: () => import('./pages/admin/group-buying/detail/group-buying-detail.component').then(m => m.AdminGroupBuyingDetailComponent) },
             { path: 'settings', loadComponent: () => import('./pages/admin/settings/admin-settings.component').then(m => m.AdminSettingsComponent) },
             { path: 'demo', loadComponent: () => import('./pages/demo/demo.component').then(m => m.DemoComponent) },
             { path: 'social-posts', loadComponent: () => import('./pages/admin/social/social-post-list.component').then(m => m.AdminSocialPostListComponent) },

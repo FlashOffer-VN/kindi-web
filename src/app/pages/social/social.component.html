@@ -5,8 +5,8 @@
         <button class="tab-btn" [class.active]="selectedTab === 'feed'" (click)="selectedTab = 'feed'">
             <i class="fas fa-newspaper"></i> {{ 'SOCIAL.FEED' | translate }}
         </button>
-        <button class="tab-btn" [class.active]="selectedTab === 'events'" (click)="selectedTab = 'events'">
-            <i class="fas fa-calendar"></i> {{ 'SOCIAL.EVENTS' | translate }}
+        <button class="tab-btn" [class.active]="selectedTab === 'group-buying'" (click)="selectedTab = 'group-buying'">
+            <i class="fas fa-people-group"></i> {{ 'SOCIAL.GROUP_BUYING' | translate }}
         </button>
         <button class="tab-btn" [class.active]="selectedTab === 'groups'" (click)="selectedTab = 'groups'">
             <i class="fas fa-layer-group"></i> {{ 'SOCIAL.GROUPS' | translate }}
@@ -44,12 +44,48 @@
             </div>
             }
 
-            @if (selectedTab === 'events') {
-            <div class="events-grid">
-                @for (event of events; track event.id) {
-                <app-event-card [event]="event" (register)="registerEvent(event)"></app-event-card>
+            @if (selectedTab === 'group-buying') {
+            <div class="group-buying-head">
+                <p class="desc">{{ 'SOCIAL.GROUP_BUYING_DESC' | translate }}</p>
+                <div class="filter-chips">
+                    <button class="chip" [class.active]="!groupBuyingMineOnly" (click)="setGroupBuyingFilter(false)">
+                        {{ 'COMMON.ALL' | translate }}
+                    </button>
+                    <button class="chip" [class.active]="groupBuyingMineOnly" (click)="setGroupBuyingFilter(true)">
+                        {{ 'SOCIAL.GROUP_BUYING_MINE' | translate }}
+                    </button>
+                </div>
+            </div>
+
+            @if (isLoadingGroupBuyings) {
+            <div class="loading-posts">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>{{ 'SOCIAL.LOADING' | translate }}</span>
+            </div>
+            }
+
+            @if (!isLoadingGroupBuyings && !groupBuyings.length) {
+            <div class="empty-state">
+                <i class="fas fa-people-group"></i>
+                <p>{{ 'SOCIAL.GROUP_BUYING_EMPTY' | translate }}</p>
+                <a routerLink="/group-buying">{{ 'GROUP_BUYING.TITLE' | translate }}</a>
+            </div>
+            }
+
+            <div class="group-buying-grid">
+                @for (item of groupBuyings; track item.id) {
+                <app-group-buying-card [item]="item" (open)="openGroupBuying($event)"
+                    (join)="joinGroupBuying($event)"></app-group-buying-card>
                 }
             </div>
+
+            @if (groupBuyings.length >= groupBuyingPageSize) {
+            <div class="load-more">
+                <button class="btn-load-more" (click)="loadMoreGroupBuyings()">
+                    <i class="fas fa-chevron-down"></i> {{ 'COMMON.BUTTON.SEE_MORE' | translate }}
+                </button>
+            </div>
+            }
             }
 
             @if (selectedTab === 'groups') {
@@ -61,10 +97,15 @@
             }
         </div>
 
-        <app-social-sidebar [members]="members" [events]="events" [groups]="groups" (joinGroup)="joinGroup($event)">
+        <app-social-sidebar [members]="members" [groupBuying]="groupBuyings" [groups]="groups"
+            (joinGroup)="joinGroup($event)" (openGroupBuying)="openGroupBuying($event)">
         </app-social-sidebar>
     </div>
 </div>
+
+<!-- Mua chung: modal chi tiết + đăng ký tham gia -->
+<app-group-buying-detail-modal [visible]="showGroupBuyingModal" [requestId]="selectedGroupBuyingId"
+    (closed)="onGroupBuyingModalClosed()" (joined)="onGroupBuyingJoined()"></app-group-buying-detail-modal>
 
 <!-- Edit Post Modal -->
 <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">

@@ -1,0 +1,99 @@
+<div class="p-6">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">{{ 'ADMIN.GROUP_BUYING.TITLE' | translate }}</h1>
+        <p class="text-gray-500 text-sm mt-1">{{ 'ADMIN.GROUP_BUYING.LIST_DESC' | translate }}</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div class="flex flex-col sm:flex-row gap-3 items-end">
+            <div class="flex-1 w-full">
+                <app-input [(ngModel)]="searchText" [label]="'ADMIN.GROUP_BUYING.SEARCH_LABEL' | translate"
+                    [placeholder]="'ADMIN.GROUP_BUYING.SEARCH_PLACEHOLDER' | translate" (keyup.enter)="onSearch()">
+                </app-input>
+            </div>
+            <app-button variant="primary" (onClick)="onSearch()">
+                <i class="fas fa-search mr-2"></i>{{ 'COMMON.BUTTON.SEARCH' | translate }}
+            </app-button>
+        </div>
+    </div>
+
+    <!-- Status tabs -->
+    <div class="mb-4">
+        <app-status-tabs [items]="tabs" [active]="activeTab" (change)="onTabChange($event)"></app-status-tabs>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'ADMIN.GROUP_BUYING.PRODUCT' | translate }}</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'ADMIN.GROUP_BUYING.TARGET_PRICE' | translate }}</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'ADMIN.GROUP_BUYING.PEOPLE' | translate }}</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'ADMIN.GROUP_BUYING.CREATOR' | translate }}</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'ADMIN.GROUP_BUYING.CREATED_AT' | translate }}</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'ADMIN.GROUP_BUYING.STATUS' | translate }}</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ 'COMMON.BUTTON.ACTION' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr *ngIf="isLoading">
+                        <td colspan="8" class="px-4 py-10 text-center">
+                            <app-loading></app-loading>
+                        </td>
+                    </tr>
+                    <tr *ngIf="!isLoading && requests.length === 0">
+                        <td colspan="8" class="px-4 py-10 text-center text-gray-500">
+                            {{ 'PAGINATION.NO_ITEMS' | translate }}
+                        </td>
+                    </tr>
+                    <tr *ngFor="let request of requests; let i = index"
+                        class="hover:bg-gray-50 transition-colors cursor-pointer" (click)="navigateToDetail(request.id)">
+                        <td class="px-4 py-3 text-sm text-gray-500">{{ (pageNumber - 1) * pageSize + i + 1 }}</td>
+                        <td class="px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">{{ request.productName }}</div>
+                            <div class="text-xs text-gray-400">#{{ request.groupBuyingRequestCode || formatId(request.id) }}</div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-700">{{ formatPrice(request.targetPrice) }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">
+                            <span class="font-semibold text-primary">{{ request.currentPeopleCount }}</span>
+                            / {{ request.targetPeopleCount }}
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="text-sm text-gray-900">{{ request.fullName }}</div>
+                            <div class="text-xs text-gray-500">{{ request.phone }}</div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(request.createdAt) }}</td>
+                        <td class="px-4 py-3">
+                            <app-badge [status]="getStatusKey(request.status)" [variant]="getStatusVariant(request.status)"
+                                [label]="getStatusKey(request.status) | translate"></app-badge>
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <app-button variant="secondary" size="sm"
+                                (onClick)="$event.stopPropagation(); navigateToDetail(request.id)">
+                                {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
+                            </app-button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="border-t border-gray-200 px-4 py-3">
+            <app-pagination [pageNumber]="pageNumber" [pageSize]="pageSize" [totalCount]="totalCount"
+                [totalPages]="totalPages" [hasPreviousPage]="hasPreviousPage" [hasNextPage]="hasNextPage"
+                (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)"></app-pagination>
+        </div>
+    </div>
+</div>

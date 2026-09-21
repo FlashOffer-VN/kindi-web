@@ -515,7 +515,45 @@
             "FORM_INVALID": "Vui lòng kiểm tra lại thông tin đã nhập"
         },
         "SUCCESS": {
-            "SUBMIT": "Tạo nhóm mua chung thành công! Chúng tôi sẽ liên hệ bạn sớm nhất."
+            "SUBMIT": "Tạo nhóm mua chung thành công! Chúng tôi sẽ liên hệ bạn sớm nhất.",
+            "JOINED": "Đăng ký tham gia mua chung thành công"
+        },
+        "PEOPLE_UNIT": "người",
+        "PEOPLE": "Số người tham gia",
+        "NEEDED": "Còn thiếu",
+        "NEED_MORE": "Còn thiếu {{count}} người",
+        "ENOUGH": "Đã đủ người",
+        "JOIN": "Tham gia mua chung",
+        "JOINED": "Đã tham gia",
+        "MINE": "Nhóm của bạn",
+        "CREATED_AT": "Ngày tạo",
+        "JOIN_TITLE": "Đăng ký tham gia mua chung",
+        "JOIN_BLOCKED": "Hiện chưa thể tham gia nhóm này",
+        "GUEST_HINT": "Bạn chưa đăng nhập — điền thông tin bên dưới để tham gia. Hệ thống sẽ tạo tài khoản cho bạn (tên đăng nhập là user + số điện thoại, mật khẩu là số điện thoại).",
+        "STATUS": {
+            "PENDING": "Chờ duyệt",
+            "ACTIVE": "Đang mua chung",
+            "COMPLETED": "Đã hoàn thành",
+            "CANCELLED": "Đã hủy"
+        },
+        "DETAIL": {
+            "TITLE": "Chi tiết mua chung",
+            "NOTE": "Mô tả / ghi chú",
+            "NOTE_PLACEHOLDER": "Ghi chú cho người mở nhóm...",
+            "PRODUCT_LINK": "Link sản phẩm",
+            "CREATOR": "Người mở nhóm",
+            "PARTICIPANTS": "Người đã tham gia",
+            "OWNER": "Người mở",
+            "YOU": "Bạn",
+            "LOGIN_TO_SEE_CONTACT": "Đăng nhập để xem đầy đủ số điện thoại/Zalo/email liên hệ."
+        },
+        "ACCOUNT": {
+            "CREATED_TITLE": "Tài khoản của bạn đã được tạo",
+            "CREATED_DESC": "Dùng thông tin dưới đây để đăng nhập vào Kindi và theo dõi nhóm mua chung của bạn.",
+            "USERNAME": "Tên đăng nhập",
+            "PASSWORD": "Mật khẩu",
+            "PASSWORD_IS_PHONE": "Là số điện thoại bạn vừa nhập",
+            "LOGIN_NOW": "Đăng nhập ngay"
         }
     },
     "FIND_SUPPLIER": {
@@ -822,7 +860,12 @@
         "PINNED": "Đã ghim",
         "PIN_SUCCESS": "Đã ghim bài viết lên đầu trang!",
         "UNPIN_SUCCESS": "Đã hủy ghim bài viết!",
-        "PIN_ERROR": "Không thể thực hiện thao tác ghim"
+        "PIN_ERROR": "Không thể thực hiện thao tác ghim",
+        "GROUP_BUYING": "Mua chung",
+        "GROUP_BUYING_DESC": "Các nhóm mua chung đang mở — bạn có thể tham gia để cùng chốt giá tốt hơn.",
+        "GROUP_BUYING_OPEN": "Mua chung đang mở",
+        "GROUP_BUYING_EMPTY": "Chưa có nhóm mua chung nào đang mở",
+        "GROUP_BUYING_MINE": "Nhóm của tôi"
     },
     "TOAST": {
         "SUCCESS": "Thành công",
@@ -878,7 +921,8 @@
             "CONFIRM": "Xác nhận",
             "APPLY": "Áp dụng",
             "OK": "OK",
-            "RESTORE": "Khôi phục"
+            "RESTORE": "Khôi phục",
+            "SEE_MORE": "Xem thêm"
         },
         "ERROR": {
             "LOAD_FAILED": "Đã có lỗi xảy ra khi tải dữ liệu!",
@@ -915,7 +959,8 @@
             "SETTINGS": "Cài đặt",
             "BACK_TO_SITE": "Về trang người dùng",
             "CRM": "CRM",
-            "LOGOUT": "Đăng xuất"
+            "LOGOUT": "Đăng xuất",
+            "GROUP_BUYING": "Yêu cầu mua chung"
         },
         "DASHBOARD": {
             "TITLE": "Tổng quan quản trị",
@@ -1167,6 +1212,52 @@
             "NO_FILTER_RESULT": "Không có sản phẩm nào khớp bộ lọc",
             "NO_PRODUCTS": "Chưa có sản phẩm",
             "SPECIAL_CONDITIONS": "Điều kiện đặc biệt"
+        },
+        "GROUP_BUYING": {
+            "TITLE": "Quản lý yêu cầu mua chung",
+            "LIST_DESC": "Duyệt, theo dõi số người tham gia và xử lý các yêu cầu mua chung.",
+            "SEARCH_LABEL": "Tìm kiếm",
+            "SEARCH_PLACEHOLDER": "Mã, tên sản phẩm, họ tên, số điện thoại...",
+            "PRODUCT": "Sản phẩm",
+            "PRODUCT_LINK": "Link sản phẩm",
+            "TARGET_PRICE": "Giá mục tiêu",
+            "TARGET_PEOPLE": "Số người mục tiêu",
+            "PEOPLE": "Số người",
+            "NEEDED": "Còn thiếu",
+            "STATUS": "Trạng thái",
+            "CREATOR": "Người mở nhóm",
+            "CREATOR_INFO": "Thông tin người mở nhóm",
+            "FULL_NAME": "Họ và tên",
+            "PHONE": "Số điện thoại",
+            "ZALO": "Zalo",
+            "EMAIL": "Email",
+            "CREATED_AT": "Ngày tạo",
+            "APPROVED_AT": "Ngày duyệt",
+            "CLOSED_REASON": "Lý do đóng/hủy",
+            "BUSINESS_FIELD": "Lĩnh vực",
+            "PROGRESS": "tiến độ nhóm",
+            "PRODUCT_INFO": "Thông tin sản phẩm",
+            "PARTICIPANTS": "Danh sách người tham gia",
+            "JOINED_AT": "Tham gia lúc",
+            "OWNER": "Người mở",
+            "GUEST_ACCOUNT": "Tài khoản tự tạo",
+            "APPROVE": "Duyệt yêu cầu",
+            "APPROVE_CONFIRM": "Duyệt yêu cầu này để hiển thị công khai trên tab Mua chung?",
+            "APPROVE_SUCCESS": "Duyệt yêu cầu mua chung thành công",
+            "COMPLETE": "Đánh dấu hoàn thành",
+            "COMPLETE_CONFIRM": "Đánh dấu nhóm mua chung này đã hoàn thành?",
+            "COMPLETE_SUCCESS": "Cập nhật trạng thái hoàn thành",
+            "REOPEN": "Mở lại",
+            "CANCEL_REQUEST": "Hủy yêu cầu",
+            "CANCEL_CONFIRM": "Hủy yêu cầu mua chung này? Người tham gia sẽ không thể đăng ký thêm.",
+            "CANCEL_REASON_PLACEHOLDER": "Nhập lý do hủy...",
+            "CANCEL_REASON_REQUIRED": "Vui lòng nhập lý do hủy",
+            "CANCEL_SUCCESS": "Đã hủy yêu cầu mua chung",
+            "REMOVE_PARTICIPANT": "Xóa khỏi nhóm",
+            "REMOVE_CONFIRM": "Xóa {{name}} khỏi nhóm mua chung này?",
+            "REMOVE_SUCCESS": "Đã xóa người tham gia khỏi nhóm",
+            "EDIT_TITLE": "Sửa yêu cầu mua chung",
+            "UPDATE_SUCCESS": "Cập nhật yêu cầu mua chung thành công"
         }
     }
 }

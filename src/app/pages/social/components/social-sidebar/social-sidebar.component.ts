@@ -2,7 +2,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { SocialMember, SocialEvent, SocialGroup } from '@core/models/social.model';
+import { SocialMember, SocialGroup } from '@core/models/social.model';
+import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
 
 @Component({
     selector: 'app-social-sidebar',
@@ -24,17 +25,25 @@ import { SocialMember, SocialEvent, SocialGroup } from '@core/models/social.mode
             </div>
         </div>
 
-        <!-- Upcoming Events -->
+        <!-- Mua chung đang mở -->
         <div class="sidebar-card mb-2">
-            <h3><i class="fas fa-calendar-alt"></i> {{ 'SOCIAL.UPCOMING_EVENTS' | translate }}</h3>
-            <div *ngFor="let event of events | slice:0:2" class="event-item">
-                <div class="event-date">
-                    <span class="day">{{ event.date | date:'dd' }}</span>
-                    <span class="month">{{ event.date | date:'MMM' }}</span>
+            <h3><i class="fas fa-people-group"></i> {{ 'SOCIAL.GROUP_BUYING_OPEN' | translate }}</h3>
+            <div *ngIf="!groupBuying.length" class="gb-empty">{{ 'SOCIAL.GROUP_BUYING_EMPTY' | translate }}</div>
+            <div *ngFor="let item of groupBuying | slice:0:3" class="gb-item" (click)="openGroupBuying.emit(item)">
+                <div class="gb-badge-count">
+                    <span class="current">{{ item.currentPeopleCount }}</span>
+                    <span class="target">/{{ item.targetPeopleCount }}</span>
                 </div>
-                <div class="event-info">
-                    <span class="title">{{ event.title }}</span>
-                    <span class="location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</span>
+                <div class="gb-info">
+                    <span class="title">{{ item.productName }}</span>
+                    <span class="need">
+                        <i class="fas fa-user-group"></i>
+                        @if (item.neededPeopleCount > 0) {
+                        {{ 'GROUP_BUYING.NEED_MORE' | translate:{ count: item.neededPeopleCount } }}
+                        } @else {
+                        {{ 'GROUP_BUYING.ENOUGH' | translate }}
+                        }
+                    </span>
                 </div>
             </div>
         </div>
@@ -142,7 +151,7 @@ import { SocialMember, SocialEvent, SocialGroup } from '@core/models/social.mode
             box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
         }
 
-        .event-item {
+        .gb-item {
             display: flex;
             gap: 12px;
             padding: 10px 0;
@@ -153,62 +162,65 @@ import { SocialMember, SocialEvent, SocialGroup } from '@core/models/social.mode
             padding-left: 4px;
         }
 
-        .event-item:hover {
+        .gb-item:hover {
             background: #f8fafc;
         }
 
-        .event-item:last-child {
+        .gb-item:last-child {
             border-bottom: none;
         }
 
-        .event-date {
+        .gb-empty {
+            font-size: 13px;
+            color: #9CA3AF;
+        }
+
+        .gb-badge-count {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 48px;
-            background: #f3f4f6;
+            align-items: baseline;
+            justify-content: center;
+            min-width: 52px;
+            background: #f5f3ff;
             border-radius: 8px;
-            padding: 4px 8px;
+            padding: 6px 8px;
             flex-shrink: 0;
         }
 
-        .event-date .day {
+        .gb-badge-count .current {
             font-size: 18px;
             font-weight: 700;
-            color: #1F2937;
-            line-height: 1.2;
+            color: #7C3AED;
+            line-height: 1.1;
         }
 
-        .event-date .month {
-            font-size: 11px;
-            color: #6B7280;
-            text-transform: uppercase;
+        .gb-badge-count .target {
+            font-size: 12px;
+            color: #9CA3AF;
             font-weight: 600;
         }
 
-        .event-info {
+        .gb-info {
             flex: 1;
             min-width: 0;
         }
 
-        .event-info .title {
+        .gb-info .title {
             font-size: 14px;
             font-weight: 500;
             color: #1F2937;
             display: block;
             line-height: 1.3;
             margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .event-info .location {
+        .gb-info .need {
             font-size: 12px;
-            color: #6B7280;
+            color: #D97706;
             display: block;
-        }
-
-        .event-info .location i {
-            margin-right: 4px;
-            font-size: 11px;
+            font-weight: 600;
         }
 
         .group-item {
@@ -356,10 +368,11 @@ import { SocialMember, SocialEvent, SocialGroup } from '@core/models/social.mode
 })
 export class SocialSidebarComponent {
     @Input() members: SocialMember[] = [];
-    @Input() events: SocialEvent[] = [];
+    @Input() groupBuying: GroupBuyingFeedItem[] = [];
     @Input() groups: SocialGroup[] = [];
 
     @Output() joinGroup = new EventEmitter<SocialGroup>();
+    @Output() openGroupBuying = new EventEmitter<GroupBuyingFeedItem>();
 
     get onlineMembers(): SocialMember[] {
         return this.members.filter(m => m.isOnline);
