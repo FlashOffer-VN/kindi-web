@@ -1,4 +1,7 @@
-﻿import { CommonModule } from '@angular/common';
+﻿import { QUILL_MODULES_GROUP_POST, quillPlainText } from '@core/configs/quill.config';
+import { QuillModule } from 'ngx-quill';
+import { SanitizeHtmlPipe } from '@shared/pipes/sanitize-html.pipe';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,7 +28,9 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
     selector: 'app-group-detail',
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule, AccountCreatedNoticeComponent,
-        ButtonComponent, InputComponent, LoadingComponent, ModalComponent],
+        ButtonComponent, InputComponent, LoadingComponent, ModalComponent,
+        QuillModule,
+        SanitizeHtmlPipe,],
     templateUrl: './group-detail.component.html',
 })
 export class GroupDetailComponent implements OnInit {
@@ -60,6 +65,9 @@ export class GroupDetailComponent implements OnInit {
     rejectForm: FormGroup;
 
     readonly memberStatus = GroupMemberStatus;
+
+    /** Bộ công cụ Quill dùng chung (xem core/configs/quill.config.ts) */
+    readonly quillModules = QUILL_MODULES_GROUP_POST;
     readonly postType = GroupPostType;
     readonly approvalStatus = GroupApprovalStatus;
 
@@ -259,6 +267,11 @@ export class GroupDetailComponent implements OnInit {
     }
 
     onCreatePost(): void {
+        if (quillPlainText(this.postForm.value.content).length < 2) {
+            this._appService.showError(this._appService.trans('GROUPS.POST_CONTENT_REQUIRED'));
+            return;
+        }
+
         if (this.postForm.invalid) {
             this.postForm.markAllAsTouched();
             return;

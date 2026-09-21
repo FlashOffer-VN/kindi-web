@@ -1448,7 +1448,8 @@
         "TYPE_GROUP_BUYING": "Mua chung",
         "TYPE_SUPPLIER": "Tìm nhà cung cấp",
         "TYPE_ANNOUNCEMENT": "Thông báo",
-        "ERROR_CONTACT_REQUIRED": "Vui lòng nhập họ tên và số điện thoại"
+        "ERROR_CONTACT_REQUIRED": "Vui lòng nhập họ tên và số điện thoại",
+        "POST_CONTENT_REQUIRED": "Vui lòng nhập nội dung bài viết"
     },
     "SUPPLIERS_CLEAR_FILTER": "Xoá bộ lọc",
     "CLUBS": {

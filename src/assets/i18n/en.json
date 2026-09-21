@@ -1485,7 +1485,8 @@
         "TYPE_GROUP_BUYING": "Group buying",
         "TYPE_SUPPLIER": "Supplier request",
         "TYPE_ANNOUNCEMENT": "Announcement",
-        "ERROR_CONTACT_REQUIRED": "Please enter your full name and phone number"
+        "ERROR_CONTACT_REQUIRED": "Please enter your full name and phone number",
+        "POST_CONTENT_REQUIRED": "Please enter the post content"
     },
     "SUPPLIERS_CLEAR_FILTER": "Clear filters",
     "CLUBS": {

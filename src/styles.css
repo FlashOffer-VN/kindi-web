@@ -192,3 +192,67 @@ body {
     padding-left: 16px;
     margin: 12px 0;
 }
+
+
+/* ===== Soạn thảo Quill dùng chung cho form đăng bài trong nhóm/hội ===== */
+.kindi-quill {
+    display: block;
+}
+
+.kindi-quill .ql-toolbar.ql-snow,
+.kindi-quill .ql-container.ql-snow {
+    border-color: #E2E8F0;
+}
+
+.kindi-quill .ql-toolbar.ql-snow {
+    border-radius: 12px 12px 0 0;
+}
+
+.kindi-quill .ql-container.ql-snow {
+    border-radius: 0 0 12px 12px;
+    min-height: 120px;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ===== Nội dung bài viết giàu định dạng (Quill) — dùng chung cho feed + bài trong nhóm/hội + modal chi tiết =====
+   Tailwind preflight đặt list-style: none nên phải khai báo lại dấu đầu dòng; Quill lưu <li data-list="bullet|ordered">. */
+.post-text ul,
+.post-text ol,
+.post-content ul,
+.post-content ol {
+    margin: 8px 0;
+    padding-left: 24px;
+}
+
+.post-text li,
+.post-content li {
+    margin-bottom: 4px;
+}
+
+.post-text li[data-list="bullet"],
+.post-text ul > li,
+.post-content li[data-list="bullet"],
+.post-content ul > li {
+    list-style-type: disc;
+}
+
+.post-text li[data-list="ordered"],
+.post-text ol > li,
+.post-content li[data-list="ordered"],
+.post-content ol > li {
+    list-style-type: decimal;
+}
+
+.post-text img,
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.post-text a,
+.post-content a {
+    color: var(--primary);
+    text-decoration: underline;
+}

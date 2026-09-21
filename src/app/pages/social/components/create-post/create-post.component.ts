@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output, Input, inject, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, EventEmitter, Output, Input, inject, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { QUILL_MODULES } from '@core/configs/quill.config';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import { firstValueFrom } from 'rxjs';
 import { isBrowser } from '../../../../core/utils/platform';
@@ -36,15 +37,7 @@ export class CreatePostComponent implements AfterViewInit {
     isSubmitting = false;
     showEditor = true; // Thêm flag để force re-render
 
-    editorConfig = {
-        toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['link', 'image'],
-            ['clean']
-        ]
-    };
+    readonly editorConfig = QUILL_MODULES;
 
     readonly postTypes = [
         { value: PostType.Post, label: 'SOCIAL.TYPE_POST', icon: 'fa-file-alt' },

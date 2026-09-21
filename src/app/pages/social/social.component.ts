@@ -3,6 +3,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { QUILL_MODULES } from '@core/configs/quill.config';
 import { QuillModule } from 'ngx-quill';
 import { AppService } from '@core/services/app.service';
 import { SocialPost, SocialMember, SocialGroup } from '@core/models/social.model';
@@ -103,15 +104,7 @@ export class SocialComponent implements OnInit, AfterViewInit {
         privacy?: PrivacyType;
     } = {};
 
-    editorConfig = {
-        toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['link', 'image'],
-            ['clean']
-        ]
-    };
+    readonly editorConfig = QUILL_MODULES;
 
     // Options for edit modal
     readonly postTypes = [

@@ -171,9 +171,8 @@
 
                     <div class="mt-3">
                         <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'GROUPS.POST_CONTENT' | translate }}</label>
-                        <textarea formControlName="content" rows="4"
-                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none"
-                            [placeholder]="'ADMIN.GROUPS.POST_CONTENT_PLACEHOLDER' | translate"></textarea>
+                        <quill-editor class="kindi-quill" formControlName="content" [modules]="quillModules"
+                            [placeholder]="'ADMIN.GROUPS.POST_CONTENT_PLACEHOLDER' | translate"></quill-editor>
                     </div>
 
                     <div class="mt-4">
@@ -208,7 +207,7 @@
                         </div>
 
                         <h3 *ngIf="post.title" class="text-base font-bold text-slate-800">{{ post.title }}</h3>
-                        <p class="mt-1 whitespace-pre-line text-sm text-slate-600">{{ post.content }}</p>
+                        <div class="post-text mt-1 whitespace-pre-line text-sm text-slate-600" [innerHTML]="post.content | sanitizeHtml"></div>
 
                         <div class="mt-3 flex flex-wrap items-center gap-3 text-xs">
                             <span class="text-slate-500"><i class="fas fa-user mr-1"></i>{{ post.authorName }}</span>
@@ -246,7 +245,7 @@
                         </div>
 
                         <h3 *ngIf="post.title" class="text-base font-bold text-slate-800">{{ post.title }}</h3>
-                        <p class="mt-1 whitespace-pre-line text-sm text-slate-700">{{ post.content }}</p>
+                        <div class="post-text mt-1 whitespace-pre-line text-sm text-slate-700" [innerHTML]="post.content | sanitizeHtml"></div>
 
                         <div class="mt-3 flex items-center gap-3 text-xs">
                             <span class="text-slate-500"><i class="fas fa-user mr-1"></i>{{ post.authorName }}</span>

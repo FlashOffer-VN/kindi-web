@@ -1,4 +1,7 @@
-﻿import { CommonModule } from '@angular/common';
+﻿import { QUILL_MODULES_GROUP_POST, quillPlainText } from '@core/configs/quill.config';
+import { QuillModule } from 'ngx-quill';
+import { SanitizeHtmlPipe } from '@shared/pipes/sanitize-html.pipe';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -24,7 +27,9 @@ import { StatusTabItem, StatusTabsComponent } from '@shared/components/status-ta
     selector: 'app-admin-group-detail',
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent,
-        InputComponent, LoadingComponent, ModalComponent, StatusTabsComponent],
+        InputComponent, LoadingComponent, ModalComponent, StatusTabsComponent,
+        QuillModule,
+        SanitizeHtmlPipe,],
     templateUrl: './group-detail.component.html',
 })
 export class AdminGroupDetailComponent implements OnInit {
@@ -58,6 +63,9 @@ export class AdminGroupDetailComponent implements OnInit {
     clubApproving = false;
     clubRejectForm: FormGroup;
 
+
+    /** Bộ công cụ Quill dùng chung (xem core/configs/quill.config.ts) */
+    readonly quillModules = QUILL_MODULES_GROUP_POST;
     readonly groupType = BusinessGroupType;
     readonly approvalStatus = GroupApprovalStatus;
 
@@ -287,6 +295,11 @@ export class AdminGroupDetailComponent implements OnInit {
     }
 
     onCreatePost(): void {
+        if (quillPlainText(this.postForm.value.content).length < 2) {
+            this._appService.showError(this._appService.trans('GROUPS.POST_CONTENT_REQUIRED'));
+            return;
+        }
+
         if (this.postForm.invalid) {
             this.postForm.markAllAsTouched();
             return;
