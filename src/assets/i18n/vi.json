@@ -324,10 +324,6 @@
             "DESC": "Kết nối với hệ sinh thái đối tác doanh nghiệp hàng đầu Việt Nam. Cùng nhau phát triển và tạo ra giá trị bền vững.",
             "JOIN": "Tham gia ngay",
             "EXPLORE": "Khám phá",
-            "VERIFIED": "Đã xác thực",
-            "ESTABLISHED": "Năm thành lập",
-            "EMPLOYEES": "nhân viên",
-            "VIEW_DETAIL": "Xem chi tiết",
             "LOADING": "Đang tải danh sách đối tác...",
             "STATS_PARTNERS": "Đối tác tham gia",
             "STATS_CITIES": "Tỉnh/thành phố",
@@ -343,11 +339,15 @@
             "BENEFIT_3_DESC": "Nhận các chương trình ưu đãi và hỗ trợ đặc biệt từ KINDI",
             "BENEFIT_4_TITLE": "An toàn & minh bạch",
             "BENEFIT_4_DESC": "Giao dịch an toàn, minh bạch với cơ chế bảo vệ quyền lợi rõ ràng",
-            "LIST_TITLE": "Danh sách đối tác",
-            "LIST_DESC": "Các doanh nghiệp đã tin tưởng và đồng hành cùng KINDI",
             "CTA_TITLE": "Trở thành đối tác của KINDI",
             "CTA_DESC": "Đăng ký ngay để gia nhập hệ sinh thái đối tác và cùng phát triển",
-            "CTA_BUTTON": "Đăng ký làm đối tác"
+            "CTA_BUTTON": "Đăng ký làm đối tác",
+            "OPP_TITLE": "Cơ hội mua chung đang mở",
+            "OPP_DESC": "Các nhóm mua chung đang tìm thêm thành viên — tham gia để có giá tốt hơn và mở rộng kết nối với doanh nghiệp khác.",
+            "OPP_EMPTY": "Hiện chưa có cơ hội mua chung nào đang mở.",
+            "OPP_JOIN": "Tham gia ngay",
+            "OPP_VIEW_ALL": "Xem tất cả cơ hội",
+            "OPP_CREATE": "Tạo yêu cầu mua chung"
         }
     },
     "CTV_FORM": {

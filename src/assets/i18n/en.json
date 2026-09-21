@@ -368,10 +368,6 @@
             "DESC": "Connect with Vietnam's leading business partner ecosystem. Grow together and create sustainable value.",
             "JOIN": "Join now",
             "EXPLORE": "Explore",
-            "VERIFIED": "Verified",
-            "ESTABLISHED": "Established",
-            "EMPLOYEES": "employees",
-            "VIEW_DETAIL": "View detail",
             "LOADING": "Loading partner list...",
             "STATS_PARTNERS": "Partners joined",
             "STATS_CITIES": "Cities",
@@ -387,11 +383,15 @@
             "BENEFIT_3_DESC": "Receive exclusive deals and special support from KINDI",
             "BENEFIT_4_TITLE": "Secure & transparent",
             "BENEFIT_4_DESC": "Secure transactions with clear rights protection mechanisms",
-            "LIST_TITLE": "Partner list",
-            "LIST_DESC": "Businesses that trust and partner with KINDI",
             "CTA_TITLE": "Become a KINDI partner",
             "CTA_DESC": "Register now to join the partner ecosystem and grow together",
-            "CTA_BUTTON": "Register as partner"
+            "CTA_BUTTON": "Register as partner",
+            "OPP_TITLE": "Open group-buying opportunities",
+            "OPP_DESC": "Group-buying pools that still need members — join to unlock a better price and grow your network.",
+            "OPP_EMPTY": "There is no open group-buying opportunity right now.",
+            "OPP_JOIN": "Join now",
+            "OPP_VIEW_ALL": "View all opportunities",
+            "OPP_CREATE": "Create a group-buying request"
         }
     },
     "CTV_FORM": {
