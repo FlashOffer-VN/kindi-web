@@ -1538,6 +1538,17 @@
         "VIEW_GROUPS": "View industry groups",
         "FROM_REQUEST": "Forwarded request",
         "FROM_GROUP_BUYING": "Forwarded group-buying request",
-        "FROM_SUPPLIER": "Forwarded supplier request"
+        "FROM_SUPPLIER": "Forwarded supplier request",
+        "PICK_GROUPS": "Choose industry groups (multiple allowed)",
+        "SEARCH_GROUP_PLACEHOLDER": "Search industry group...",
+        "SELECT_ALL": "Select all",
+        "CLEAR_SELECTION": "Clear",
+        "SELECTED_COUNT": "{{count}} group(s) selected",
+        "SUCCESS_MULTI": "Sent to {{count}} industry group(s)",
+        "PARTIAL_SUCCESS": "Sent to {{ok}}/{{total}} group(s)",
+        "FAILED": "Could not send to the group",
+        "REQUIRED_GROUP": "Please select at least one industry group",
+        "NO_ANY_GROUP": "No industry group available yet",
+        "FROM_OFFER": "Forwarded offer"
     }
 }

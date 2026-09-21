@@ -1501,6 +1501,17 @@
         "VIEW_GROUPS": "Xem danh sách nhóm ngành",
         "FROM_REQUEST": "Chuyển tiếp yêu cầu",
         "FROM_GROUP_BUYING": "Chuyển tiếp yêu cầu mua chung",
-        "FROM_SUPPLIER": "Chuyển tiếp yêu cầu tìm nhà cung cấp"
+        "FROM_SUPPLIER": "Chuyển tiếp yêu cầu tìm nhà cung cấp",
+        "PICK_GROUPS": "Chọn nhóm ngành để gửi (có thể chọn nhiều nhóm)",
+        "SEARCH_GROUP_PLACEHOLDER": "Tìm nhóm ngành...",
+        "SELECT_ALL": "Chọn tất cả",
+        "CLEAR_SELECTION": "Bỏ chọn",
+        "SELECTED_COUNT": "Đã chọn {{count}} nhóm",
+        "SUCCESS_MULTI": "Đã gửi vào {{count}} nhóm ngành",
+        "PARTIAL_SUCCESS": "Đã gửi {{ok}}/{{total}} nhóm",
+        "FAILED": "Không gửi được thông tin vào nhóm",
+        "REQUIRED_GROUP": "Vui lòng chọn ít nhất 1 nhóm ngành",
+        "NO_ANY_GROUP": "Chưa có nhóm ngành nào trong hệ thống",
+        "FROM_OFFER": "Chuyển tiếp offer"
     }
 }

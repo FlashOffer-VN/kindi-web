@@ -1,4 +1,4 @@
-// src/app/pages/admin/group-buying/detail/group-buying-detail.component.ts
+﻿// src/app/pages/admin/group-buying/detail/group-buying-detail.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,17 +19,23 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { BadgeComponent, BadgeVariant } from '@shared/components/badge/badge.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 
+import { GroupPostType } from '@core/models/business-group.model';
+import { ShareToGroupComponent } from '@shared/components/share-to-group/share-to-group.component';
+
 @Component({
     selector: 'app-admin-group-buying-detail',
     standalone: true,
     imports: [
         CommonModule, FormsModule, RouterModule, TranslateModule,
-        ButtonComponent, LoadingComponent, BadgeComponent, ModalComponent
-    ],
+        ButtonComponent, LoadingComponent, BadgeComponent, ModalComponent,
+        ShareToGroupComponent,],
     templateUrl: './group-buying-detail.component.html',
     styleUrls: ['./group-buying-detail.component.css']
 })
 export class AdminGroupBuyingDetailComponent implements OnInit {
+    /** Loại bài khi gửi thông tin vào nhóm ngành */
+    readonly groupPostType = GroupPostType;
+
     detail: GroupBuyingDetail | null = null;
     isLoading = true;
     isActionLoading = false;

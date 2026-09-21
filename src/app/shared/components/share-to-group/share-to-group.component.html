@@ -1,4 +1,4 @@
-<!-- Nút chuyển tiếp yêu cầu vào nhóm ngành (dùng chung cho trang quản trị + cộng đồng) -->
+﻿<!-- Nút chuyển tiếp yêu cầu vào nhóm ngành (dùng chung cho trang quản trị + cộng đồng) -->
 <app-button [variant]="variant" size="sm" (onClick)="open()">
     <i class="fas fa-share mr-1"></i>{{ 'SHARE_TO_GROUP.BUTTON' | translate }}
 </app-button>
@@ -11,7 +11,9 @@
 
     <!-- Chưa tham gia nhóm ngành nào -->
     <div *ngIf="!loadingGroups && groups.length === 0" class="py-2 text-center">
-        <p class="text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.NO_GROUP' | translate }}</p>
+        <p class="text-sm font-semibold text-slate-700">
+            {{ (allGroups ? 'SHARE_TO_GROUP.NO_ANY_GROUP' : 'SHARE_TO_GROUP.NO_GROUP') | translate }}
+        </p>
         <p class="mt-1 text-sm text-slate-500">{{ 'SHARE_TO_GROUP.NO_GROUP_HINT' | translate }}</p>
         <a routerLink="/groups" class="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
             {{ 'SHARE_TO_GROUP.VIEW_GROUPS' | translate }}
@@ -23,13 +25,50 @@
             {{ refLabelKey | translate }}<span *ngIf="refCode"> · {{ refCode }}</span>
         </p>
 
-        <div>
+        <!-- Gửi vào 1 nhóm -->
+        <div *ngIf="!multi">
             <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUP' | translate }}</label>
             <select formControlName="groupId"
                 class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none">
                 <option value="" disabled>{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
                 <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
             </select>
+        </div>
+
+        <!-- Admin: gửi cùng lúc vào nhiều nhóm -->
+        <div *ngIf="multi" class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUPS' | translate }}</label>
+
+            <input type="text" [(ngModel)]="searchText" [ngModelOptions]="{ standalone: true }"
+                [placeholder]="'SHARE_TO_GROUP.SEARCH_GROUP_PLACEHOLDER' | translate"
+                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-primary focus:outline-none">
+
+            <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-primary">
+                    {{ 'SHARE_TO_GROUP.SELECTED_COUNT' | translate:{ count: selectedGroupIds.length } }}
+                </span>
+                <span class="flex gap-3">
+                    <button type="button" class="font-semibold text-primary hover:underline" (click)="selectAllGroups()">
+                        {{ 'SHARE_TO_GROUP.SELECT_ALL' | translate }}
+                    </button>
+                    <button type="button" class="font-semibold text-slate-500 hover:underline" (click)="clearSelectedGroups()">
+                        {{ 'SHARE_TO_GROUP.CLEAR_SELECTION' | translate }}
+                    </button>
+                </span>
+            </div>
+
+            <div class="max-h-64 space-y-1 overflow-y-auto rounded-xl border border-slate-200 p-2">
+                <label *ngFor="let group of filteredGroups"
+                    class="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-50">
+                    <input type="checkbox" class="h-4 w-4" [checked]="isSelected(group.id)" (change)="toggleGroup(group.id)">
+                    <span class="text-sm text-slate-700">
+                        {{ group.name }}
+                        <span *ngIf="group.businessFieldName" class="text-xs text-slate-400">· {{ group.businessFieldName }}</span>
+                    </span>
+                </label>
+
+                <p *ngIf="filteredGroups.length === 0" class="px-3 py-4 text-center text-sm text-slate-400">--</p>
+            </div>
         </div>
 
         <div>
