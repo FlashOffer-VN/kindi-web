@@ -1,4 +1,4 @@
-# FlashOffer-UI — Development Conventions
+# Kindi-UI — Development Conventions
 
 Angular 20 SPA, **prerendered static SSR (SSG)** for SEO, deployed to Vercel.
 The app is fully standalone (`bootstrapApplication`) with lazy `loadComponent`
@@ -53,6 +53,6 @@ node scripts/smoke-prerender.mjs        # verify static HTML per route
 ## Deploy
 
 - `vercel.json`: build command `npm run build:production`, output directory
-  `dist/flashoffer-ui/browser`. The `index.csr.html` → `index.html` rewrite
+  `dist/kindi-ui/browser`. The `index.csr.html` → `index.html` rewrite
   prevents Vercel serving the CSR shell for `/`.
 - CI (`.github/workflows/ci.yml`) runs the three check scripts before build.

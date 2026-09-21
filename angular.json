@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "flashoffer-ui": {
+    "kindi-ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -66,10 +66,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "flashoffer-ui:build:production"
+              "buildTarget": "kindi-ui:build:production"
             },
             "development": {
-              "buildTarget": "flashoffer-ui:build:development"
+              "buildTarget": "kindi-ui:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -2,7 +2,7 @@
 /**
  * CI check: after `ng build` (prerender/SSG), assert that each route declared
  * in `prerendered-routes.json` actually produced a static HTML file in
- * `dist/flashoffer-ui/browser/`.
+ * `dist/kindi-ui/browser/`.
  *
  * This guards against the Angular CLI caveat where a route can be *listed* in
  * the manifest even if its render failed silently — we want the real files.
@@ -13,11 +13,11 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = process.cwd();
-const manifestPath = resolve(root, 'dist/flashoffer-ui/prerendered-routes.json');
-const browserDir = resolve(root, 'dist/flashoffer-ui/browser');
+const manifestPath = resolve(root, 'dist/kindi-ui/prerendered-routes.json');
+const browserDir = resolve(root, 'dist/kindi-ui/browser');
 
 if (!existsSync(manifestPath)) {
-  console.error('❌ dist/flashoffer-ui/prerendered-routes.json not found. Run `ng build` first.');
+  console.error('❌ dist/kindi-ui/prerendered-routes.json not found. Run `ng build` first.');
   process.exit(1);
 }
 
