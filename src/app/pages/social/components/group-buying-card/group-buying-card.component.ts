@@ -19,6 +19,12 @@ import { ShareToGroupComponent } from '@shared/components/share-to-group/share-t
                 @if (item.businessFieldName) {
                 <span class="gb-field"><i class="fas fa-tag"></i> {{ item.businessFieldName }}</span>
                 }
+
+                <!-- Chuyển tiếp vào nhóm ngành: góc trên bên phải -->
+                <app-share-to-group class="gb-share" [iconOnly]="true" [refId]="item.id"
+                    [refCode]="item.groupBuyingRequestCode" [postType]="groupPostType.GroupBuyingRequest"
+                    [targetTitle]="item.productName"
+                    [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
             </div>
 
             <h3 class="gb-title">{{ item.productName }}</h3>
@@ -68,18 +74,15 @@ import { ShareToGroupComponent } from '@shared/components/share-to-group/share-t
                     {{ 'GROUP_BUYING.JOIN' | translate }}
                 </button>
                 }
-                <span class="share-wrap" (click)="$event.stopPropagation()">
-                    <app-share-to-group [iconOnly]="true" [refId]="item.id" [refCode]="item.groupBuyingRequestCode"
-                        [postType]="groupPostType.GroupBuyingRequest" [targetTitle]="item.productName"
-                        [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
-                </span>
             </div>
         </div>
     `,
     styles: [`
-        .share-wrap {
+        /* Nút chuyển tiếp nằm ở góc trên bên phải của card */
+        .gb-share {
             display: inline-flex;
             margin-left: auto;
+            align-self: flex-start;
         }
 
         .gb-card {
