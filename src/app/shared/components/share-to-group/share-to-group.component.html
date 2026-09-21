@@ -57,13 +57,34 @@
                 </span>
             </div>
 
+            <!-- Cảnh báo: nhóm đã có bản ghi này sẽ KHÔNG gửi lại -->
+            <div *ngIf="sentGroups.length > 0" class="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                <p class="font-bold">
+                    <i class="fas fa-triangle-exclamation mr-1"></i>
+                    {{ 'SHARE_TO_GROUP.ALREADY_SENT_WARNING' | translate:{ count: sentGroups.length } }}
+                </p>
+                <p class="mt-1">{{ sentGroupNames }}</p>
+            </div>
+
+            <p *ngIf="unsentGroups.length > 0" class="text-xs font-semibold text-emerald-700">
+                {{ 'SHARE_TO_GROUP.UNSENT_HINT' | translate:{ count: unsentGroups.length } }}
+            </p>
+
             <div class="max-h-64 space-y-1 overflow-y-auto rounded-xl border border-slate-200 p-2">
                 <label *ngFor="let group of filteredGroups"
-                    class="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-50">
-                    <input type="checkbox" class="h-4 w-4" [checked]="isSelected(group.id)" (change)="toggleGroup(group.id)">
+                    class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-50"
+                    [class.opacity-60]="isAlreadySent(group.id)"
+                    [class.cursor-pointer]="!isAlreadySent(group.id)"
+                    [class.cursor-not-allowed]="isAlreadySent(group.id)">
+                    <input type="checkbox" class="h-4 w-4" [checked]="isSelected(group.id)"
+                        [disabled]="isAlreadySent(group.id)" (change)="toggleGroup(group.id)">
                     <span class="text-sm text-slate-700">
                         {{ group.name }}
                         <span *ngIf="group.businessFieldName" class="text-xs text-slate-400">· {{ group.businessFieldName }}</span>
+                    </span>
+                    <span *ngIf="isAlreadySent(group.id)"
+                        class="ml-auto whitespace-nowrap rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700">
+                        {{ 'SHARE_TO_GROUP.ALREADY_SENT_BADGE' | translate }}
                     </span>
                 </label>
 

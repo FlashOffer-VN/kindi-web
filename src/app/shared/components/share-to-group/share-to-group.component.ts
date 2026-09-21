@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { AppService } from '@core/services/app.service';
-import { BusinessGroup, GroupPostType } from '@core/models/business-group.model';
+import { BusinessGroup, ForwardedGroup, GroupPostType } from '@core/models/business-group.model';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
@@ -48,6 +48,10 @@ export class ShareToGroupComponent {
     selectedGroupIds: string[] = [];
     searchText = '';
 
+    /** Nhóm ngành đã có bản ghi này — hiển thị cảnh báo và không gửi lại */
+    sentGroups: ForwardedGroup[] = [];
+    loadingSentGroups = false;
+
     constructor(
         private readonly fb: FormBuilder,
         private readonly _appService: AppService
@@ -67,18 +71,42 @@ export class ShareToGroupComponent {
             (g.businessFieldName ?? '').toLowerCase().includes(keyword));
     }
 
+    /** Id các nhóm đã có bản ghi này */
+    get sentGroupIds(): string[] {
+        return this.sentGroups.map(g => g.groupId);
+    }
+
+    /** Số nhóm CHƯA có — đây là những nhóm có thể gửi */
+    get unsentGroups(): BusinessGroup[] {
+        return this.groups.filter(g => !this.sentGroupIds.includes(g.id));
+    }
+
+    /** Tên các nhóm đã có bản ghi (hiển thị trong cảnh báo) */
+    get sentGroupNames(): string {
+        return this.sentGroups.map(g => g.name).join(', ');
+    }
+
+    isAlreadySent(groupId: string): boolean {
+        return this.sentGroupIds.includes(groupId);
+    }
+
     isSelected(groupId: string): boolean {
         return this.selectedGroupIds.includes(groupId);
     }
 
     toggleGroup(groupId: string): void {
+        if (this.isAlreadySent(groupId)) return;
+
         this.selectedGroupIds = this.isSelected(groupId)
             ? this.selectedGroupIds.filter(id => id !== groupId)
             : [...this.selectedGroupIds, groupId];
     }
 
+    /** Chọn tất cả chỉ áp dụng cho nhóm CHƯA có bản ghi */
     selectAllGroups(): void {
-        this.selectedGroupIds = this.filteredGroups.map(g => g.id);
+        this.selectedGroupIds = this.filteredGroups
+            .filter(g => !this.isAlreadySent(g.id))
+            .map(g => g.id);
     }
 
     clearSelectedGroups(): void {
@@ -95,7 +123,9 @@ export class ShareToGroupComponent {
         this.form.reset({ groupId: '', note: '' });
         this.selectedGroupIds = [];
         this.searchText = '';
+        this.sentGroups = [];
         this.loadGroups();
+        this.loadSentGroups();
     }
 
     close(): void {
@@ -126,13 +156,35 @@ export class ShareToGroupComponent {
         });
     }
 
+    /** Nhóm nào đã có bản ghi này thì bỏ qua, không chuyển tiếp lại */
+    private loadSentGroups(): void {
+        if (!this.refId) return;
+
+        this.loadingSentGroups = true;
+        this._appService.businessGroupService.getForwardedGroups(this.refId).subscribe({
+            next: (response) => {
+                this.loadingSentGroups = false;
+                this.sentGroups = response?.data ?? [];
+            },
+            error: () => {
+                this.loadingSentGroups = false;
+                this.sentGroups = [];
+            }
+        });
+    }
+
     submit(): void {
         if (this.multi) {
-            if (this.selectedGroupIds.length === 0) {
-                this._appService.showError(this._appService.trans('SHARE_TO_GROUP.REQUIRED_GROUP'));
+            // Bỏ các nhóm đã có bản ghi (đã gửi trước đó)
+            const targets = this.selectedGroupIds.filter(id => !this.isAlreadySent(id));
+
+            if (targets.length === 0) {
+                this._appService.showError(this._appService.trans(
+                    this.selectedGroupIds.length > 0 ? 'SHARE_TO_GROUP.ALREADY_ALL_SENT' : 'SHARE_TO_GROUP.REQUIRED_GROUP'));
                 return;
             }
-            this.submitToMany();
+
+            this.submitToMany(targets);
             return;
         }
 
@@ -157,9 +209,9 @@ export class ShareToGroupComponent {
     }
 
     /** Admin gửi cùng lúc vào nhiều nhóm: nhóm nào lỗi thì bỏ qua, báo lại số nhóm gửi được */
-    private submitToMany(): void {
+    private submitToMany(targetIds: string[]): void {
         this.submitting = true;
-        const groups = [...this.selectedGroupIds];
+        const groups = [...targetIds];
         const payload = this.buildPayload();
 
         const requests = groups.map(groupId =>

@@ -13,6 +13,7 @@ import {
     BusinessGroupPostResponse,
     BusinessGroupResponse,
     BusinessGroupQuery,
+    ForwardedGroupListResponse,
     CreateBusinessGroupRequest,
     CreateCommunityGroupRequest,
     CreateGroupPostRequest,
@@ -48,6 +49,11 @@ export class BusinessGroupService {
         if (query.businessFieldId) params['businessFieldId'] = query.businessFieldId;
 
         return this.api.get<BusinessGroupListResponse>(`${this.endpoint}/public`, params);
+    }
+
+    /** Nhóm ngành đã có bài chuyển tiếp cho bản ghi này (admin) — cảnh báo trước khi gửi */
+    getForwardedGroups(refId: string): Observable<ForwardedGroupListResponse> {
+        return this.api.get<ForwardedGroupListResponse>(`${this.endpoint}/forwarded-groups`, { refId });
     }
 
     getPublicDetail(id: string): Observable<BusinessGroupDetailResponse> {

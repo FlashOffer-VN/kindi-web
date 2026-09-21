@@ -1549,6 +1549,12 @@
         "FAILED": "Could not send to the group",
         "REQUIRED_GROUP": "Please select at least one industry group",
         "NO_ANY_GROUP": "No industry group available yet",
-        "FROM_OFFER": "Forwarded offer"
+        "FROM_OFFER": "Forwarded offer",
+        "ALREADY_SENT_WARNING": "{{count}} group(s) already have this — will NOT be re-sent",
+        "UNSENT_HINT": "{{count}} group(s) do not have it yet — select to send",
+        "ALREADY_SENT_BADGE": "Already sent",
+        "ALREADY_ALL_SENT": "Selected groups already have this, nothing to re-send",
+        "SENT_GROUPS_TITLE": "Groups that already have it",
+        "UNSENT_GROUPS_TITLE": "Groups without it yet"
     }
 }

@@ -1512,6 +1512,12 @@
         "FAILED": "Không gửi được thông tin vào nhóm",
         "REQUIRED_GROUP": "Vui lòng chọn ít nhất 1 nhóm ngành",
         "NO_ANY_GROUP": "Chưa có nhóm ngành nào trong hệ thống",
-        "FROM_OFFER": "Chuyển tiếp offer"
+        "FROM_OFFER": "Chuyển tiếp offer",
+        "ALREADY_SENT_WARNING": "{{count}} nhóm ngành đã có thông tin này — sẽ KHÔNG chuyển tiếp lại",
+        "UNSENT_HINT": "{{count}} nhóm chưa có — chọn để gửi",
+        "ALREADY_SENT_BADGE": "Đã gửi",
+        "ALREADY_ALL_SENT": "Các nhóm đã chọn đều đã có thông tin này, không gửi lại",
+        "SENT_GROUPS_TITLE": "Nhóm đã có (không gửi lại)",
+        "UNSENT_GROUPS_TITLE": "Nhóm chưa có (có thể gửi)"
     }
 }

@@ -215,6 +215,15 @@ export interface UpdateGroupMemberStatusRequest {
 }
 
 export interface BusinessGroupListResponse extends Paged<BusinessGroup> { }
+
+/** Nhóm ngành đã có bài chuyển tiếp cho một bản ghi (cảnh báo trước khi gửi lại) */
+export interface ForwardedGroup {
+    groupId: string;
+    groupCode: string | null;
+    name: string;
+}
+
+export interface ForwardedGroupListResponse extends ApiResponse<ForwardedGroup[]> { }
 export interface BusinessGroupDetailResponse extends ApiResponse<BusinessGroupDetail> { }
 export interface JoinBusinessGroupResponse extends ApiResponse<JoinBusinessGroupResult> { }
 export interface BusinessGroupPostListResponse extends Paged<BusinessGroupPost> { }
