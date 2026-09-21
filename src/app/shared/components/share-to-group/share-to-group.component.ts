@@ -19,7 +19,12 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
     selector: 'app-share-to-group',
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent, LoadingComponent, ModalComponent],
-    templateUrl: './share-to-group.component.html'
+    templateUrl: './share-to-group.component.html',
+    host: {
+        // Component thường nằm trong row/card có (click) điều hướng (bảng admin, card bảng tin).
+        // Chặn bubble ở mức host để cả nút VÀ popup (kể cả lúc đóng) không làm nhảy trang.
+        '(click)': '$event.stopPropagation()'
+    }
 })
 export class ShareToGroupComponent {
     /** Id bản ghi gốc được chuyển tiếp */
