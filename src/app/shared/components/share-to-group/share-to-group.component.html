@@ -1,7 +1,10 @@
 ﻿<!-- Nút chuyển tiếp yêu cầu vào nhóm ngành (dùng chung cho trang quản trị + cộng đồng) -->
-<app-button [variant]="variant" size="sm" (onClick)="open()">
-    <i class="fas fa-share mr-1"></i>{{ 'SHARE_TO_GROUP.BUTTON' | translate }}
-</app-button>
+<!-- Bọc span chặn bubble: nút nằm trong row/card có (click) điều hướng -->
+<span class="inline-flex" (click)="$event.stopPropagation()">
+    <app-button [variant]="variant" [size]="size" [title]="labelKey | translate" (onClick)="open()">
+        <i class="fas fa-share"></i><span *ngIf="!iconOnly" class="ml-1">{{ labelKey | translate }}</span>
+    </app-button>
+</span>
 
 <app-modal [visible]="visible" [title]="'SHARE_TO_GROUP.TITLE' | translate" [showFooter]="false"
     (cancel)="close()">

@@ -43,7 +43,8 @@
                         [loading]="isActionLoading">
                         <i class="fa-solid fa-clock mr-1"></i> {{ 'ADMIN.OFFERS.EXPIRE' | translate }}
                     </app-button>
-                    <app-share-to-group [multi]="true" [allGroups]="true" [refId]="offer.id"
+                    <app-share-to-group [labelKey]="'SHARE_TO_GROUP.BUTTON_SHORT'" [multi]="true" [allGroups]="true"
+                        [refId]="offer.id"
                         [refCode]="offer.offerRequestCode" [postType]="groupPostType.Offer"
                         [targetTitle]="offer.productName"
                         [refLabelKey]="'SHARE_TO_GROUP.FROM_OFFER'"></app-share-to-group>

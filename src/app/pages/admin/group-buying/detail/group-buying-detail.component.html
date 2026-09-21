@@ -44,7 +44,8 @@
                         (onClick)="showCancelModal = true">
                         <i class="fas fa-ban mr-2"></i>{{ 'ADMIN.GROUP_BUYING.CANCEL_REQUEST' | translate }}
                     </app-button>
-                    <app-share-to-group [multi]="true" [allGroups]="true" [refId]="detail.id"
+                    <app-share-to-group [size]="'md'" [labelKey]="'SHARE_TO_GROUP.BUTTON_SHORT'" [multi]="true"
+                        [allGroups]="true" [refId]="detail.id"
                         [refCode]="detail.groupBuyingRequestCode" [postType]="groupPostType.GroupBuyingRequest"
                         [targetTitle]="detail.productName"
                         [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>

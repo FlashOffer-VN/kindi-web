@@ -69,7 +69,7 @@ import { ShareToGroupComponent } from '@shared/components/share-to-group/share-t
                 </button>
                 }
                 <span class="share-wrap" (click)="$event.stopPropagation()">
-                    <app-share-to-group [refId]="item.id" [refCode]="item.groupBuyingRequestCode"
+                    <app-share-to-group [iconOnly]="true" [refId]="item.id" [refCode]="item.groupBuyingRequestCode"
                         [postType]="groupPostType.GroupBuyingRequest" [targetTitle]="item.productName"
                         [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
                 </span>

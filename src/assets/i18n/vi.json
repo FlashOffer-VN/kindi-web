@@ -1518,6 +1518,7 @@
         "ALREADY_SENT_BADGE": "Đã gửi",
         "ALREADY_ALL_SENT": "Các nhóm đã chọn đều đã có thông tin này, không gửi lại",
         "SENT_GROUPS_TITLE": "Nhóm đã có (không gửi lại)",
-        "UNSENT_GROUPS_TITLE": "Nhóm chưa có (có thể gửi)"
+        "UNSENT_GROUPS_TITLE": "Nhóm chưa có (có thể gửi)",
+        "BUTTON_SHORT": "Chuyển tiếp"
     }
 }

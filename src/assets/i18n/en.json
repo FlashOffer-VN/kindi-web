@@ -1555,6 +1555,7 @@
         "ALREADY_SENT_BADGE": "Already sent",
         "ALREADY_ALL_SENT": "Selected groups already have this, nothing to re-send",
         "SENT_GROUPS_TITLE": "Groups that already have it",
-        "UNSENT_GROUPS_TITLE": "Groups without it yet"
+        "UNSENT_GROUPS_TITLE": "Groups without it yet",
+        "BUTTON_SHORT": "Forward"
     }
 }

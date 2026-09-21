@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { AppService } from '@core/services/app.service';
 import { BusinessGroup, ForwardedGroup, GroupPostType } from '@core/models/business-group.model';
-import { ButtonComponent } from '@shared/components/button/button.component';
+import { ButtonComponent, ButtonSize } from '@shared/components/button/button.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 
@@ -33,6 +33,12 @@ export class ShareToGroupComponent {
     /** Nhãn mô tả nguồn chuyển tiếp (i18n key) */
     @Input() refLabelKey = 'SHARE_TO_GROUP.FROM_REQUEST';
     @Input() variant: 'primary' | 'secondary' = 'secondary';
+    /** Chỉ hiện icon (kèm tooltip) — dùng ở nơi chật như card/list */
+    @Input() iconOnly = false;
+    /** Key nhãn nút (đổi thành chữ ngắn ở trang chi tiết) */
+    @Input() labelKey = 'SHARE_TO_GROUP.BUTTON';
+    /** Cỡ nút, canh cho bằng các nút bên cạnh */
+    @Input() size: ButtonSize = 'sm';
     /** Gửi cùng lúc vào NHIỀU nhóm ngành (admin) — mặc định gửi 1 nhóm */
     @Input() multi = false;
     /** Admin: được chọn trong TẤT CẢ nhóm ngành, không chỉ nhóm mình tham gia */
