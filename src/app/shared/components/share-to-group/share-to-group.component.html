@@ -1,0 +1,109 @@
+﻿<!-- Nút chuyển tiếp yêu cầu vào nhóm ngành (dùng chung cho trang quản trị + cộng đồng) -->
+<app-button [variant]="variant" [size]="size" [title]="labelKey | translate" (onClick)="open()">
+    <i class="fas fa-share"></i><span *ngIf="!iconOnly" class="ml-1">{{ labelKey | translate }}</span>
+</app-button>
+
+<app-modal [visible]="visible" [title]="'SHARE_TO_GROUP.TITLE' | translate" [showFooter]="false"
+    (cancel)="close()">
+    <div *ngIf="loadingGroups" class="flex justify-center py-6">
+        <app-loading size="sm"></app-loading>
+    </div>
+
+    <!-- Chưa tham gia nhóm ngành nào -->
+    <div *ngIf="!loadingGroups && groups.length === 0" class="py-2 text-center">
+        <p class="text-sm font-semibold text-slate-700">
+            {{ (allGroups ? 'SHARE_TO_GROUP.NO_ANY_GROUP' : 'SHARE_TO_GROUP.NO_GROUP') | translate }}
+        </p>
+        <p class="mt-1 text-sm text-slate-500">{{ 'SHARE_TO_GROUP.NO_GROUP_HINT' | translate }}</p>
+        <a routerLink="/groups" class="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
+            {{ 'SHARE_TO_GROUP.VIEW_GROUPS' | translate }}
+        </a>
+    </div>
+
+    <form *ngIf="!loadingGroups && groups.length > 0" [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+        <p class="text-sm text-slate-500">
+            {{ refLabelKey | translate }}<span *ngIf="refCode"> · {{ refCode }}</span>
+        </p>
+
+        <!-- Gửi vào 1 nhóm -->
+        <div *ngIf="!multi">
+            <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUP' | translate }}</label>
+            <app-ng-select-wrapper formControlName="groupId" [items]="groupOptions" [searchable]="true"
+                [clearable]="true" [placeholder]="'COMMON.SELECT_PLACEHOLDER' | translate"
+                [isInvalid]="form.get('groupId')?.invalid === true && form.get('groupId')?.touched === true"
+                [errorMessage]="'SHARE_TO_GROUP.REQUIRED_GROUP' | translate"></app-ng-select-wrapper>
+        </div>
+
+        <!-- Admin: gửi cùng lúc vào nhiều nhóm -->
+        <div *ngIf="multi" class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUPS' | translate }}</label>
+
+            <input type="text" [(ngModel)]="searchText" [ngModelOptions]="{ standalone: true }"
+                [placeholder]="'SHARE_TO_GROUP.SEARCH_GROUP_PLACEHOLDER' | translate"
+                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-primary focus:outline-none">
+
+            <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-primary">
+                    {{ 'SHARE_TO_GROUP.SELECTED_COUNT' | translate:{ count: selectedGroupIds.length } }}
+                </span>
+                <span class="flex gap-3">
+                    <button type="button" class="font-semibold text-primary hover:underline" (click)="selectAllGroups()">
+                        {{ 'SHARE_TO_GROUP.SELECT_ALL' | translate }}
+                    </button>
+                    <button type="button" class="font-semibold text-slate-500 hover:underline" (click)="clearSelectedGroups()">
+                        {{ 'SHARE_TO_GROUP.CLEAR_SELECTION' | translate }}
+                    </button>
+                </span>
+            </div>
+
+            <!-- Cảnh báo: nhóm đã có bản ghi này sẽ KHÔNG gửi lại -->
+            <div *ngIf="sentGroups.length > 0" class="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                <p class="font-bold">
+                    <i class="fas fa-triangle-exclamation mr-1"></i>
+                    {{ 'SHARE_TO_GROUP.ALREADY_SENT_WARNING' | translate:{ count: sentGroups.length } }}
+                </p>
+                <p class="mt-1">{{ sentGroupNames }}</p>
+            </div>
+
+            <p *ngIf="unsentGroups.length > 0" class="text-xs font-semibold text-emerald-700">
+                {{ 'SHARE_TO_GROUP.UNSENT_HINT' | translate:{ count: unsentGroups.length } }}
+            </p>
+
+            <div class="max-h-64 space-y-1 overflow-y-auto rounded-xl border border-slate-200 p-2">
+                <label *ngFor="let group of filteredGroups"
+                    class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-50"
+                    [class.opacity-60]="isAlreadySent(group.id)"
+                    [class.cursor-pointer]="!isAlreadySent(group.id)"
+                    [class.cursor-not-allowed]="isAlreadySent(group.id)">
+                    <input type="checkbox" class="h-4 w-4" [checked]="isSelected(group.id)"
+                        [disabled]="isAlreadySent(group.id)" (change)="toggleGroup(group.id)">
+                    <span class="text-sm text-slate-700">
+                        {{ group.name }}
+                        <span *ngIf="group.businessFieldName" class="text-xs text-slate-400">· {{ group.businessFieldName }}</span>
+                    </span>
+                    <span *ngIf="isAlreadySent(group.id)"
+                        class="ml-auto whitespace-nowrap rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700">
+                        {{ 'SHARE_TO_GROUP.ALREADY_SENT_BADGE' | translate }}
+                    </span>
+                </label>
+
+                <p *ngIf="filteredGroups.length === 0" class="px-3 py-4 text-center text-sm text-slate-400">--</p>
+            </div>
+        </div>
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.NOTE_LABEL' | translate }}</label>
+            <textarea formControlName="note" rows="3" [placeholder]="'SHARE_TO_GROUP.NOTE_PLACEHOLDER' | translate"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <app-button variant="secondary" type="button" (onClick)="close()">
+                {{ 'COMMON.BUTTON.CANCEL' | translate }}
+            </app-button>
+            <app-button variant="primary" type="submit" [loading]="submitting" [disabled]="submitting">
+                <i class="fas fa-paper-plane mr-1"></i>{{ 'SHARE_TO_GROUP.SUBMIT' | translate }}
+            </app-button>
+        </div>
+    </form>
+</app-modal>

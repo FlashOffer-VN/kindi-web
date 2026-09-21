@@ -5,13 +5,11 @@ import { ApiService } from './api.service';
 import {
     SocialPost,
     SocialMember,
-    SocialEvent,
     SocialGroup,
     SocialComment,
     CreatePostRequest,
     GetPostsQuery,
-    UpdatePostRequest,
-    EventType
+    UpdatePostRequest
 } from '../models/social.model';
 import { PagedResponse } from '@core/models/paged-response.model';
 import { ApiResponse } from '@core/models/auth.model';
@@ -151,40 +149,6 @@ export class SocialService {
             // Mock data
         ];
         return of(members).pipe(delay(300));
-    }
-
-    // ===== EVENTS =====
-    // ❌ CHƯA CÓ API - Giữ mock
-    getEvents(): Observable<SocialEvent[]> {
-        const events: SocialEvent[] = [
-            {
-                id: 1,
-                title: 'Webinar: Chiến lược phát triển 2026',
-                description: 'Chia sẻ chiến lược phát triển kinh doanh trong bối cảnh mới',
-                date: new Date('2026-03-20T14:00:00'),
-                location: 'Online - Zoom',
-                type: EventType.Online,
-                maxParticipants: 100,
-                currentParticipants: 65,
-                image: 'assets/events/webinar.jpg',
-                organizer: 'Nguyễn Văn A',
-                isRegistered: false
-            },
-            {
-                id: 2,
-                title: 'Meetup: Kết nối doanh nhân TP.HCM',
-                description: 'Gặp gỡ, kết nối và chia sẻ kinh nghiệm kinh doanh',
-                date: new Date('2026-03-25T18:00:00'),
-                location: 'Quận 1, TP.HCM',
-                type: EventType.Offline,
-                maxParticipants: 50,
-                currentParticipants: 30,
-                image: 'assets/events/Meetup.jpg',
-                organizer: 'Trần Thị B',
-                isRegistered: false
-            }
-        ];
-        return of(events).pipe(delay(300));
     }
 
     // ===== GROUPS =====

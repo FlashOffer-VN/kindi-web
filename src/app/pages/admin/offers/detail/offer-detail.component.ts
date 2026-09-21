@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,6 +12,9 @@ import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { BadgeComponent, BadgeVariant } from '@shared/components/badge/badge.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 
+import { GroupPostType } from '@core/models/business-group.model';
+import { ShareToGroupComponent } from '@shared/components/share-to-group/share-to-group.component';
+
 @Component({
     selector: 'app-admin-offer-detail',
     standalone: true,
@@ -22,12 +25,15 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
         ButtonComponent,
         LoadingComponent,
         BadgeComponent,
-        ModalComponent
-    ],
+        ModalComponent,
+        ShareToGroupComponent,],
     templateUrl: './offer-detail.component.html',
     styleUrls: ['./offer-detail.component.css']
 })
 export class AdminOfferDetailComponent implements OnInit {
+    /** Loại bài khi gửi thông tin vào nhóm ngành */
+    readonly groupPostType = GroupPostType;
+
     offer: OfferRequest | null = null;
     isLoading = true;
     isActionLoading = false;

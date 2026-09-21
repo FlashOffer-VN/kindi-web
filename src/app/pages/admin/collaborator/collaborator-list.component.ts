@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AppService } from '@core/services/app.service';
-import { CtvRegistration, CTVRegistrationStatus } from '@core/models/ctv.model';
+import { Collaborator, CollaboratorStatus } from '@core/models/collaborator.model';
 import { PagedResponse } from '@core/models/paged-response.model';
 
 import { ButtonComponent } from '@shared/components/button/button.component';
@@ -37,7 +37,7 @@ import { NgxFilterDaterangeComponent } from '@shared/components/filter-daterange
 })
 export class AdminCollaboratorListComponent implements OnInit {
     // Data
-    collaborators: CtvRegistration[] = [];
+    collaborators: Collaborator[] = [];
     isLoading = true;
     isDeleting = false;
     isRestoring = false;
@@ -86,7 +86,7 @@ export class AdminCollaboratorListComponent implements OnInit {
         const isDeleted = this.activeTab === 'deleted';
 
         if (isDeleted) {
-            this._appService.ctvService.getDeletedData(
+            this._appService.collaboratorService.getDeletedData(
                 this.pageNumber,
                 this.pageSize,
                 this.searchText,
@@ -94,7 +94,7 @@ export class AdminCollaboratorListComponent implements OnInit {
                 this.toDate ?? undefined
             )
                 .subscribe({
-                    next: (response: PagedResponse<CtvRegistration>) => {
+                    next: (response: PagedResponse<Collaborator>) => {
                         this.applyPagedResponse(response);
                         this.isLoading = false;
                     },
@@ -106,16 +106,16 @@ export class AdminCollaboratorListComponent implements OnInit {
             return;
         }
 
-        let status: CTVRegistrationStatus | undefined;
+        let status: CollaboratorStatus | undefined;
         if (this.activeTab !== 'all') {
             switch (this.activeTab) {
-                case 'pending': status = CTVRegistrationStatus.Pending; break;
-                case 'approved': status = CTVRegistrationStatus.Approved; break;
-                case 'rejected': status = CTVRegistrationStatus.Rejected; break;
+                case 'pending': status = CollaboratorStatus.Pending; break;
+                case 'approved': status = CollaboratorStatus.Approved; break;
+                case 'rejected': status = CollaboratorStatus.Rejected; break;
             }
         }
 
-        this._appService.ctvService.getData(
+        this._appService.collaboratorService.getData(
                 this.pageNumber,
                 this.pageSize,
                 this.searchText,
@@ -124,7 +124,7 @@ export class AdminCollaboratorListComponent implements OnInit {
                 this.toDate ?? undefined
             )
             .subscribe({
-                next: (response: PagedResponse<CtvRegistration>) => {
+                next: (response: PagedResponse<Collaborator>) => {
                     this.applyPagedResponse(response);                    this.isLoading = false;
                 },
                 error: () => {
@@ -134,7 +134,7 @@ export class AdminCollaboratorListComponent implements OnInit {
             });
     }
 
-    private applyPagedResponse(response: PagedResponse<CtvRegistration>): void {
+    private applyPagedResponse(response: PagedResponse<Collaborator>): void {
         this.collaborators = response.data;
         this.pageNumber = response.pageNumber;
         this.pageSize = response.pageSize;
@@ -167,13 +167,13 @@ export class AdminCollaboratorListComponent implements OnInit {
         this.loadData();
     }
 
-    onDelete(item: CtvRegistration): void {
+    onDelete(item: Collaborator): void {
         this._appService.confirmDelete(
             this._appService.trans('ADMIN.CTV.DELETE_CONFIRM', { name: item.fullName })
         ).then(confirmed => {
             if (!confirmed) return;
             this.isDeleting = true;
-            this._appService.ctvService.delete(item.id).subscribe({
+            this._appService.collaboratorService.delete(item.id).subscribe({
                 next: () => {
                     this.isDeleting = false;
                     this._appService.showSuccess(this._appService.trans('ADMIN.CTV.DELETED_SUCCESS'));
@@ -187,9 +187,9 @@ export class AdminCollaboratorListComponent implements OnInit {
         });
     }
 
-    onRestore(item: CtvRegistration): void {
+    onRestore(item: Collaborator): void {
         this.isRestoring = true;
-        this._appService.ctvService.restore(item.id).subscribe({
+        this._appService.collaboratorService.restore(item.id).subscribe({
             next: () => {
                 this.isRestoring = false;
                 this._appService.showSuccess(this._appService.trans('ADMIN.CTV.RESTORED_SUCCESS'));
@@ -202,20 +202,24 @@ export class AdminCollaboratorListComponent implements OnInit {
         });
     }
 
-    getStatusVariant(status: CTVRegistrationStatus): BadgeVariant {
-        const variants: Record<CTVRegistrationStatus, BadgeVariant> = {
-            [CTVRegistrationStatus.Pending]: 'warning',
-            [CTVRegistrationStatus.Approved]: 'success',
-            [CTVRegistrationStatus.Rejected]: 'danger'
+    getStatusVariant(status: CollaboratorStatus): BadgeVariant {
+        const variants: Record<number, BadgeVariant> = {
+            [CollaboratorStatus.Pending]: 'warning',
+            [CollaboratorStatus.Approved]: 'success',
+            [CollaboratorStatus.Rejected]: 'danger',
+            [CollaboratorStatus.Suspended]: 'secondary',
+            [CollaboratorStatus.Active]: 'success'
         };
         return variants[status] || 'secondary';
     }
 
-    getStatusKey(status: CTVRegistrationStatus): string {
-        const keys: Record<CTVRegistrationStatus, string> = {
-            [CTVRegistrationStatus.Pending]: 'pending',
-            [CTVRegistrationStatus.Approved]: 'approved',
-            [CTVRegistrationStatus.Rejected]: 'rejected'
+    getStatusKey(status: CollaboratorStatus): string {
+        const keys: Record<number, string> = {
+            [CollaboratorStatus.Pending]: 'pending',
+            [CollaboratorStatus.Approved]: 'approved',
+            [CollaboratorStatus.Rejected]: 'rejected',
+            [CollaboratorStatus.Suspended]: 'suspended',
+            [CollaboratorStatus.Active]: 'approved'
         };
         return keys[status] || 'pending';
     }

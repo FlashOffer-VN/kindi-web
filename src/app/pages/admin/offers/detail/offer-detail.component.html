@@ -1,4 +1,4 @@
-<div class="p-6 space-y-6">
+﻿<div class="p-6 space-y-6">
     <!-- Loading -->
     <div *ngIf="isLoading" class="flex justify-center items-center py-12">
         <app-loading></app-loading>
@@ -43,6 +43,12 @@
                         [loading]="isActionLoading">
                         <i class="fa-solid fa-clock mr-1"></i> {{ 'ADMIN.OFFERS.EXPIRE' | translate }}
                     </app-button>
+                    <app-share-to-group [labelKey]="'SHARE_TO_GROUP.BUTTON_SHORT'" [multi]="true" [allGroups]="true"
+                        [refId]="offer.id"
+                        [refCode]="offer.offerRequestCode" [postType]="groupPostType.Offer"
+                        [targetTitle]="offer.productName"
+                        [refLabelKey]="'SHARE_TO_GROUP.FROM_OFFER'"></app-share-to-group>
+
                     <app-button variant="secondary" size="sm" (click)="goBack()">
                         <i class="fa-solid fa-arrow-left mr-1"></i> {{ 'COMMON.BUTTON.BACK' | translate }}
                     </app-button>

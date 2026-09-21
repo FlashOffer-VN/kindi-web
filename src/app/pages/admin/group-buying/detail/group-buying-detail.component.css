@@ -1,0 +1,7 @@
+:host {
+    display: block;
+}
+
+table tbody tr:hover {
+    background-color: #f9fafb;
+}

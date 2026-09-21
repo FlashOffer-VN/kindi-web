@@ -1,4 +1,4 @@
-// shared/components/button/button.component.ts
+﻿// shared/components/button/button.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -25,6 +25,8 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
       [type]="type"
       [disabled]="disabled || loading"
       (click)="onClick.emit($event)"
+      [attr.title]="title || null"
+      [attr.aria-label]="title || null"
       [class]="getButtonClasses()"
     >
       @if (loading) {
@@ -104,6 +106,9 @@ export class ButtonComponent {
   @Input() disabled = false;
   @Input() loading = false;
   @Input() fullWidth = false;
+
+  /** Tooltip hiển thị khi rê chuột (dùng cho nút chỉ có icon). */
+  @Input() title = '';
   @Output() onClick = new EventEmitter<MouseEvent>();
 
   getButtonClasses(): string {

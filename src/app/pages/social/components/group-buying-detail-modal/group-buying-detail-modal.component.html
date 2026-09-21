@@ -1,0 +1,210 @@
+﻿<div class="gb-modal-overlay" *ngIf="visible" (click)="close()">
+    <div class="gb-modal" (click)="stopPropagation($event)">
+        <!-- Header -->
+        <div class="gb-modal-head">
+            <div class="head-left">
+                <span class="gb-badge" [class]="statusClass(detail?.status)">
+                    {{ statusKey(detail?.status) | translate }}
+                </span>
+                <h3>{{ detail?.productName || ('GROUP_BUYING.DETAIL.TITLE' | translate) }}</h3>
+                <span class="code" *ngIf="detail?.groupBuyingRequestCode">
+                    <i class="fas fa-hashtag"></i> {{ detail?.groupBuyingRequestCode }}
+                </span>
+            </div>
+            <button class="close-btn" (click)="close()"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="gb-modal-body">
+            <app-loading *ngIf="isLoading" [fullScreen]="false"></app-loading>
+
+            <div class="error-box" *ngIf="!isLoading && loadError">
+                <i class="fas fa-triangle-exclamation"></i> {{ loadError }}
+            </div>
+
+            <ng-container *ngIf="!isLoading && detail">
+                <!-- Thông tin cơ bản -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">{{ 'GROUP_BUYING.TARGET_PRICE' | translate }}</span>
+                        <span class="value purple">
+                            {{ detail.targetPrice ? (detail.targetPrice | number:'1.0-0') + 'đ' : '--' }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">{{ 'GROUP_BUYING.PEOPLE' | translate }}</span>
+                        <span class="value">{{ detail.currentPeopleCount }}/{{ detail.targetPeopleCount }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">{{ 'GROUP_BUYING.NEEDED' | translate }}</span>
+                        <span class="value">{{ detail.neededPeopleCount }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">{{ 'GROUP_BUYING.CREATED_AT' | translate }}</span>
+                        <span class="value">{{ detail.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                </div>
+
+                <!-- Tiến độ -->
+                <div class="progress-block">
+                    <div class="bar">
+                        <div class="fill" [style.width.%]="percent()"></div>
+                    </div>
+                    <p class="progress-text">
+                        @if (detail.neededPeopleCount > 0) {
+                        {{ 'GROUP_BUYING.NEED_MORE' | translate:{ count: detail.neededPeopleCount } }}
+                        } @else {
+                        {{ 'GROUP_BUYING.ENOUGH' | translate }}
+                        }
+                    </p>
+                </div>
+
+                <!-- Mô tả / ghi chú -->
+                <div class="section" *ngIf="detail.note">
+                    <h4>{{ 'GROUP_BUYING.DETAIL.NOTE' | translate }}</h4>
+                    <p class="note">{{ detail.note }}</p>
+                </div>
+
+                <!-- Sản phẩm -->
+                <div class="section" *ngIf="detail.productLink">
+                    <h4>{{ 'GROUP_BUYING.DETAIL.PRODUCT_LINK' | translate }}</h4>
+                    <a class="product-link" [href]="detail.productLink" target="_blank" rel="noopener">
+                        <i class="fas fa-link"></i> {{ detail.productLink }}
+                    </a>
+                </div>
+
+                <!-- Đầu mối liên hệ -->
+                <div class="section">
+                    <h4>{{ 'GROUP_BUYING.DETAIL.CREATOR' | translate }}</h4>
+                    <div class="creator-box">
+                        <div class="avatar">{{ detail.creatorName.charAt(0) }}</div>
+                        <div class="creator-info">
+                            <span class="name">{{ detail.creatorName }}</span>
+                            <span class="contact">
+                                <i class="fas fa-phone"></i> {{ detail.creatorPhone || '--' }}
+                                <ng-container *ngIf="detail.creatorZalo">
+                                    &nbsp;·&nbsp;<i class="fas fa-comment"></i> {{ detail.creatorZalo }}
+                                </ng-container>
+                                <ng-container *ngIf="detail.creatorEmail">
+                                    &nbsp;·&nbsp;<i class="fas fa-envelope"></i> {{ detail.creatorEmail }}
+                                </ng-container>
+                            </span>
+                        </div>
+                    </div>
+                    <p class="hint" *ngIf="!isAuthenticated">
+                        <i class="fas fa-circle-info"></i> {{ 'GROUP_BUYING.DETAIL.LOGIN_TO_SEE_CONTACT' | translate }}
+                    </p>
+                    <p class="hint" *ngIf="detail.closedReason">
+                        <i class="fas fa-circle-info"></i> {{ detail.closedReason }}
+                    </p>
+                </div>
+
+                <!-- Danh sách người tham gia -->
+                <div class="section">
+                    <h4>{{ 'GROUP_BUYING.DETAIL.PARTICIPANTS' | translate }} ({{ detail.participants.length }})</h4>
+                    <div class="participants">
+                        @for (p of detail.participants; track p.id) {
+                        <div class="participant" [class.me]="p.isMe">
+                            <div class="avatar">{{ p.fullName.charAt(0) }}</div>
+                            <div class="p-info">
+                                <span class="name">
+                                    {{ p.fullName }}
+                                    @if (p.isCreator) {
+                                    <span class="tag owner">{{ 'GROUP_BUYING.DETAIL.OWNER' | translate }}</span>
+                                    }
+                                    @if (p.isMe) {
+                                    <span class="tag me">{{ 'GROUP_BUYING.DETAIL.YOU' | translate }}</span>
+                                    }
+                                </span>
+                                <span class="contact">
+                                    {{ p.phone }}
+                                    <ng-container *ngIf="p.zalo">&nbsp;·&nbsp;Zalo: {{ p.zalo }}</ng-container>
+                                </span>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Kết quả đăng ký: tài khoản vừa tạo / đã có tài khoản (dùng chung component) -->
+                <app-account-created-notice
+                    *ngIf="joinResult"
+                    [isNewAccount]="joinResult.isNewAccount === true"
+                    [accountAlreadyExisted]="joinResult.accountAlreadyExisted === true"
+                    [username]="joinResult.username"
+                    [passwordIsPhone]="joinResult.passwordIsPhone"
+                    (loginClick)="goToLogin()">
+                </app-account-created-notice>
+
+                <!-- Khu vực đăng ký -->
+                <div class="section join-section" *ngIf="!joinResult?.isNewAccount">
+                    <h4>{{ 'GROUP_BUYING.JOIN_TITLE' | translate }}</h4>
+
+                    <div class="blocked" *ngIf="!detail.canJoin">
+                        <i class="fas fa-circle-exclamation"></i>
+                        {{ detail.joinBlockedReason || ('GROUP_BUYING.JOIN_BLOCKED' | translate) }}
+                    </div>
+
+                    <form [formGroup]="joinForm" (ngSubmit)="onJoin()" *ngIf="detail.canJoin">
+                        <div class="guest-form" *ngIf="!isAuthenticated">
+                            <p class="guest-hint">
+                                <i class="fas fa-user-plus"></i> {{ 'GROUP_BUYING.GUEST_HINT' | translate }}
+                            </p>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>{{ 'GROUP_BUYING.FULL_NAME' | translate }} <span class="req">*</span></label>
+                                    <input type="text" formControlName="fullName"
+                                        placeholder="{{ 'GROUP_BUYING.FULL_NAME_PLACEHOLDER' | translate }}">
+                                    <span class="error"
+                                        *ngIf="f['fullName']?.invalid && (f['fullName']?.dirty || f['fullName']?.touched)">
+                                        {{ 'GROUP_BUYING.ERROR.FULL_NAME_REQUIRED' | translate }}
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ 'GROUP_BUYING.PHONE' | translate }} <span class="req">*</span></label>
+                                    <input type="tel" formControlName="phone"
+                                        placeholder="{{ 'GROUP_BUYING.PHONE_PLACEHOLDER' | translate }}">
+                                    <span class="error"
+                                        *ngIf="f['phone']?.invalid && (f['phone']?.dirty || f['phone']?.touched)">
+                                        {{ 'GROUP_BUYING.ERROR.PHONE_REQUIRED' | translate }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>{{ 'GROUP_BUYING.ZALO' | translate }}</label>
+                                    <input type="text" formControlName="zalo"
+                                        placeholder="{{ 'GROUP_BUYING.ZALO_PLACEHOLDER' | translate }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ 'GROUP_BUYING.EMAIL' | translate }}</label>
+                                    <input type="email" formControlName="email"
+                                        placeholder="{{ 'GROUP_BUYING.EMAIL_PLACEHOLDER' | translate }}">
+                                    <span class="error"
+                                        *ngIf="f['email']?.invalid && (f['email']?.dirty || f['email']?.touched)">
+                                        {{ 'GROUP_BUYING.ERROR.EMAIL_INVALID' | translate }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ 'GROUP_BUYING.NOTE' | translate }}</label>
+                            <textarea rows="2" formControlName="note"
+                                placeholder="{{ 'GROUP_BUYING.DETAIL.NOTE_PLACEHOLDER' | translate }}"></textarea>
+                        </div>
+
+                        <div class="actions">
+                            <button type="button" class="btn-secondary" (click)="close()">
+                                {{ 'COMMON.BUTTON.CANCEL' | translate }}
+                            </button>
+                            <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+                                <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+                                {{ 'GROUP_BUYING.JOIN' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

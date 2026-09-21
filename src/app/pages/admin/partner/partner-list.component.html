@@ -1,4 +1,4 @@
-<div class="p-6">
+﻿<div class="p-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
@@ -91,60 +91,62 @@
                     </tr>
 
                     <!-- Data rows -->
-                    <tr *ngFor="let partner of partners; let i = index"
-                        class="hover:bg-gray-50 transition-colors cursor-pointer"
-                        (click)="navigateToDetail(partner.id)">
-                        <td class="px-4 py-3 text-sm text-gray-500">
-                            {{ (pageNumber - 1) * pageSize + i + 1 }}
-                        </td>
-                        <td class="px-4 py-3 text-sm font-mono text-gray-600">
-                            {{ partner.partnerCode }}
-                        </td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                            {{ partner.fullName }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ partner.companyName }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ partner.email }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ partner.phone }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ getBusinessTypeLabel(partner.businessType) | translate }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ partner.businessFieldName || '--' }}
-                        </td>
-                        <td class="status-column px-3 py-3">
-                            <app-badge size="sm" [status]="getStatusKey(partner.status)"
-                                [variant]="getStatusVariant(partner.status)">
-                            </app-badge>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-500">
-                            {{ formatDate(partner.createdAt) }}
-                        </td>
-                        <td class="action-column px-3 py-3">
-                            <div class="flex items-center gap-2">
-                                <app-button variant="primary" size="sm"
-                                    (click)="$event.stopPropagation(); navigateToDetail(partner.id)">
-                                    {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
-                                </app-button>
-                                <app-button *ngIf="activeTab === 'deleted'" variant="primary" size="sm"
-                                    [loading]="isRestoring" (click)="$event.stopPropagation(); onRestore(partner)"
-                                    [title]="'COMMON.BUTTON.RESTORE' | translate">
-                                    <i class="fa-solid fa-rotate-left"></i>
-                                </app-button>
-                                <app-button *ngIf="activeTab !== 'deleted'" variant="danger" size="sm"
-                                    [loading]="isDeleting" (click)="$event.stopPropagation(); onDelete(partner)"
-                                    [title]="'COMMON.BUTTON.DELETE' | translate">
-                                    <i class="fa-solid fa-trash"></i>
-                                </app-button>
-                            </div>
-                        </td>
-                    </tr>
+                    <ng-container *ngIf="!isLoading">
+    <tr *ngFor="let partner of partners; let i = index"
+                            class="hover:bg-gray-50 transition-colors cursor-pointer"
+                            (click)="navigateToDetail(partner.id)">
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                {{ (pageNumber - 1) * pageSize + i + 1 }}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-mono text-gray-600">
+                                {{ partner.partnerCode }}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                                {{ partner.fullName }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ partner.companyName }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ partner.email }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ partner.phone }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ getBusinessTypeLabel(partner.businessType) | translate }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ partner.businessFieldName || '--' }}
+                            </td>
+                            <td class="status-column px-3 py-3">
+                                <app-badge size="sm" [status]="getStatusKey(partner.status)"
+                                    [variant]="getStatusVariant(partner.status)">
+                                </app-badge>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                {{ formatDate(partner.createdAt) }}
+                            </td>
+                            <td class="action-column px-3 py-3">
+                                <div class="flex items-center gap-2">
+                                    <app-button variant="primary" size="sm"
+                                        (click)="$event.stopPropagation(); navigateToDetail(partner.id)">
+                                        {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
+                                    </app-button>
+                                    <app-button *ngIf="activeTab === 'deleted'" variant="primary" size="sm"
+                                        [loading]="isRestoring" (click)="$event.stopPropagation(); onRestore(partner)"
+                                        [title]="'COMMON.BUTTON.RESTORE' | translate">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </app-button>
+                                    <app-button *ngIf="activeTab !== 'deleted'" variant="danger" size="sm"
+                                        [loading]="isDeleting" (click)="$event.stopPropagation(); onDelete(partner)"
+                                        [title]="'COMMON.BUTTON.DELETE' | translate">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </app-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
                 </tbody>
             </table>
         </div>

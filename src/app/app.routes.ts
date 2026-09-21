@@ -1,9 +1,9 @@
-// app.routes.ts
+﻿// app.routes.ts
 import { Routes } from '@angular/router';
 import { AdminLayoutComponent } from './shared/components/layouts/admin-layout/admin-layout.component';
 import { GuestLayoutComponent } from './shared/components/layouts/guest-layout/guest-layout.component';
 import { UserLayoutComponent } from './shared/components/layouts/user-layout/user-layout.component';
-import { AdminGuard, AuthGuard, GuestGuard } from './core/guards';
+import { AdminGuard, AuthGuard, CredentialsGuard, GuestGuard } from './core/guards';
 
 export const routes: Routes = [
     // Guest routes (chưa đăng nhập)
@@ -45,6 +45,8 @@ export const routes: Routes = [
             { path: 'connect-sme', loadComponent: () => import('./pages/connect-sme/connect-sme.component').then(m => m.ConnectSmeComponent) },
             { path: 'find-supplier', loadComponent: () => import('./pages/find-supplier/find-supplier.component').then(m => m.FindSupplierComponent) },
             { path: 'group-buying', loadComponent: () => import('./pages/group-buying/group-buying.component').then(m => m.GroupBuyingComponent) },
+            { path: 'groups', loadComponent: () => import('./pages/groups/groups.component').then(m => m.GroupsComponent) },
+            { path: 'groups/:id', loadComponent: () => import('./pages/groups/detail/group-detail.component').then(m => m.GroupDetailComponent) },
             { path: 'get-offer', loadComponent: () => import('./pages/get-offer/get-offer.component').then(m => m.GetOfferComponent) },
             { path: 'suppliers', loadComponent: () => import('./pages/suppliers/suppliers.component').then(m => m.SuppliersComponent) },
             { path: 'talent', loadComponent: () => import('./pages/talent/talent.component').then(m => m.TalentComponent) },
@@ -72,7 +74,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminLayoutComponent,
-        canActivate: [AdminGuard],
+        canActivate: [AdminGuard, CredentialsGuard],
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
@@ -82,6 +84,11 @@ export const routes: Routes = [
             // Purchase Request Management
             { path: 'purchase-requests', loadComponent: () => import('./pages/admin/purchase-requests/purchase-request-list.component').then(m => m.AdminPurchaseRequestListComponent) },
             { path: 'purchase-requests/:id', loadComponent: () => import('./pages/admin/purchase-requests/detail/purchase-request-detail.component').then(m => m.AdminPurchaseRequestDetailComponent) },
+            // Group Buying Management
+            { path: 'group-buying', loadComponent: () => import('./pages/admin/group-buying/group-buying-list.component').then(m => m.AdminGroupBuyingListComponent) },
+            { path: 'groups', loadComponent: () => import('./pages/admin/groups/group-list.component').then(m => m.AdminGroupListComponent) },
+            { path: 'groups/:id', loadComponent: () => import('./pages/admin/groups/detail/group-detail.component').then(m => m.AdminGroupDetailComponent) },
+            { path: 'group-buying/:id', loadComponent: () => import('./pages/admin/group-buying/detail/group-buying-detail.component').then(m => m.AdminGroupBuyingDetailComponent) },
             { path: 'settings', loadComponent: () => import('./pages/admin/settings/admin-settings.component').then(m => m.AdminSettingsComponent) },
             { path: 'demo', loadComponent: () => import('./pages/demo/demo.component').then(m => m.DemoComponent) },
             { path: 'social-posts', loadComponent: () => import('./pages/admin/social/social-post-list.component').then(m => m.AdminSocialPostListComponent) },
@@ -101,7 +108,16 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
             { path: '', redirectTo: 'profile', pathMatch: 'full' },
-            { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
+            // Bắt buộc đổi tên đăng nhập + mật khẩu ở lần đăng nhập đầu (không gắn CredentialsGuard để tránh vòng lặp)
+            {
+                path: 'change-credentials',
+                loadComponent: () => import('./pages/profile/change-credentials/change-credentials.component').then(m => m.ChangeCredentialsPageComponent)
+            },
+            {
+                path: 'profile',
+                canActivate: [CredentialsGuard],
+                loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
+            },
         ]
     },
 

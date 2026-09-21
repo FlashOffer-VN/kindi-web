@@ -1,4 +1,4 @@
-// core/services/app.service.ts
+﻿// core/services/app.service.ts
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth.service';
@@ -6,19 +6,18 @@ import { ToastService } from './toast.service';
 import { ToastType } from './toast.service';
 import { Observable } from 'rxjs';
 import { PartnerRegisterService } from './partner-register.service';
-import { CtvRegistrationService } from './ctv-registration.service';
 import { PurchaseRequestService } from './purchase-request.service';
 import { GroupBuyingRequestService } from './group-buying-request.service';
 import { OfferRequestService } from './offer-request.service';
 import { PartnerService } from './partner.service';
-import { CtvService } from './ctv.service';
 import { SocialService } from './social.service';
-import { UserRole } from '@core/models/auth.model';
+import { ChangeCredentialsRequest, UserRole } from '@core/models/auth.model';
 import { storageSet } from '../utils/storage';
 import { ModalService } from './modal.service';
 import { CollaboratorService } from './collaborator.service';
 import { DashboardService } from './dashboard.service';
 import { CrmService } from './crm.service';
+import { BusinessGroupService } from './business-group.service';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 
 @Injectable({
@@ -31,16 +30,15 @@ export class AppService {
         public modal: ModalService,
         public partnerRegister: PartnerRegisterService,
         private translate: TranslateService,
-        public ctvRegistration: CtvRegistrationService,
         public purchaseRequest: PurchaseRequestService,
         public groupBuyingRequest: GroupBuyingRequestService,
         public offerRequest: OfferRequestService,
-        public ctvService: CtvService,
         public partnerService: PartnerService,
         public socialService: SocialService,
         public collaboratorService: CollaboratorService,
         public dashboardService: DashboardService,
-        public crmService: CrmService
+        public crmService: CrmService,
+        public businessGroupService: BusinessGroupService
     ) { }
 
     // ========== Auth ==========
@@ -58,6 +56,13 @@ export class AppService {
 
     getCurrentUser() {
         return this.auth.getCurrentUser();
+    }
+
+    /**
+     * Đổi tên đăng nhập + mật khẩu (lần đăng nhập đầu hoặc ở trang người dùng)
+     */
+    changeCredentials(payload: ChangeCredentialsRequest) {
+        return this.auth.changeCredentials(payload);
     }
 
     isAuthenticated() {

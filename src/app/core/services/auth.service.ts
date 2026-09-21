@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, tap, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 import { Router } from '@angular/router';
@@ -9,7 +9,8 @@ import {
     LoginRequest,
     RegisterRequest,
     AuthResponse,
-    ApiResponse
+    ApiResponse,
+    ChangeCredentialsRequest
 } from '../models/auth.model';
 import { isBrowser } from '../utils/platform';
 import { storageGet, storageRemove, storageSet } from '../utils/storage';
@@ -202,11 +203,12 @@ export class AuthService {
         const roleValue = data.role || 'GUEST';
 
         const user: User = {
-            id: data.id || 0,
+            id: data.id ?? '',
             username: data.username || '',
             email: data.email || data.username || '',
             role: roleValue as UserRole,
-            fullName: data.fullName || ''
+            fullName: data.fullName || '',
+            mustChangeCredentials: data.mustChangeCredentials === true
         };
 
         if (data.token) {
@@ -229,11 +231,61 @@ export class AuthService {
      * Redirect sau login dựa trên role và flag isAdmin
      */
     private redirectAfterLogin(user: User, isAdmin: boolean): void {
+        // Tài khoản tạo tự động (mật khẩu = SĐT) phải đổi tên đăng nhập + mật khẩu trước khi dùng tiếp
+        if (user.mustChangeCredentials) {
+            this.router.navigate(['/user/change-credentials']);
+            return;
+        }
+
         if (isAdmin || user.role === UserRole.ADMIN) {
             this.router.navigate(['/admin/dashboard']);
         } else {
             this.router.navigate(['/social']);
         }
+    }
+
+    /**
+     * True khi tài khoản đang đăng nhập buộc phải đổi tên đăng nhập + mật khẩu (lần đầu).
+     */
+    mustChangeCredentials(): boolean {
+        return this.getCurrentUser()?.mustChangeCredentials === true;
+    }
+
+    /**
+     * Đổi tên đăng nhập + mật khẩu. API trả token mới (username là claim trong token)
+     * nên cập nhật lại token + user đang lưu, KHÔNG redirect (trang gọi tự quyết định).
+     */
+    changeCredentials(payload: ChangeCredentialsRequest): Observable<AuthResponse> {
+        return this.api.post<AuthResponse>('auth/change-credentials', payload).pipe(
+            tap(response => this.applyChangedCredentials(response))
+        );
+    }
+
+    /**
+     * Cập nhật token + user sau khi đổi thông tin đăng nhập thành công.
+     */
+    private applyChangedCredentials(response: AuthResponse): void {
+        const data = response?.data;
+        if (!data) return;
+
+        if (data.token) {
+            storageSet('token', data.token);
+        }
+
+        const current = this.getCurrentUser();
+        const user: User = {
+            ...(current || ({} as User)),
+            id: current?.id ?? data.id ?? 0,
+            username: data.username || current?.username || '',
+            email: data.email || current?.email || data.username || '',
+            role: (data.role || current?.role || 'USER') as UserRole,
+            fullName: data.fullName || current?.fullName || '',
+            mustChangeCredentials: data.mustChangeCredentials === true
+        };
+
+        storageSet('user', JSON.stringify(user));
+        this.currentUserSubject.next(user);
+        this.setBodyRoleClass(user.role);
     }
 
     /**

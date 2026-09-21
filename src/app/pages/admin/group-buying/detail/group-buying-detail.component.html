@@ -1,0 +1,282 @@
+﻿<div class="p-6">
+    <div *ngIf="isLoading" class="py-20 text-center">
+        <app-loading></app-loading>
+    </div>
+
+    <ng-container *ngIf="!isLoading && detail">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-5">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary-light text-white flex items-center justify-center text-2xl font-bold flex-shrink-0">
+                    {{ detail.productName.charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <h1 class="text-xl font-bold text-gray-800">{{ detail.productName }}</h1>
+                        <app-badge [status]="getStatusKey(detail.status)" [variant]="getStatusVariant(detail.status)"
+                            size="lg" [label]="getStatusKey(detail.status) | translate"></app-badge>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">
+                        <i class="fas fa-hashtag"></i> {{ detail.groupBuyingRequestCode || detail.id }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        <i class="fas fa-user mr-1"></i>{{ detail.creatorName }}
+                        &nbsp;·&nbsp;<i class="fas fa-phone mr-1"></i>{{ detail.creatorPhone }}
+                        &nbsp;·&nbsp;<i class="fas fa-clock mr-1"></i>{{ formatDate(detail.createdAt) }}
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <app-button *ngIf="canApprove()" variant="success" [loading]="isActionLoading"
+                        (onClick)="showApproveModal = true">
+                        <i class="fas fa-check mr-2"></i>{{ 'ADMIN.GROUP_BUYING.APPROVE' | translate }}
+                    </app-button>
+                    <app-button *ngIf="canComplete()" variant="primary" [loading]="isActionLoading"
+                        (onClick)="showCompleteModal = true">
+                        <i class="fas fa-flag-checkered mr-2"></i>{{ 'ADMIN.GROUP_BUYING.COMPLETE' | translate }}
+                    </app-button>
+                    <app-button *ngIf="canReopen()" variant="warning" [loading]="isActionLoading"
+                        (onClick)="confirmReopen()">
+                        <i class="fas fa-rotate-right mr-2"></i>{{ 'ADMIN.GROUP_BUYING.REOPEN' | translate }}
+                    </app-button>
+                    <app-button *ngIf="canCancel()" variant="danger" [loading]="isActionLoading"
+                        (onClick)="showCancelModal = true">
+                        <i class="fas fa-ban mr-2"></i>{{ 'ADMIN.GROUP_BUYING.CANCEL_REQUEST' | translate }}
+                    </app-button>
+                    <app-share-to-group [size]="'md'" [labelKey]="'SHARE_TO_GROUP.BUTTON_SHORT'" [multi]="true"
+                        [allGroups]="true" [refId]="detail.id"
+                        [refCode]="detail.groupBuyingRequestCode" [postType]="groupPostType.GroupBuyingRequest"
+                        [targetTitle]="detail.productName"
+                        [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
+
+                    <app-button variant="secondary" (onClick)="openEdit()">
+                        <i class="fas fa-pen mr-2"></i>{{ 'COMMON.BUTTON.EDIT' | translate }}
+                    </app-button>
+                    <app-button variant="secondary" (onClick)="goBack()">
+                        <i class="fas fa-arrow-left mr-2"></i>{{ 'COMMON.BUTTON.BACK' | translate }}
+                    </app-button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase">{{ 'ADMIN.GROUP_BUYING.TARGET_PRICE' | translate }}</p>
+                <p class="text-lg font-bold text-primary mt-1">{{ formatPrice(detail.targetPrice) }}</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase">{{ 'ADMIN.GROUP_BUYING.PEOPLE' | translate }}</p>
+                <p class="text-lg font-bold text-gray-800 mt-1">
+                    {{ detail.currentPeopleCount }} / {{ detail.targetPeopleCount }}
+                </p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase">{{ 'ADMIN.GROUP_BUYING.NEEDED' | translate }}</p>
+                <p class="text-lg font-bold text-orange-500 mt-1">{{ detail.neededPeopleCount }}</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase">{{ 'ADMIN.GROUP_BUYING.BUSINESS_FIELD' | translate }}</p>
+                <p class="text-lg font-bold text-gray-800 mt-1">{{ detail.businessFieldName || '--' }}</p>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-primary to-primary-light rounded-full transition-all"
+                    [style.width.%]="percent()"></div>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">{{ percent() }}% {{ 'ADMIN.GROUP_BUYING.PROGRESS' | translate }}</p>
+        </div>
+
+        <!-- Product + Requester info -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-base font-bold text-gray-800 mb-4">
+                    <i class="fas fa-box mr-2 text-primary"></i>{{ 'ADMIN.GROUP_BUYING.PRODUCT_INFO' | translate }}
+                </h3>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.PRODUCT' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">{{ detail.productName }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.PRODUCT_LINK' | translate }}</span>
+                    <a *ngIf="detail.productLink" class="text-sm text-primary break-all text-right max-w-[60%]"
+                        [href]="detail.productLink" target="_blank" rel="noopener">{{ detail.productLink }}</a>
+                    <span *ngIf="!detail.productLink" class="text-sm text-gray-400">--</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.TARGET_PRICE' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800">{{ formatPrice(detail.targetPrice) }}</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span class="text-sm text-gray-500">{{ 'GROUP_BUYING.NOTE' | translate }}</span>
+                    <span class="text-sm text-gray-800 text-right max-w-[60%] whitespace-pre-line">{{ detail.note || '--' }}</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-base font-bold text-gray-800 mb-4">
+                    <i class="fas fa-user mr-2 text-primary"></i>{{ 'ADMIN.GROUP_BUYING.CREATOR_INFO' | translate }}
+                </h3>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.FULL_NAME' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800">{{ detail.creatorName }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.PHONE' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800">{{ detail.creatorPhone }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.ZALO' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800">{{ detail.creatorZalo || '--' }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-50">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.EMAIL' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800">{{ detail.creatorEmail || '--' }}</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.APPROVED_AT' | translate }}</span>
+                    <span class="text-sm font-medium text-gray-800">{{ formatDate(detail.approvedAt) }}</span>
+                </div>
+                <div class="flex justify-between py-2" *ngIf="detail.closedReason">
+                    <span class="text-sm text-gray-500">{{ 'ADMIN.GROUP_BUYING.CLOSED_REASON' | translate }}</span>
+                    <span class="text-sm font-medium text-red-500 text-right max-w-[60%]">{{ detail.closedReason }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participants -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-base font-bold text-gray-800">
+                    <i class="fas fa-users mr-2 text-primary"></i>{{ 'ADMIN.GROUP_BUYING.PARTICIPANTS' | translate }}
+                    ({{ detail.participants.length }})
+                </h3>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ 'ADMIN.GROUP_BUYING.FULL_NAME' | translate }}</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ 'ADMIN.GROUP_BUYING.PHONE' | translate }}</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Zalo / Email</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ 'ADMIN.GROUP_BUYING.JOINED_AT' | translate }}</th>
+                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ 'COMMON.BUTTON.ACTION' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr *ngIf="detail.participants.length === 0">
+                            <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                                {{ 'PAGINATION.NO_ITEMS' | translate }}
+                            </td>
+                        </tr>
+                        <tr *ngFor="let p of detail.participants; let i = index">
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ i + 1 }}</td>
+                            <td class="px-4 py-3">
+                                <span class="text-sm font-medium text-gray-900">{{ p.fullName }}</span>
+                                <span *ngIf="p.isCreator" class="ml-2 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700">
+                                    {{ 'ADMIN.GROUP_BUYING.OWNER' | translate }}
+                                </span>
+                                <span *ngIf="p.isGuestAccount" class="ml-2 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                                    {{ 'ADMIN.GROUP_BUYING.GUEST_ACCOUNT' | translate }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ p.phone }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                {{ p.zalo || '--' }}<br>{{ p.email || '' }}
+                            </td>
+                            <td class="px-4 py-3 text-xs text-gray-500">
+                                <div *ngIf="p.collaboratorCode">CTV: {{ p.collaboratorCode }}</div>
+                                <div *ngIf="p.userCode">{{ p.userCode }}</div>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(p.createdAt) }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <app-button *ngIf="!p.isCreator" variant="danger" size="sm"
+                                    (onClick)="openRemoveParticipant(p)">
+                                    <i class="fas fa-user-minus"></i>
+                                </app-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<!-- Duyệt -->
+<app-modal [(visible)]="showApproveModal" [title]="'ADMIN.GROUP_BUYING.APPROVE' | translate"
+    [confirmText]="'COMMON.BUTTON.CONFIRM' | translate" [cancelText]="'COMMON.BUTTON.CANCEL' | translate"
+    [confirmVariant]="'success'" [loading]="isActionLoading" (confirm)="confirmApprove()"
+    (cancel)="showApproveModal = false">
+    <p class="text-gray-600">{{ 'ADMIN.GROUP_BUYING.APPROVE_CONFIRM' | translate }}</p>
+</app-modal>
+
+<!-- Hoàn thành -->
+<app-modal [(visible)]="showCompleteModal" [title]="'ADMIN.GROUP_BUYING.COMPLETE' | translate"
+    [confirmText]="'COMMON.BUTTON.CONFIRM' | translate" [cancelText]="'COMMON.BUTTON.CANCEL' | translate"
+    [confirmVariant]="'primary'" [loading]="isActionLoading" (confirm)="confirmComplete()"
+    (cancel)="showCompleteModal = false">
+    <p class="text-gray-600">{{ 'ADMIN.GROUP_BUYING.COMPLETE_CONFIRM' | translate }}</p>
+</app-modal>
+
+<!-- Hủy (kèm lý do) -->
+<app-modal [(visible)]="showCancelModal" [title]="'ADMIN.GROUP_BUYING.CANCEL_REQUEST' | translate"
+    [confirmText]="'COMMON.BUTTON.CONFIRM' | translate" [cancelText]="'COMMON.BUTTON.CANCEL' | translate"
+    [confirmVariant]="'danger'" [loading]="isActionLoading" (confirm)="confirmCancel()"
+    (cancel)="showCancelModal = false">
+    <p class="text-gray-600 mb-3">{{ 'ADMIN.GROUP_BUYING.CANCEL_CONFIRM' | translate }}</p>
+    <textarea [(ngModel)]="cancelReason" rows="3" class="w-full border border-gray-300 rounded-lg p-3 text-sm"
+        placeholder="{{ 'ADMIN.GROUP_BUYING.CANCEL_REASON_PLACEHOLDER' | translate }}"></textarea>
+</app-modal>
+
+<!-- Xóa người khỏi nhóm -->
+<app-modal [(visible)]="showRemoveParticipantModal" [title]="'ADMIN.GROUP_BUYING.REMOVE_PARTICIPANT' | translate"
+    [confirmText]="'COMMON.BUTTON.CONFIRM' | translate" [cancelText]="'COMMON.BUTTON.CANCEL' | translate"
+    [confirmVariant]="'danger'" [loading]="isActionLoading" (confirm)="confirmRemoveParticipant()"
+    (cancel)="showRemoveParticipantModal = false">
+    <p class="text-gray-600">
+        {{ 'ADMIN.GROUP_BUYING.REMOVE_CONFIRM' | translate:{ name: removingParticipant?.fullName } }}
+    </p>
+</app-modal>
+
+<!-- Sửa thông tin -->
+<app-modal [(visible)]="showEditModal" [title]="'ADMIN.GROUP_BUYING.EDIT_TITLE' | translate"
+    [confirmText]="'COMMON.BUTTON.SAVE' | translate" [cancelText]="'COMMON.BUTTON.CANCEL' | translate"
+    [confirmVariant]="'primary'" [loading]="isActionLoading" (confirm)="confirmEdit()"
+    (cancel)="showEditModal = false">
+    <div class="space-y-3">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ADMIN.GROUP_BUYING.PRODUCT' | translate }}</label>
+            <input type="text" [(ngModel)]="editData.productName" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ADMIN.GROUP_BUYING.PRODUCT_LINK' | translate }}</label>
+            <input type="text" [(ngModel)]="editData.productLink" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ADMIN.GROUP_BUYING.TARGET_PRICE' | translate }}</label>
+                <input type="number" [(ngModel)]="editData.targetPrice" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ADMIN.GROUP_BUYING.TARGET_PEOPLE' | translate }}</label>
+                <input type="number" [(ngModel)]="editData.targetPeopleCount" class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+            </div>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'GROUP_BUYING.NOTE' | translate }}</label>
+            <textarea rows="3" [(ngModel)]="editData.note" class="w-full border border-gray-300 rounded-lg p-2 text-sm"></textarea>
+        </div>
+    </div>
+</app-modal>

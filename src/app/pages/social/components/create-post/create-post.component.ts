@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Output, Input, inject, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, EventEmitter, Output, Input, inject, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { QUILL_MODULES } from '@core/configs/quill.config';
+import { apiOrigin } from '@shared/pipes/media-url.pipe';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import { firstValueFrom } from 'rxjs';
 import { isBrowser } from '../../../../core/utils/platform';
@@ -36,15 +38,7 @@ export class CreatePostComponent implements AfterViewInit {
     isSubmitting = false;
     showEditor = true; // Thêm flag để force re-render
 
-    editorConfig = {
-        toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['link', 'image'],
-            ['clean']
-        ]
-    };
+    readonly editorConfig = QUILL_MODULES;
 
     readonly postTypes = [
         { value: PostType.Post, label: 'SOCIAL.TYPE_POST', icon: 'fa-file-alt' },
@@ -81,6 +75,43 @@ export class CreatePostComponent implements AfterViewInit {
                 container.style.maxWidth = '100%';
             }
         }
+    }
+
+
+    /**
+     * Nút "chèn ảnh" trong Quill của bảng tin: upload ảnh lên API rồi chèn URL tuyệt đối vào bài viết
+     * (không nhồi base64 vào nội dung — tránh vượt giới hạn ký tự của API).
+     */
+    onEditorCreated(quill: any): void {
+        quill?.getModule('toolbar')?.addHandler('image', () => this.pickAndUploadImage(quill));
+    }
+
+    private pickAndUploadImage(quill: any): void {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = () => {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            this._appService.socialService.uploadImage(file, file.name).subscribe({
+                next: (result: { url: string }) => {
+                    if (!result?.url) {
+                        this._appService.showError(this._appService.trans('SOCIAL.IMAGE_UPLOAD_FAILED'));
+                        return;
+                    }
+
+                    const range = quill.getSelection(true);
+                    const index = range?.index ?? 0;
+                    quill.insertEmbed(index, 'image', `${apiOrigin()}${result.url}`, 'user');
+                    quill.setSelection(index + 1);
+                },
+                error: () => this._appService.showError(this._appService.trans('SOCIAL.IMAGE_UPLOAD_FAILED'))
+            });
+        };
+
+        input.click();
     }
 
     toggleOptions(): void {

@@ -1,4 +1,4 @@
-/* styles.css */
+﻿/* styles.css */
 @import '@ng-select/ng-select/themes/default.theme.css';
 @tailwind base;
 @tailwind components;
@@ -180,13 +180,167 @@ body {
     letter-spacing: -0.01em;
 }
 
-/* Font cho blockquote (trích dẫn) */
+/* Font cho blockquote (trích dẫn) — GIỮ ĐÚNG FONT CỦA APP (trước đây ép sang Georgia/Times serif
+   nên đoạn trích dẫn hiển thị khác hẳn font Inter của bài viết và khác cả editor Quill) */
 .post-text blockquote {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 16px;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-style: normal;
     color: #4B5563;
     border-left: 4px solid var(--primary);
     padding-left: 16px;
     margin: 12px 0;
+}
+
+
+/* ===== Soạn thảo Quill dùng chung cho form đăng bài trong nhóm/hội ===== */
+.kindi-quill {
+    display: block;
+}
+
+.kindi-quill .ql-toolbar.ql-snow,
+.kindi-quill .ql-container.ql-snow {
+    border-color: #E2E8F0;
+}
+
+.kindi-quill .ql-toolbar.ql-snow {
+    border-radius: 12px 12px 0 0;
+}
+
+.kindi-quill .ql-container.ql-snow {
+    border-radius: 0 0 12px 12px;
+    min-height: 120px;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ===== Nội dung bài viết giàu định dạng (Quill) — dùng chung cho feed + bài trong nhóm/hội + modal chi tiết =====
+   Tailwind preflight đặt list-style: none nên phải khai báo lại dấu đầu dòng; Quill lưu <li data-list="bullet|ordered">. */
+.post-text ul,
+.post-text ol,
+.post-content ul,
+.post-content ol {
+    margin: 8px 0;
+    padding-left: 24px;
+}
+
+.post-text li,
+.post-content li {
+    margin-bottom: 4px;
+}
+
+.post-text li[data-list="bullet"],
+.post-text ul > li,
+.post-content li[data-list="bullet"],
+.post-content ul > li {
+    list-style-type: disc;
+}
+
+.post-text li[data-list="ordered"],
+.post-text ol > li,
+.post-content li[data-list="ordered"],
+.post-content ol > li {
+    list-style-type: decimal;
+}
+
+.post-text img,
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.post-text a,
+.post-content a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+
+/* ==========================================================================
+   SELECTBOX — dropdown gọn gàng, nhất quán cho toàn app
+   LƯU Ý: panel của ng-select được append ra <body> nên CSS trong component
+   (encapsulated) KHÔNG áp được — bắt buộc style ở đây.
+   ========================================================================== */
+
+.ng-dropdown-panel {
+    border: 1px solid #E5E7EB !important;
+    border-radius: 14px !important;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14) !important;
+    margin-top: 6px;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items {
+    padding: 6px;
+    max-height: 300px;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+    padding: 10px 14px !important;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1F2937;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+    background: #F1F5F9 !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
+    background: color-mix(in srgb, var(--primary) 10%, #FFFFFF) !important;
+    color: var(--primary) !important;
+    font-weight: 600;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+    background: color-mix(in srgb, var(--primary) 16%, #FFFFFF) !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-disabled {
+    color: #CBD5E1;
+}
+
+/* ô tìm kiếm trong panel */
+.ng-dropdown-panel .ng-input > input {
+    padding: 9px 12px !important;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.ng-dropdown-panel .ng-dropdown-header,
+.ng-dropdown-panel .ng-dropdown-footer {
+    padding: 8px 14px;
+    border-color: #F1F5F9;
+}
+
+/* ô select lúc đang mở */
+.ng-select.ng-select-opened > .ng-select-container {
+    border-color: var(--primary) !important;
+}
+
+/* Select gốc của trình duyệt (chưa chuyển sang ng-select): vẽ lại mũi tên cho khớp app */
+select:not([multiple]) {
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%2364748b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px 8px;
+    padding-right: 34px !important;
+    font-family: inherit;
+}
+
+select:not([multiple]):focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+select:not([multiple]) option {
+    padding: 8px 12px;
 }

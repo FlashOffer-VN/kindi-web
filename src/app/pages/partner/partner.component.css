@@ -1,4 +1,4 @@
-/* src/app/pages/partner/partner.component.css */
+﻿/* src/app/pages/partner/partner.component.css */
 :host {
     display: block;
     min-height: 100vh;
@@ -301,8 +301,8 @@
     margin: 0;
 }
 
-/* ===== Partner List ===== */
-.partner-list {
+/* ===== Cơ hội mua chung đang mở (thay cho danh sách đối tác — tránh trùng chức năng Nguồn cung) ===== */
+.partner-opportunities {
     margin-bottom: 56px;
     opacity: 0;
     animation: fadeUp 0.6s ease 0.4s forwards;
@@ -321,213 +321,131 @@
     margin-bottom: 12px;
 }
 
-.partner-grid {
+.opportunity-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
-.partner-card {
-    background: #fff;
+.opportunity-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
     border: 1px solid #e8edf3;
     border-radius: 16px;
-    padding: 24px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: cardPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    background: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.partner-card:nth-child(1) {
-    animation-delay: 0.1s;
+.opportunity-card:hover {
+    border-color: #d7e0ea;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.10);
 }
 
-.partner-card:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.partner-card:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.partner-card:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.partner-card:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-.partner-card:nth-child(6) {
-    animation-delay: 0.6s;
-}
-
-@keyframes cardPop {
-    0% {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.partner-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
-    border-color: #007f94;
-}
-
-.partner-card__badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: #d1fae5;
-    color: #059669;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 12px;
+.opportunity-card__badge {
+    align-self: flex-start;
+    padding: 3px 10px;
     border-radius: 999px;
+    background: #eef2f7;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
-.partner-card__badge i {
+.opportunity-card__badge.is-active { background: #dbeafe; color: #1d4ed8; }
+.opportunity-card__badge.is-pending { background: #fef3c7; color: #b45309; }
+.opportunity-card__badge.is-completed { background: #d1fae5; color: #047857; }
+.opportunity-card__badge.is-cancelled { background: #fee2e2; color: #b91c1c; }
+
+.opportunity-card h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.opportunity-card__field {
+    color: #64748b;
     font-size: 12px;
 }
 
-.partner-card__header {
+.opportunity-card__progress {
+    margin-top: auto;
+}
+
+.progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #eef2f7;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary-dark, #006b80), var(--primary, #007f94));
+}
+
+.progress-meta {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+    gap: 8px;
+    margin-top: 8px;
+    color: #475569;
+    font-size: 12px;
 }
 
-.partner-card__logo {
-    width: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-    border-radius: 12px;
-    font-size: 24px;
-    color: #007f94;
-}
-
-.partner-card__rating {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.stars {
-    color: #f59e0b;
-    font-size: 14px;
-    letter-spacing: 1px;
-}
-
-.half-star {
-    color: #f59e0b;
-    font-size: 14px;
-    letter-spacing: 1px;
-    position: relative;
-}
-
-.rating-number {
-    font-size: 14px;
+.progress-meta .need {
+    color: #b45309;
     font-weight: 600;
-    color: #0a1a2b;
 }
 
-.partner-card__body h3 {
-    font-size: 18px;
+.opportunity-card__price {
+    color: #475569;
+    font-size: 13px;
+}
+
+.opportunity-card__price strong {
+    color: var(--primary, #007f94);
+    font-size: 15px;
+}
+
+.opportunity-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--primary, #007f94);
+    font-size: 13px;
     font-weight: 700;
-    color: #0a1a2b;
-    margin: 0 0 4px;
 }
 
-.partner-card__category {
-    font-size: 13px;
-    color: #5a6c7e;
-    display: inline-block;
-    background: #f0f4f8;
-    padding: 2px 12px;
-    border-radius: 999px;
-    margin-bottom: 8px;
-}
-
-.partner-card__description {
-    font-size: 14px;
-    color: #5a6c7e;
-    line-height: 1.6;
-    margin: 0 0 12px;
-}
-
-.partner-card__info {
-    display: flex;
-    gap: 16px;
-    font-size: 13px;
-    color: #5a6c7e;
-    margin-bottom: 12px;
-}
-
-.partner-card__info i {
-    margin-right: 4px;
-    color: #9aa8b6;
-}
-
-.partner-card__products {
+.opportunity-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
 }
 
-.product-tag {
-    font-size: 12px;
-    color: #1a2a3a;
-    background: #f0f4f8;
-    padding: 4px 10px;
-    border-radius: 999px;
+.opportunity-empty {
+    padding: 40px 0;
+    color: #64748b;
+    text-align: center;
 }
 
-.partner-card__footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 12px;
-    border-top: 1px solid #e8edf3;
+.opportunity-empty i {
+    color: #cbd5e1;
+    font-size: 28px;
 }
 
-.partner-card__location {
-    font-size: 13px;
-    color: #5a6c7e;
-}
-
-.partner-card__location i {
-    margin-right: 4px;
-    color: #9aa8b6;
-}
-
-.partner-card__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #007f94;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.partner-card__cta:hover {
-    color: #006b7e;
-    transform: translateX(4px);
+.opportunity-empty p {
+    margin: 10px 0 16px;
 }
 
 /* ===== CTA ===== */

@@ -1,4 +1,4 @@
-<!-- src/app/pages/partner/partner.component.html -->
+﻿<!-- src/app/pages/partner/partner.component.html -->
 <div class="partner-container">
     <!-- Hero Section -->
     <div class="partner-hero">
@@ -29,7 +29,7 @@
     <div class="partner-stats">
         <div class="stat-item">
             <span class="stat-icon">🏢</span>
-            <strong>{{ partners.length }}+</strong>
+            <strong>{{ partnerCount }}+</strong>
             <span>{{ 'PARTNER.LEADING_PAGE.STATS_PARTNERS' | translate }}</span>
         </div>
         <div class="stat-item">
@@ -79,11 +79,11 @@
         </div>
     </section>
 
-    <!-- Partner List -->
-    <section class="partner-list" id="partner-list">
+    <!-- Cơ hội đang mở cho đối tác (khác với Nguồn cung — đây là các yêu cầu mua chung đang gọi thêm thành viên) -->
+    <section class="partner-opportunities" id="partner-opportunities">
         <div class="section-header">
-            <h2>{{ 'PARTNER.LEADING_PAGE.LIST_TITLE' | translate }}</h2>
-            <p>{{ 'PARTNER.LEADING_PAGE.LIST_DESC' | translate }}</p>
+            <h2>{{ 'PARTNER.LEADING_PAGE.OPP_TITLE' | translate }}</h2>
+            <p>{{ 'PARTNER.LEADING_PAGE.OPP_DESC' | translate }}</p>
         </div>
 
         <!-- Loading -->
@@ -92,56 +92,53 @@
             <span>{{ 'PARTNER.LEADING_PAGE.LOADING' | translate }}</span>
         </div>
 
-        <!-- Grid -->
-        <div class="partner-grid" *ngIf="!isLoading">
-            <div class="partner-card" *ngFor="let partner of partners">
-                <div class="partner-card__badge" *ngIf="partner.verified">
-                    <i class="fas fa-check-circle"></i>
-                    {{ 'PARTNER.LEADING_PAGE.VERIFIED' | translate }}
-                </div>
-                <div class="partner-card__header">
-                    <div class="partner-card__logo">
-                        <i [class]="partner.logo"></i>
+        <!-- Rỗng -->
+        <div class="opportunity-empty" *ngIf="!isLoading && !opportunities.length">
+            <i class="fas fa-people-group"></i>
+            <p>{{ 'PARTNER.LEADING_PAGE.OPP_EMPTY' | translate }}</p>
+            <a routerLink="/group-buying" class="btn-cta">{{ 'PARTNER.LEADING_PAGE.OPP_CREATE' | translate }}</a>
+        </div>
+
+        <!-- Danh sách cơ hội -->
+        <div class="opportunity-grid" *ngIf="!isLoading && opportunities.length">
+            <a class="opportunity-card" *ngFor="let item of opportunities" routerLink="/social">
+                <span class="opportunity-card__badge" [class]="statusClass(item.status)">
+                    {{ statusKey(item.status) | translate }}
+                </span>
+
+                <h3>{{ item.productName }}</h3>
+
+                <span class="opportunity-card__field" *ngIf="item.businessFieldName">
+                    <i class="fas fa-tag"></i> {{ item.businessFieldName }}
+                </span>
+
+                <div class="opportunity-card__progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" [style.width.%]="opportunityPercent(item)"></div>
                     </div>
-                    <div class="partner-card__rating">
-                        <span class="stars">
-                            <span *ngFor="let star of getStars(partner.rating)">★</span>
-                            <span class="half-star" *ngIf="hasHalfStar(partner.rating)">★</span>
-                        </span>
-                        <span class="rating-number">{{ partner.rating }}</span>
-                    </div>
-                </div>
-                <div class="partner-card__body">
-                    <h3>{{ partner.name }}</h3>
-                    <span class="partner-card__category">{{ partner.category }}</span>
-                    <p class="partner-card__description">{{ partner.description }}</p>
-                    <div class="partner-card__info">
-                        <span>
-                            <i class="fas fa-calendar"></i>
-                            {{ 'PARTNER.LEADING_PAGE.ESTABLISHED' | translate }}: {{ partner.establishedYear }}
-                        </span>
-                        <span>
-                            <i class="fas fa-users"></i>
-                            {{ partner.employees }} {{ 'PARTNER.LEADING_PAGE.EMPLOYEES' | translate }}
-                        </span>
-                    </div>
-                    <div class="partner-card__products">
-                        <span class="product-tag" *ngFor="let product of partner.products">
-                            {{ product }}
+                    <div class="progress-meta">
+                        <span><i class="fas fa-user-group"></i> {{ item.currentPeopleCount }}/{{ item.targetPeopleCount }}
+                            {{ 'GROUP_BUYING.PEOPLE_UNIT' | translate }}</span>
+                        <span class="need" *ngIf="item.neededPeopleCount > 0">
+                            {{ 'GROUP_BUYING.NEED_MORE' | translate:{ count: item.neededPeopleCount } }}
                         </span>
                     </div>
                 </div>
-                <div class="partner-card__footer">
-                    <span class="partner-card__location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        {{ partner.address }}
-                    </span>
-                    <a class="partner-card__cta" [routerLink]="['/partner', partner.id]">
-                        {{ 'PARTNER.LEADING_PAGE.VIEW_DETAIL' | translate }}
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
+
+                <div class="opportunity-card__price" *ngIf="item.targetPrice">
+                    {{ 'GROUP_BUYING.TARGET_PRICE' | translate }}:
+                    <strong>{{ item.targetPrice | number:'1.0-0' }}đ</strong>
                 </div>
-            </div>
+
+                <span class="opportunity-card__cta">
+                    {{ 'PARTNER.LEADING_PAGE.OPP_JOIN' | translate }} <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+        </div>
+
+        <div class="opportunity-actions" *ngIf="!isLoading && opportunities.length">
+            <a routerLink="/social" class="btn-outline">{{ 'PARTNER.LEADING_PAGE.OPP_VIEW_ALL' | translate }}</a>
+            <a routerLink="/group-buying" class="btn-cta">{{ 'PARTNER.LEADING_PAGE.OPP_CREATE' | translate }}</a>
         </div>
     </section>
 

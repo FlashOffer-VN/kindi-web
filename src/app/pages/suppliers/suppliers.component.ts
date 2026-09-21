@@ -1,103 +1,111 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppService } from '@core/services/app.service';
+import { BusinessFieldOption, BusinessFieldService } from '@core/services/business-field.service';
+import {
+    PublicPartner,
+    getBusinessTypeLabel,
+    getCompanySizeLabel
+} from '@core/models/partner.model';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
 import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wrapper.component';
 
+/**
+ * Trang Nguồn cung: danh sách đối tác doanh nghiệp ĐÃ ĐĂNG KÝ với Kindi và đã được duyệt
+ * (GET /api/v1/Partners/public) — thay cho dữ liệu mẫu trước đây.
+ */
 @Component({
     selector: 'app-suppliers',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink, TranslateModule, NgSelectWrapperComponent],
+    imports: [CommonModule, FormsModule, RouterLink, TranslateModule, LoadingComponent, PaginationComponent,
+        NgSelectWrapperComponent],
     templateUrl: './suppliers.component.html',
     styleUrls: ['./suppliers.component.css']
 })
-export class SuppliersComponent {
-    // Mock data - sẽ thay bằng API sau
-    suppliers = [
-        {
-            id: 1,
-            name: 'Công ty TNHH Công nghệ Xanh',
-            category: 'Công nghệ',
-            rating: 4.8,
-            products: ['Phần mềm quản lý', 'Giải pháp đám mây'],
-            logo: '🌱',
-            verified: true
-        },
-        {
-            id: 2,
-            name: 'Logistics Thành Công',
-            category: 'Vận tải',
-            rating: 4.6,
-            products: ['Vận tải đường bộ', 'Kho bãi'],
-            logo: '🚚',
-            verified: true
-        },
-        {
-            id: 3,
-            name: 'Thực phẩm Sạch 365',
-            category: 'Thực phẩm',
-            rating: 4.9,
-            products: ['Thực phẩm hữu cơ', 'Đồ uống'],
-            logo: '🥬',
-            verified: true
-        },
-        {
-            id: 4,
-            name: 'Nội thất Xanh',
-            category: 'Nội thất',
-            rating: 4.5,
-            products: ['Bàn ghế văn phòng', 'Nội thất gia đình'],
-            logo: '🪑',
-            verified: false
-        },
-        {
-            id: 5,
-            name: 'Máy tính Hoàng Gia',
-            category: 'Công nghệ',
-            rating: 4.7,
-            products: ['Laptop', 'Máy tính bàn'],
-            logo: '💻',
-            verified: true
-        },
-        {
-            id: 6,
-            name: 'Sản xuất Tân Tiến',
-            category: 'Sản xuất',
-            rating: 4.4,
-            products: ['Linh kiện điện tử', 'Thiết bị công nghiệp'],
-            logo: '⚙️',
-            verified: false
-        }
-    ];
-
-    featuredProducts = [
-        { name: 'Phần mềm quản lý bán hàng', supplier: 'Công nghệ Xanh', price: 'Liên hệ' },
-        { name: 'Vận tải đường bộ Bắc-Nam', supplier: 'Logistics Thành Công', price: 'Theo yêu cầu' },
-        { name: 'Rau củ hữu cơ sạch', supplier: 'Thực phẩm Sạch 365', price: '200.000đ/kg' },
-        { name: 'Bàn làm việc thông minh', supplier: 'Nội thất Xanh', price: '2.500.000đ' }
-    ];
+export class SuppliersComponent implements OnInit, OnDestroy {
+    suppliers: PublicPartner[] = [];
+    isLoading = false;
 
     searchTerm = '';
-    selectedCategory = '';
+    selectedBusinessFieldId: string | null = null;
+    businessFieldOptions: BusinessFieldOption[] = [];
 
-    readonly categories = [...new Set(this.suppliers.map(supplier => supplier.category))];
+    page = 1;
+    pageSize = 12;
+    totalCount = 0;
+    totalPages = 1;
 
-    readonly categoryOptions = this.categories.map(category => ({
-        label: category,
-        value: category
-    }));
+    private searchTimer: ReturnType<typeof setTimeout> | null = null;
+    private readonly _businessFieldService = inject(BusinessFieldService);
 
-    get filteredSuppliers() {
-        const term = this.searchTerm.trim().toLowerCase();
-        return this.suppliers.filter(supplier => {
-            const matchesCategory = !this.selectedCategory || supplier.category === this.selectedCategory;
-            const searchableText = `${supplier.name} ${supplier.category} ${supplier.products.join(' ')}`.toLowerCase();
-            return matchesCategory && (!term || searchableText.includes(term));
+    constructor(private readonly _appService: AppService) { }
+
+    ngOnInit(): void {
+        this._businessFieldService.getActive().subscribe({
+            next: (options) => (this.businessFieldOptions = options),
+            error: () => (this.businessFieldOptions = [])
+        });
+
+        this.load();
+    }
+
+    ngOnDestroy(): void {
+        if (this.searchTimer) clearTimeout(this.searchTimer);
+    }
+
+    load(page = this.page): void {
+        this.page = page;
+        this.isLoading = true;
+
+        this._appService.partnerService.getPublicSuppliers({
+            page: this.page,
+            pageSize: this.pageSize,
+            search: this.searchTerm,
+            businessFieldId: this.selectedBusinessFieldId
+        }).subscribe({
+            next: (response) => {
+                this.isLoading = false;
+                this.suppliers = response?.data ?? [];
+                this.totalCount = response?.totalCount ?? 0;
+                this.totalPages = response?.totalPages ?? 1;
+            },
+            error: (error: unknown) => {
+                this.isLoading = false;
+                this.suppliers = [];
+                this._appService.showError(this._appService.extractErrorMessage(error));
+            }
         });
     }
 
-    getStars(rating: number): number[] {
-        return Array(Math.floor(rating)).fill(0);
+    /** Gõ tới đâu tìm tới đó nhưng gọi API có debounce (tránh 1 request cho mỗi ký tự) */
+    onSearchInput(): void {
+        if (this.searchTimer) clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(() => this.load(1), 400);
+    }
+
+    onFilterChange(): void {
+        this.load(1);
+    }
+
+    onPageChange(page: number): void {
+        this.load(page);
+    }
+
+    clearFilters(): void {
+        this.searchTerm = '';
+        this.selectedBusinessFieldId = null;
+        this.load(1);
+    }
+
+    businessTypeText(partner: PublicPartner): string {
+        return getBusinessTypeLabel(partner.businessType);
+    }
+
+    companySizeText(partner: PublicPartner): string {
+        return getCompanySizeLabel(partner.companySize);
     }
 }

@@ -1,22 +1,21 @@
-// src/app/pages/register-ctv/register-ctv.component.ts
+﻿// src/app/pages/register-ctv/register-ctv.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '@core/services/app.service';
-import { CtvRegistrationRequest, SalesChannelOption } from '@core/models/ctv-registration.model';
+import { CreateCollaboratorRequest, SalesChannelOption } from '@core/models/collaborator.model';
 import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wrapper.component';
+import { AccountCreatedNoticeComponent } from '@shared/components/account-created-notice/account-created-notice.component';
+import { AccountCredentials } from '@core/models/account.model';
 
 @Component({
     selector: 'app-register-ctv',
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        NgSelectWrapperComponent,
-        RouterLink
+        CommonModule, ReactiveFormsModule, TranslateModule, NgSelectWrapperComponent, RouterLink,
+        AccountCreatedNoticeComponent
     ],
     templateUrl: './register-ctv.component.html',
     styleUrls: ['./register-ctv.component.css']
@@ -27,6 +26,8 @@ export class RegisterCtvComponent implements OnInit {
     salesChannels: SalesChannelOption[] = [];
     touched = false;
     submitted = false;
+    /** Tài khoản vừa tạo/dùng lại khi đăng ký công khai (hiện khối thông tin đăng nhập) */
+    registeredAccount: AccountCredentials | null = null;
 
     constructor(
         private fb: FormBuilder,
@@ -34,8 +35,12 @@ export class RegisterCtvComponent implements OnInit {
         private router: Router
     ) { }
 
+    goToLogin(): void {
+        this.router.navigate(['/login']);
+    }
+
     ngOnInit(): void {
-        this.salesChannels = this._appService.ctvRegistration.getSalesChannels();
+        this.salesChannels = this._appService.collaboratorService.getSalesChannels();
         this.ctvForm = this.fb.group({
             fullName: ['', [Validators.required, Validators.minLength(2)]],
             phone: ['', [Validators.required, Validators.pattern(/^0[0-9]{9,10}$/)]],
@@ -130,12 +135,25 @@ export class RegisterCtvComponent implements OnInit {
         }
 
         this.isSubmitting = true;
-        const request: CtvRegistrationRequest = this.ctvForm.value;
+        const value = this.ctvForm.value;
+        const request: CreateCollaboratorRequest = {
+            fullName: value.fullName,
+            phone: value.phone,
+            zalo: value.zalo || undefined,
+            email: value.email || undefined,
+            salesChannel: value.salesChannel ?? undefined,
+            experience: value.experience || undefined,
+            agreeTerms: value.agreeTerms === true
+        };
 
-        this._appService.ctvRegistration.register(request).subscribe({
+
+        this._appService.collaboratorService.register(request).subscribe({
             next: (response: any) => {
                 this.isSubmitting = false;
                 this._appService.showSuccess(this._appService.trans('CTV_FORM.SUCCESS_REGISTER'));
+
+                // Form công khai: API trả tài khoản vừa tạo (username user<sđt>, mật khẩu = SĐT)
+                this.registeredAccount = response?.data?.account ?? null;
 
                 // ✅ Reset form
                 // ✅ Reset từng control
@@ -153,7 +171,11 @@ export class RegisterCtvComponent implements OnInit {
                 this.ctvForm.markAsPristine();
                 this.ctvForm.markAsUntouched();
                 this.ctvForm.updateValueAndValidity();
-                this.router.navigate(['/']);
+
+                // Có tài khoản vừa tạo → ở lại trang để người đăng ký thấy thông tin đăng nhập
+                if (!this.registeredAccount) {
+                    this.router.navigate(['/']);
+                }
             },
             error: (error: any) => {
                 this.isSubmitting = false;

@@ -1,4 +1,4 @@
-// shared/components/layouts/admin-layout/admin-header/admin-header.component.ts
+﻿// shared/components/layouts/admin-layout/admin-header/admin-header.component.ts
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -31,7 +31,18 @@ export class AdminHeaderComponent {
         this.toggleSidebar.emit();
     }
 
+    /** Đăng xuất khỏi trang quản trị — có dialog xác nhận */
     logout(): void {
-        this._appService.auth.logout();
+        this._appService.modal.confirm({
+            title: this._appService.trans('ADMIN.LOGOUT_TITLE'),
+            message: this._appService.trans('ADMIN.LOGOUT_MESSAGE'),
+            confirmText: this._appService.trans('ADMIN.SIDEBAR.LOGOUT'),
+            cancelText: this._appService.trans('COMMON.BUTTON.CANCEL'),
+            confirmVariant: 'danger'
+        }).then(confirmed => {
+            if (confirmed) {
+                this._appService.auth.logoutToAdmin();
+            }
+        });
     }
 }

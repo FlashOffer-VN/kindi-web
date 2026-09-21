@@ -1,4 +1,4 @@
-<!-- shared/components/layouts/guest-layout/guest-header/guest-header.component.html -->
+﻿<!-- shared/components/layouts/guest-layout/guest-header/guest-header.component.html -->
 <header class="sme-header menu-open">
     <!-- Logo -->
     <a class="sme-logo" routerLink="/home">
@@ -43,6 +43,11 @@
             <i class="fas fa-shield-alt"></i>
             {{ 'BUTTON_ADMIN' | translate }}
         </button>
+
+        <!-- Đăng nhập (chỉ hiện khi chưa đăng nhập) -->
+        <a *ngIf="!isLoggedIn" class="sme-button sme-button--ghost" routerLink="/login">
+            <i class="fas fa-right-to-bracket" style="margin-right: 6px;"></i>{{ 'LOGIN.BUTTON' | translate }}
+        </a>
 
         <!-- CTV Button -->
         <a class="sme-button sme-button--ghost" routerLink="/register">
@@ -111,6 +116,10 @@
                 <i class="fas fa-sign-out-alt"></i> Đăng xuất
             </button>
         </div>
+
+        <a *ngIf="!isLoggedIn" class="sme-button sme-button--ghost" routerLink="/login" (click)="closeMobileMenu()">
+            <i class="fas fa-right-to-bracket"></i> {{ 'LOGIN.BUTTON' | translate }}
+        </a>
 
         <a class="sme-button sme-button--ghost" routerLink="/register" (click)="closeMobileMenu()">
             {{ 'BUTTON_JOIN' | translate }}

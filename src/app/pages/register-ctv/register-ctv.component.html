@@ -1,4 +1,4 @@
-<!-- register-ctv.component.html -->
+﻿<!-- register-ctv.component.html -->
 <div class="register-ctv-container">
     <div class="register-ctv-card">
         <!-- ====== Decorative elements ====== -->
@@ -19,6 +19,17 @@
                 <span class="step-line"></span>
                 <span class="step">3</span>
             </div> -->
+        </div>
+
+        <!-- ====== Thông tin đăng nhập vừa tạo cho người đăng ký ====== -->
+        <div *ngIf="registeredAccount" class="register-ctv-form">
+            <app-account-created-notice
+                [isNewAccount]="registeredAccount.isNewAccount"
+                [accountAlreadyExisted]="registeredAccount.accountAlreadyExisted"
+                [username]="registeredAccount.username"
+                [passwordIsPhone]="registeredAccount.passwordIsPhone"
+                (loginClick)="goToLogin()">
+            </app-account-created-notice>
         </div>
 
         <!-- ====== Form ====== -->

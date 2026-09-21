@@ -1,4 +1,6 @@
-import { BusinessInfo } from './business-info.model';
+﻿import { BusinessInfo } from './business-info.model';
+
+import { AccountCredentials } from './account.model';
 
 export interface Collaborator {
     id: string;
@@ -17,6 +19,8 @@ export interface Collaborator {
     parentCollaboratorId?: string;
     businessFieldId?: string | null;
     businessFieldName?: string | null;
+    /** Chỉ có ở response đăng ký công khai: tài khoản vừa tạo/dùng lại (username user<sđt>, mật khẩu = SĐT) */
+    account?: AccountCredentials | null;
     level: number;
     referralCode?: string;
     status: CollaboratorStatus;
@@ -105,7 +109,7 @@ export interface UpdateCollaboratorRequest {
 }
 
 /**
- * Quy mô doanh nghiệp của CTV (khác Partner: CTV có 5 mức, Partner 4 mức).
+ * Quy mô doanh nghiệp của cộng tác viên (khác Partner: CTV có 5 mức, Partner 4 mức).
  * value khớp `businessSize` mà backend nhận.
  */
 export const BUSINESS_SIZES = [
@@ -138,3 +142,50 @@ export const STATUS_VARIANT: Record<CollaboratorStatus, string> = {
     [CollaboratorStatus.Suspended]: 'secondary',
     [CollaboratorStatus.Active]: 'success'
 };
+// ===== Enum/helper dùng chung (gộp từ ctv.model.ts + ctv-registration.model.ts) =====
+
+export enum SalesChannel {
+    Retail = 1,
+    Wholesale = 2,
+    Online = 3,
+    Offline = 4,
+    Other = 5
+}
+
+export interface SalesChannelOption {
+    value: SalesChannel;
+    label: string;
+}
+
+/** 5 kênh bán hàng — label lấy từ i18n. */
+export const SALES_CHANNEL_OPTIONS: SalesChannelOption[] = [
+    { value: SalesChannel.Retail, label: 'FIND_SUPPLIER.SALES_CHANNEL_RETAIL' },
+    { value: SalesChannel.Wholesale, label: 'FIND_SUPPLIER.SALES_CHANNEL_WHOLESALE' },
+    { value: SalesChannel.Online, label: 'FIND_SUPPLIER.SALES_CHANNEL_ONLINE' },
+    { value: SalesChannel.Offline, label: 'FIND_SUPPLIER.SALES_CHANNEL_OFFLINE' },
+    { value: SalesChannel.Other, label: 'FIND_SUPPLIER.SALES_CHANNEL_OTHER' }
+];
+
+/** Tên hiển thị (key i18n) của kênh bán hàng. */
+export function getSalesChannelLabel(channel: SalesChannel): string {
+    const labels: Record<SalesChannel, string> = {
+        [SalesChannel.Retail]: 'FIND_SUPPLIER.SALES_CHANNEL_RETAIL',
+        [SalesChannel.Wholesale]: 'FIND_SUPPLIER.SALES_CHANNEL_WHOLESALE',
+        [SalesChannel.Online]: 'FIND_SUPPLIER.SALES_CHANNEL_ONLINE',
+        [SalesChannel.Offline]: 'FIND_SUPPLIER.SALES_CHANNEL_OFFLINE',
+        [SalesChannel.Other]: 'FIND_SUPPLIER.SALES_CHANNEL_OTHER'
+    };
+    return labels[channel] || channel.toString();
+}
+
+/** Tên hiển thị (key i18n) của trạng thái cộng tác viên. */
+export function getCollaboratorStatusLabel(status: CollaboratorStatus): string {
+    const labels: Record<CollaboratorStatus, string> = {
+        [CollaboratorStatus.Pending]: 'COMMON.STATUS.PENDING',
+        [CollaboratorStatus.Approved]: 'COMMON.STATUS.APPROVED',
+        [CollaboratorStatus.Rejected]: 'COMMON.STATUS.REJECTED',
+        [CollaboratorStatus.Suspended]: 'COMMON.STATUS.SUSPENDED',
+        [CollaboratorStatus.Active]: 'COMMON.STATUS.APPROVED'
+    };
+    return labels[status] || status.toString();
+}

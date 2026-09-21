@@ -1,4 +1,4 @@
-<div class="p-6">
+﻿<div class="p-6">
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900">{{ 'ADMIN.SOCIAL.TITLE' | translate }}</h1>
         <p class="text-sm text-gray-500">{{ 'ADMIN.SOCIAL.LIST_TITLE' | translate }}</p>
@@ -43,55 +43,57 @@
                     <tr *ngIf="!isLoading && posts.length === 0">
                         <td colspan="5" class="px-4 py-8 text-center text-gray-500">{{ 'PAGINATION.NO_ITEMS' | translate }}</td>
                     </tr>
-                    <tr *ngFor="let post of posts; let i = index">
-                        <td class="px-4 py-3 text-sm text-gray-500">{{ (pageNumber - 1) * pageSize + i + 1 }}</td>
-                        <td class="px-4 py-3">
-                            <div class="text-sm font-medium text-gray-900">{{ post.author.fullName }}</div>
-                            <div class="text-xs text-gray-400">{{ getAuthorCode(post.author) }}</div>
-                        </td>
-                        <td class="max-w-md px-4 py-3 text-sm text-gray-600">
-                            <button type="button" class="post-preview text-left" (click)="openPostDetail(post)">
-                                <div class="font-medium">{{ post.title || '--' }}</div>
-                                <div>{{ getContentPreview(post.content) }}</div>
-                            </button>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(post.createdAt) }}</td>
-                        <td class="action-column px-4 py-3">
-                            <div class="action-buttons">
-                                <ng-container *ngIf="activeStatus === 'deleted'">
-                                    <app-button variant="primary" size="sm" [disabled]="isActionLoading"
-                                        (click)="restore(post)" [title]="'COMMON.BUTTON.RESTORE' | translate"
-                                        [attr.aria-label]="'COMMON.BUTTON.RESTORE' | translate">
-                                        <i class="fa-solid fa-rotate-left"></i>
+                    <ng-container *ngIf="!isLoading">
+    <tr *ngFor="let post of posts; let i = index">
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ (pageNumber - 1) * pageSize + i + 1 }}</td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm font-medium text-gray-900">{{ post.author.fullName }}</div>
+                                <div class="text-xs text-gray-400">{{ getAuthorCode(post.author) }}</div>
+                            </td>
+                            <td class="max-w-md px-4 py-3 text-sm text-gray-600">
+                                <button type="button" class="post-preview text-left" (click)="openPostDetail(post)">
+                                    <div class="font-medium">{{ post.title || '--' }}</div>
+                                    <div>{{ getContentPreview(post.content) }}</div>
+                                </button>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(post.createdAt) }}</td>
+                            <td class="action-column px-4 py-3">
+                                <div class="action-buttons">
+                                    <ng-container *ngIf="activeStatus === 'deleted'">
+                                        <app-button variant="primary" size="sm" [disabled]="isActionLoading"
+                                            (click)="restore(post)" [title]="'COMMON.BUTTON.RESTORE' | translate"
+                                            [attr.aria-label]="'COMMON.BUTTON.RESTORE' | translate">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                        </app-button>
+                                    </ng-container>
+                                    <ng-container *ngIf="activeStatus !== 'deleted'">
+                                        <!-- Chỉ hiện Duyệt/Từ chối khi bài chưa được duyệt -->
+                                        <app-button *ngIf="!post.isApproved" variant="success" size="sm" [disabled]="isActionLoading"
+                                            (click)="approve(post)" [title]="'ADMIN.SOCIAL.APPROVE' | translate"
+                                            [attr.aria-label]="'ADMIN.SOCIAL.APPROVE' | translate">
+                                            <i class="fa-solid fa-check"></i>
+                                        </app-button>
+                                        <app-button *ngIf="!post.isApproved" variant="danger" size="sm" [disabled]="isActionLoading"
+                                            (click)="reject(post)" [title]="'ADMIN.SOCIAL.REJECT' | translate"
+                                            [attr.aria-label]="'ADMIN.SOCIAL.REJECT' | translate">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </app-button>
+                                        <!-- Xóa mềm — áp dụng cho cả bài đã duyệt lẫn chưa duyệt -->
+                                        <app-button variant="danger" size="sm" [disabled]="isActionLoading"
+                                            (click)="delete(post)" [title]="'COMMON.BUTTON.DELETE' | translate"
+                                            [attr.aria-label]="'COMMON.BUTTON.DELETE' | translate">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </app-button>
+                                    </ng-container>
+                                    <app-button variant="outline" size="sm" (click)="openPostDetail(post)"
+                                        [title]="'ADMIN.SOCIAL.VIEW_DETAIL' | translate"
+                                        [attr.aria-label]="'ADMIN.SOCIAL.VIEW_DETAIL' | translate">
+                                        <i class="fa-solid fa-eye"></i>
                                     </app-button>
-                                </ng-container>
-                                <ng-container *ngIf="activeStatus !== 'deleted'">
-                                    <!-- Chỉ hiện Duyệt/Từ chối khi bài chưa được duyệt -->
-                                    <app-button *ngIf="!post.isApproved" variant="success" size="sm" [disabled]="isActionLoading"
-                                        (click)="approve(post)" [title]="'ADMIN.SOCIAL.APPROVE' | translate"
-                                        [attr.aria-label]="'ADMIN.SOCIAL.APPROVE' | translate">
-                                        <i class="fa-solid fa-check"></i>
-                                    </app-button>
-                                    <app-button *ngIf="!post.isApproved" variant="danger" size="sm" [disabled]="isActionLoading"
-                                        (click)="reject(post)" [title]="'ADMIN.SOCIAL.REJECT' | translate"
-                                        [attr.aria-label]="'ADMIN.SOCIAL.REJECT' | translate">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </app-button>
-                                    <!-- Xóa mềm — áp dụng cho cả bài đã duyệt lẫn chưa duyệt -->
-                                    <app-button variant="danger" size="sm" [disabled]="isActionLoading"
-                                        (click)="delete(post)" [title]="'COMMON.BUTTON.DELETE' | translate"
-                                        [attr.aria-label]="'COMMON.BUTTON.DELETE' | translate">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </app-button>
-                                </ng-container>
-                                <app-button variant="outline" size="sm" (click)="openPostDetail(post)"
-                                    [title]="'ADMIN.SOCIAL.VIEW_DETAIL' | translate"
-                                    [attr.aria-label]="'ADMIN.SOCIAL.VIEW_DETAIL' | translate">
-                                    <i class="fa-solid fa-eye"></i>
-                                </app-button>
-                            </div>
-                        </td>
-                    </tr>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
                 </tbody>
             </table>
         </div>
