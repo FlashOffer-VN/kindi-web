@@ -341,6 +341,14 @@
 
 .account-box .btn-primary { align-self: flex-start; }
 
+.account-box.note {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.account-box.note h4 { color: #92400e; }
+.account-box.note p { color: #92400e; }
+
 @media (max-width: 640px) {
     .info-grid { grid-template-columns: repeat(2, 1fr); }
     .form-row { grid-template-columns: 1fr; }

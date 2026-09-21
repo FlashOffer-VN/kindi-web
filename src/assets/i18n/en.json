@@ -597,7 +597,9 @@
             "USERNAME": "Username",
             "PASSWORD": "Password",
             "PASSWORD_IS_PHONE": "Your phone number",
-            "LOGIN_NOW": "Sign in now"
+            "LOGIN_NOW": "Sign in now",
+            "EXISTS_TITLE": "This phone number already has a Kindi account",
+            "EXISTS_DESC": "You have been added to the group buy. Sign in with your existing account to follow it (use Forgot password if you don't remember it)."
         }
     },
     "FIND_SUPPLIER": {

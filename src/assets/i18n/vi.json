@@ -553,7 +553,9 @@
             "USERNAME": "Tên đăng nhập",
             "PASSWORD": "Mật khẩu",
             "PASSWORD_IS_PHONE": "Là số điện thoại bạn vừa nhập",
-            "LOGIN_NOW": "Đăng nhập ngay"
+            "LOGIN_NOW": "Đăng nhập ngay",
+            "EXISTS_TITLE": "Số điện thoại này đã có tài khoản Kindi",
+            "EXISTS_DESC": "Bạn đã được ghi danh vào nhóm mua chung. Hãy đăng nhập bằng tài khoản cũ để theo dõi (nếu quên mật khẩu, dùng chức năng Quên mật khẩu)."
         }
     },
     "FIND_SUPPLIER": {
