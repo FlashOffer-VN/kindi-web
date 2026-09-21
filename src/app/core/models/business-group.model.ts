@@ -2,6 +2,21 @@
 import { ApiResponse } from './auth.model';
 import { PagedResponse as Paged } from './paged-response.model';
 
+/** Loại nhóm (khớp enum API BusinessGroupType) */
+export enum BusinessGroupType {
+    /** Nhóm ngành do admin gom theo lĩnh vực kinh doanh */
+    Industry = 1,
+    /** Hội nhóm do người dùng tự tạo theo chủ đề */
+    Community = 2
+}
+
+/** Trạng thái duyệt mở hội nhóm (khớp enum API GroupApprovalStatus) */
+export enum GroupApprovalStatus {
+    Pending = 1,
+    Approved = 2,
+    Rejected = 3
+}
+
 /** Vai trò thành viên trong nhóm (khớp enum API GroupMemberRole) */
 export enum GroupMemberRole {
     Member = 1,
@@ -30,6 +45,15 @@ export interface BusinessGroup {
     id: string;
     businessGroupCode?: string | null;
     name: string;
+    /** Nhóm ngành (1) hay Hội nhóm (2) */
+    type: BusinessGroupType;
+    /** Chủ đề của hội nhóm */
+    topic?: string | null;
+    approvalStatus: GroupApprovalStatus;
+    rejectedReason?: string | null;
+    /** Người đang xem là chủ hội nhóm (được duyệt thành viên) */
+    isOwner: boolean;
+    createdByUserId?: string | null;
     description?: string | null;
     businessFieldId?: string | null;
     businessFieldName?: string | null;
@@ -119,6 +143,8 @@ export interface BusinessGroupQuery {
 
 export interface AdminBusinessGroupQuery extends BusinessGroupQuery {
     isActive?: boolean | null;
+    type?: BusinessGroupType | null;
+    approvalStatus?: GroupApprovalStatus | null;
     hasPendingMembers?: boolean;
     hasPrivateRequests?: boolean;
 }
@@ -144,6 +170,17 @@ export interface JoinBusinessGroupRequest {
     zalo?: string;
     email?: string;
     note?: string;
+}
+
+export interface CreateCommunityGroupRequest {
+    name: string;
+    topic: string;
+    description?: string;
+}
+
+export interface UpdateCommunityApprovalRequest {
+    approvalStatus: GroupApprovalStatus;
+    rejectedReason?: string;
 }
 
 export interface CreateBusinessGroupRequest {

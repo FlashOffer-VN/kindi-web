@@ -7,7 +7,9 @@ import { AppService } from '@core/services/app.service';
 import {
     BusinessGroupComment,
     BusinessGroupDetail,
+    BusinessGroupMember,
     BusinessGroupPost,
+    GroupApprovalStatus,
     GroupMemberStatus,
     GroupPostType,
     JoinBusinessGroupResult
@@ -50,8 +52,16 @@ export class GroupDetailComponent implements OnInit {
     commentsLoading = false;
     commentSubmitting = false;
 
+    /** Chủ hội: danh sách yêu cầu vào hội đang chờ duyệt */
+    pendingMembers: BusinessGroupMember[] = [];
+    pendingLoading = false;
+    rejectMemberVisible = false;
+    rejectingMember: BusinessGroupMember | null = null;
+    rejectForm: FormGroup;
+
     readonly memberStatus = GroupMemberStatus;
     readonly postType = GroupPostType;
+    readonly approvalStatus = GroupApprovalStatus;
 
     constructor(
         private readonly route: ActivatedRoute,
@@ -71,6 +81,10 @@ export class GroupDetailComponent implements OnInit {
             title: ['', [Validators.maxLength(200)]],
             content: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(4000)]]
         });
+
+        this.rejectForm = this.fb.group({
+            reason: ['', [Validators.required, Validators.maxLength(500)]]
+        });
     }
 
     ngOnInit(): void {
@@ -87,6 +101,72 @@ export class GroupDetailComponent implements OnInit {
         return this.group?.myMemberStatus === this.memberStatus.Pending;
     }
 
+    get isOwner(): boolean {
+        return this.group?.isOwner === true;
+    }
+
+    /** Chủ hội (hoặc admin) duyệt thành viên mới vào hội */
+    loadPendingMembers(): void {
+        this.pendingLoading = true;
+        this._appService.businessGroupService.getMembers(this.groupId, {
+            page: 1,
+            pageSize: 30,
+            status: GroupMemberStatus.Pending
+        }).subscribe({
+            next: (response) => {
+                this.pendingLoading = false;
+                this.pendingMembers = response?.data ?? [];
+            },
+            error: (error: unknown) => {
+                this.pendingLoading = false;
+                this._appService.showError(this._appService.extractErrorMessage(error));
+            }
+        });
+    }
+
+    approveMember(member: BusinessGroupMember): void {
+        this._appService.businessGroupService
+            .updateMemberStatus(this.groupId, member.id, { status: GroupMemberStatus.Active })
+            .subscribe({
+                next: () => {
+                    this._appService.showSuccess(this._appService.trans('CLUBS.APPROVED_MEMBER'));
+                    this.loadPendingMembers();
+                    this.load();
+                },
+                error: (error: unknown) => this._appService.showError(this._appService.extractErrorMessage(error))
+            });
+    }
+
+    openRejectMember(member: BusinessGroupMember): void {
+        this.rejectingMember = member;
+        this.rejectForm.reset({ reason: '' });
+        this.rejectMemberVisible = true;
+    }
+
+    onRejectMember(): void {
+        if (!this.rejectingMember || this.rejectForm.invalid) {
+            this.rejectForm.markAllAsTouched();
+            return;
+        }
+
+        this._appService.businessGroupService
+            .updateMemberStatus(this.groupId, this.rejectingMember.id, {
+                status: GroupMemberStatus.Rejected,
+                rejectionReason: this.rejectForm.value.reason
+            })
+            .subscribe({
+                next: () => {
+                    this.rejectMemberVisible = false;
+                    this._appService.showSuccess(this._appService.trans('CLUBS.REJECTED_MEMBER'));
+                    this.loadPendingMembers();
+                },
+                error: (error: unknown) => {
+                    this.rejectMemberVisible = false;
+                    this._appService.showError(this._appService.extractErrorMessage(error));
+                }
+            });
+    }
+
     get canJoin(): boolean {
         return !!this.group && this.group.isActive && !this.isMember && !this.isPending;
     }
@@ -99,6 +179,9 @@ export class GroupDetailComponent implements OnInit {
                 this.group = response?.data ?? null;
                 if (this.group?.canViewPosts) {
                     this.loadPosts();
+                }
+                if (this.group?.isOwner) {
+                    this.loadPendingMembers();
                 }
             },
             error: (error: unknown) => {

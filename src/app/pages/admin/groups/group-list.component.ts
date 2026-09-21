@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '@core/services/app.service';
-import { BusinessGroup, CreateBusinessGroupRequest } from '@core/models/business-group.model';
+import { BusinessGroup, BusinessGroupType, CreateBusinessGroupRequest, GroupApprovalStatus } from '@core/models/business-group.model';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
@@ -29,6 +29,10 @@ export class AdminGroupListComponent implements OnInit {
     onlyPending = false;
     onlyPrivate = false;
     statusTabs: StatusTabItem[] = [];
+
+    /** Lọc theo loại: nhóm ngành / hội nhóm / hội nhóm chờ duyệt */
+    typeFilter = 'all';
+    typeTabs: StatusTabItem[] = [];
 
     page = 1;
     pageSize = 10;
@@ -56,6 +60,12 @@ export class AdminGroupListComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.typeTabs = [
+            { key: 'all', label: this._appService.trans('ADMIN.GROUPS.TAB_ALL') },
+            { key: 'industry', label: this._appService.trans('ADMIN.CLUBS.TAB_INDUSTRY') },
+            { key: 'community', label: this._appService.trans('ADMIN.CLUBS.TAB_COMMUNITY') },
+            { key: 'clubPending', label: this._appService.trans('ADMIN.CLUBS.TAB_CLUB_PENDING') }
+        ];
         this.statusTabs = [
             { key: 'all', label: this._appService.trans('ADMIN.GROUPS.TAB_ALL') },
             { key: 'active', label: this._appService.trans('ADMIN.GROUPS.TAB_ACTIVE') },
@@ -72,6 +82,10 @@ export class AdminGroupListComponent implements OnInit {
             page: this.page,
             pageSize: this.pageSize,
             search: this.searchText,
+            type: this.typeFilter === 'industry' ? BusinessGroupType.Industry
+                : this.typeFilter === 'community' || this.typeFilter === 'clubPending' ? BusinessGroupType.Community
+                : null,
+            approvalStatus: this.typeFilter === 'clubPending' ? GroupApprovalStatus.Pending : null,
             isActive: this.activeTab === 'all' ? null : this.activeTab === 'active',
             hasPendingMembers: this.onlyPending,
             hasPrivateRequests: this.onlyPrivate
@@ -95,6 +109,11 @@ export class AdminGroupListComponent implements OnInit {
 
     onTabChange(tab: string): void {
         this.activeTab = tab;
+        this.load(1);
+    }
+
+    onTypeTabChange(tab: string): void {
+        this.typeFilter = tab;
         this.load(1);
     }
 

@@ -1334,7 +1334,21 @@
             "NO_POSTS": "Chưa có bài nào"
         },
         "LOGOUT_TITLE": "Đăng xuất khỏi trang quản trị?",
-        "LOGOUT_MESSAGE": "Bạn sẽ cần đăng nhập lại để tiếp tục quản trị."
+        "LOGOUT_MESSAGE": "Bạn sẽ cần đăng nhập lại để tiếp tục quản trị.",
+        "CLUBS": {
+            "TAB_INDUSTRY": "Nhóm ngành",
+            "TAB_COMMUNITY": "Hội nhóm",
+            "TAB_CLUB_PENDING": "Hội chờ duyệt",
+            "TOPIC": "Chủ đề",
+            "OWNER": "Chủ hội",
+            "APPROVE_CLUB": "Duyệt mở hội",
+            "REJECT_CLUB": "Từ chối",
+            "CLUB_APPROVED": "Đã duyệt mở hội nhóm",
+            "CLUB_REJECTED": "Đã từ chối hội nhóm",
+            "REJECT_REASON": "Lý do từ chối",
+            "REJECT_REASON_REQUIRED": "Vui lòng nhập lý do từ chối",
+            "PENDING_CLUB_BADGE": "Chờ duyệt mở hội"
+        }
     },
     "CHANGE_CREDENTIALS": {
         "SECTION_TITLE": "Đổi tên đăng nhập và mật khẩu",
@@ -1436,5 +1450,40 @@
         "TYPE_ANNOUNCEMENT": "Thông báo",
         "ERROR_CONTACT_REQUIRED": "Vui lòng nhập họ tên và số điện thoại"
     },
-    "SUPPLIERS_CLEAR_FILTER": "Xoá bộ lọc"
+    "SUPPLIERS_CLEAR_FILTER": "Xoá bộ lọc",
+    "CLUBS": {
+        "TAB": "Hội nhóm",
+        "TITLE": "Hội nhóm theo chủ đề",
+        "DESC": "Tự tạo hội riêng cho chủ đề bạn quan tâm: bạn là người duyệt thành viên, admin duyệt mở hội.",
+        "ALL": "Tất cả",
+        "MINE_ONLY": "Hội của tôi",
+        "CREATE": "Tạo hội nhóm",
+        "CREATE_TITLE": "Tạo hội nhóm mới",
+        "NAME": "Tên hội nhóm",
+        "NAME_PLACEHOLDER": "Ví dụ: Hội bán hàng online miền Tây",
+        "TOPIC": "Chủ đề",
+        "TOPIC_PLACEHOLDER": "Ví dụ: Bán hàng online, chăm sóc khách hàng",
+        "DESCRIPTION": "Mô tả",
+        "DESCRIPTION_PLACEHOLDER": "Giới thiệu ngắn về hội của bạn",
+        "SUBMIT": "Gửi yêu cầu mở hội",
+        "CREATED": "Đã gửi yêu cầu mở hội, vui lòng chờ admin duyệt",
+        "PENDING_BADGE": "Chờ admin duyệt",
+        "REJECTED_BADGE": "Bị từ chối",
+        "APPROVED_BADGE": "Đã duyệt",
+        "OWNER_BADGE": "Bạn là chủ hội",
+        "MEMBER_BADGE": "Đã tham gia",
+        "EMPTY": "Chưa có hội nhóm nào",
+        "SEARCH_PLACEHOLDER": "Tìm hội theo tên, chủ đề...",
+        "REJECT_REASON_LABEL": "Lý do từ chối",
+        "OWNER_APPROVE_TITLE": "Yêu cầu vào hội",
+        "OWNER_APPROVE_DESC": "Bạn là chủ hội — duyệt thành viên mới vào hội của bạn.",
+        "APPROVE": "Duyệt",
+        "REJECT": "Từ chối",
+        "APPROVED_MEMBER": "Đã duyệt thành viên",
+        "REJECTED_MEMBER": "Đã từ chối thành viên",
+        "NO_PENDING_MEMBERS": "Không có yêu cầu nào đang chờ",
+        "PENDING_HINT": "Hội của bạn đang chờ admin duyệt — duyệt xong mọi người sẽ thấy và xin vào hội.",
+        "REJECTED_HINT": "Hội của bạn bị từ chối mở.",
+        "LOGIN_REQUIRED": "Vui lòng đăng nhập để tạo hội nhóm"
+    }
 }

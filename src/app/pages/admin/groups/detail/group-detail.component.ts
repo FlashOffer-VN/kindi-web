@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -8,6 +8,8 @@ import {
     BusinessGroupDetail,
     BusinessGroupMember,
     BusinessGroupPost,
+    BusinessGroupType,
+    GroupApprovalStatus,
     GroupMemberStatus,
     GroupPostType
 } from '@core/models/business-group.model';
@@ -51,6 +53,14 @@ export class AdminGroupDetailComponent implements OnInit {
     rejectingMember: BusinessGroupMember | null = null;
     rejectReason = '';
 
+    /** Duyệt / từ chối mở hội nhóm (chỉ áp dụng cho hội nhóm do người dùng tạo) */
+    clubRejectVisible = false;
+    clubApproving = false;
+    clubRejectForm: FormGroup;
+
+    readonly groupType = BusinessGroupType;
+    readonly approvalStatus = GroupApprovalStatus;
+
     readonly memberStatus = GroupMemberStatus;
 
     constructor(
@@ -65,6 +75,58 @@ export class AdminGroupDetailComponent implements OnInit {
             refCode: ['', [Validators.maxLength(30)]],
             isPinned: [false]
         });
+
+        this.clubRejectForm = this.fb.group({
+            reason: ['', [Validators.required, Validators.maxLength(500)]]
+        });
+    }
+
+    /** Admin duyệt mở hội nhóm */
+    approveClub(): void {
+        if (!this.group) return;
+
+        this.clubApproving = true;
+        this._appService.businessGroupService
+            .updateCommunityApproval(this.group.id, { approvalStatus: GroupApprovalStatus.Approved })
+            .subscribe({
+                next: () => {
+                    this.clubApproving = false;
+                    this._appService.showSuccess(this._appService.trans('ADMIN.CLUBS.CLUB_APPROVED'));
+                    this.load();
+                },
+                error: (error: unknown) => {
+                    this.clubApproving = false;
+                    this._appService.showError(this._appService.extractErrorMessage(error));
+                }
+            });
+    }
+
+    /** Admin từ chối mở hội nhóm (bắt buộc nêu lý do) */
+    onRejectClub(): void {
+        if (!this.group || this.clubRejectForm.invalid) {
+            this.clubRejectForm.markAllAsTouched();
+            return;
+        }
+
+        this.clubApproving = true;
+        this._appService.businessGroupService
+            .updateCommunityApproval(this.group.id, {
+                approvalStatus: GroupApprovalStatus.Rejected,
+                rejectedReason: this.clubRejectForm.value.reason
+            })
+            .subscribe({
+                next: () => {
+                    this.clubApproving = false;
+                    this.clubRejectVisible = false;
+                    this._appService.showSuccess(this._appService.trans('ADMIN.CLUBS.CLUB_REJECTED'));
+                    this.load();
+                },
+                error: (error: unknown) => {
+                    this.clubApproving = false;
+                    this.clubRejectVisible = false;
+                    this._appService.showError(this._appService.extractErrorMessage(error));
+                }
+            });
     }
 
     ngOnInit(): void {

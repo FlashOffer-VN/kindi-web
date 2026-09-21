@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import {
@@ -14,7 +14,9 @@ import {
     BusinessGroupResponse,
     BusinessGroupQuery,
     CreateBusinessGroupRequest,
+    CreateCommunityGroupRequest,
     CreateGroupPostRequest,
+    UpdateCommunityApprovalRequest,
     GroupPostQuery,
     JoinBusinessGroupRequest,
     JoinBusinessGroupResponse,
@@ -50,6 +52,29 @@ export class BusinessGroupService {
 
     getPublicDetail(id: string): Observable<BusinessGroupDetailResponse> {
         return this.api.get<BusinessGroupDetailResponse>(`${this.endpoint}/${id}/public`);
+    }
+
+    // ===== Hội nhóm (người dùng tự tạo theo chủ đề) =====
+    /** Danh sách hội nhóm: hội đã duyệt + hội của chính mình (mọi trạng thái) */
+    getCommunity(query: BusinessGroupQuery = {}): Observable<BusinessGroupListResponse> {
+        const params: Record<string, unknown> = {
+            page: query.page ?? 1,
+            pageSize: query.pageSize ?? 12,
+            mineOnly: query.mineOnly ?? false
+        };
+        if (query.search?.trim()) params['search'] = query.search.trim();
+
+        return this.api.get<BusinessGroupListResponse>(`${this.endpoint}/community`, params);
+    }
+
+    /** Người dùng tạo hội nhóm theo chủ đề (chờ admin duyệt mở hội) */
+    createCommunity(request: CreateCommunityGroupRequest): Observable<BusinessGroupResponse> {
+        return this.api.post<BusinessGroupResponse>(`${this.endpoint}/community`, request);
+    }
+
+    /** Admin duyệt / từ chối mở hội nhóm */
+    updateCommunityApproval(id: string, request: UpdateCommunityApprovalRequest): Observable<BusinessGroupResponse> {
+        return this.api.put<BusinessGroupResponse>(`${this.endpoint}/community/${id}/approval`, request);
     }
 
     join(id: string, request: JoinBusinessGroupRequest): Observable<JoinBusinessGroupResponse> {
@@ -107,6 +132,8 @@ export class BusinessGroupService {
         if (query.search?.trim()) params['search'] = query.search.trim();
         if (query.businessFieldId) params['businessFieldId'] = query.businessFieldId;
         if (query.isActive !== null && query.isActive !== undefined) params['isActive'] = query.isActive;
+        if (query.type) params['type'] = query.type;
+        if (query.approvalStatus) params['approvalStatus'] = query.approvalStatus;
         if (query.hasPendingMembers) params['hasPendingMembers'] = true;
         if (query.hasPrivateRequests) params['hasPrivateRequests'] = true;
 

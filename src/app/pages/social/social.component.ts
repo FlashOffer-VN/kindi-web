@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule } from 'ngx-quill';
 import { AppService } from '@core/services/app.service';
 import { SocialPost, SocialMember, SocialGroup } from '@core/models/social.model';
-import { BusinessGroup } from '@core/models/business-group.model';
+import { BusinessGroup, BusinessGroupType, GroupApprovalStatus } from '@core/models/business-group.model';
 import { GroupBuyingFeedItem } from '@core/models/group-buying-request.model';
 import { PostType, PrivacyType } from '@core/models/social.model';
 import { UserRole } from '@core/models/auth.model';
@@ -22,33 +22,32 @@ import { GroupCardComponent } from './components/group-card/group-card.component
 import { GroupBuyingCardComponent } from './components/group-buying-card/group-buying-card.component';
 import { GroupBuyingDetailModalComponent } from './components/group-buying-detail-modal/group-buying-detail-modal.component';
 import { MemberCardComponent } from './components/member-card/member-card.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostDetailModalComponent } from './components/post-detail-modal/post-detail-modal.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-social',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        TranslateModule,
-        QuillModule,
-        SocialHeaderComponent,
-        CreatePostComponent,
-        PostCardComponent,
-        TrendingTopicsComponent,
-        SocialSidebarComponent,
-        GroupCardComponent,
-        GroupBuyingCardComponent,
-        GroupBuyingDetailModalComponent,
-        MemberCardComponent
+        CommonModule, FormsModule, TranslateModule, QuillModule, SocialHeaderComponent, CreatePostComponent, PostCardComponent, TrendingTopicsComponent, SocialSidebarComponent, GroupCardComponent, GroupBuyingCardComponent, GroupBuyingDetailModalComponent, MemberCardComponent,
+        ReactiveFormsModule,
+        InputComponent,
+        ButtonComponent,
+        LoadingComponent,
+        RouterLink,
+        ModalComponent,
     ],
     templateUrl: './social.component.html',
     styleUrls: ['./social.component.css']
 })
 export class SocialComponent implements OnInit, AfterViewInit {
     constructor(
+        private readonly fb: FormBuilder,
         private _appService: AppService,
         private _route: ActivatedRoute
     ) { }
@@ -59,6 +58,18 @@ export class SocialComponent implements OnInit, AfterViewInit {
     /** Sidebar: nhóm theo lĩnh vực người dùng đã tham gia + nhóm nổi bật (dữ liệu thật) */
     myGroups: BusinessGroup[] = [];
     featuredGroups: BusinessGroup[] = [];
+
+    /** Tab "Hội nhóm": hội do người dùng tự tạo theo chủ đề */
+    clubs: BusinessGroup[] = [];
+    clubsLoading = false;
+    clubsMineOnly = false;
+    clubFormVisible = false;
+    creatingClub = false;
+    clubForm!: FormGroup;
+
+    readonly groupType = BusinessGroupType;
+    readonly approvalStatus = GroupApprovalStatus;
+
     groupBuyings: GroupBuyingFeedItem[] = [];
     groups: SocialGroup[] = [];
     trendingTopics: string[] = [];
@@ -125,6 +136,12 @@ export class SocialComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.clubForm = this.fb.group({
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+            topic: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+            description: ['', [Validators.maxLength(1000)]]
+        });
+
         this._route.params.subscribe(params => {
             const postId = params['postId'];
             if (postId) {
@@ -138,6 +155,7 @@ export class SocialComponent implements OnInit, AfterViewInit {
         this.getCurrentUser();
         this.loadPosts();
         this.loadMembers();
+        this.loadClubs();
         this.loadGroupBuyings();
         this.loadGroups();
         this.loadSidebarGroups();
@@ -205,6 +223,75 @@ export class SocialComponent implements OnInit, AfterViewInit {
             },
             error: () => { /* sidebar im lặng khi API lỗi */ }
         });
+    }
+
+    /**
+     * Tab "Hội nhóm": hội đã được admin duyệt + hội của chính mình (kèm trạng thái chờ duyệt / bị từ chối).
+     */
+    loadClubs(): void {
+        this.clubsLoading = true;
+        this._appService.businessGroupService.getCommunity({
+            page: 1,
+            pageSize: 24,
+            mineOnly: this.clubsMineOnly
+        }).subscribe({
+            next: (response) => {
+                this.clubsLoading = false;
+                this.clubs = response?.data ?? [];
+            },
+            error: (error: unknown) => {
+                this.clubsLoading = false;
+                this._appService.showError(this._appService.extractErrorMessage(error));
+            }
+        });
+    }
+
+    setClubsFilter(mineOnly: boolean): void {
+        if (this.clubsMineOnly === mineOnly) return;
+        this.clubsMineOnly = mineOnly;
+        this.loadClubs();
+    }
+
+    openCreateClub(): void {
+        if (!this._appService.isAuthenticated()) {
+            this._appService.showError(this._appService.trans('CLUBS.LOGIN_REQUIRED'));
+            return;
+        }
+
+        this.clubForm.reset({ name: '', topic: '', description: '' });
+        this.clubFormVisible = true;
+    }
+
+    onCreateClub(): void {
+        if (this.clubForm.invalid) {
+            this.clubForm.markAllAsTouched();
+            return;
+        }
+
+        this.creatingClub = true;
+        this._appService.businessGroupService.createCommunity({
+            name: this.clubForm.value.name,
+            topic: this.clubForm.value.topic,
+            description: this.clubForm.value.description || undefined
+        }).subscribe({
+            next: (response) => {
+                this.creatingClub = false;
+                this.clubFormVisible = false;
+                this._appService.showSuccess(response?.message || this._appService.trans('CLUBS.CREATED'));
+                this.loadClubs();
+                this.loadSidebarGroups();
+            },
+            error: (error: unknown) => {
+                this.creatingClub = false;
+                this._appService.showError(this._appService.extractErrorMessage(error));
+            }
+        });
+    }
+
+    clubStatusKey(club: BusinessGroup): string {
+        if (club.approvalStatus === this.approvalStatus.Pending) return 'CLUBS.PENDING_BADGE';
+        if (club.approvalStatus === this.approvalStatus.Rejected) return 'CLUBS.REJECTED_BADGE';
+        return 'CLUBS.APPROVED_BADGE';
     }
 
     loadMembers(): void {

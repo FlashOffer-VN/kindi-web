@@ -1,4 +1,4 @@
-<div class="space-y-6">
+﻿<div class="space-y-6">
     <a routerLink="/admin/groups" class="inline-flex items-center text-sm font-semibold text-primary hover:text-secondary">
         <i class="fas fa-arrow-left mr-2"></i>{{ 'ADMIN.GROUPS.BACK' | translate }}
     </a>
@@ -25,6 +25,40 @@
                     </span>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                         {{ group.requiresApproval ? ('GROUPS.REQUIRES_APPROVAL' | translate) : ('GROUPS.OPEN_JOIN' | translate) }}
+                    </span>
+                    <span *ngIf="group.type === 2" class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                        <i class="fas fa-layer-group mr-1"></i>{{ 'ADMIN.CLUBS.TAB_COMMUNITY' | translate }}
+                    </span>
+                    <span *ngIf="group.type === 2 && group.approvalStatus === 1"
+                        class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                        {{ 'ADMIN.CLUBS.PENDING_CLUB_BADGE' | translate }}
+                    </span>
+                    <span *ngIf="group.type === 2" class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                        <i class="fas fa-layer-group mr-1"></i>{{ 'ADMIN.CLUBS.TAB_COMMUNITY' | translate }}
+                    </span>
+                    <span *ngIf="group.type === 2 && group.approvalStatus === 1"
+                        class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                        {{ 'ADMIN.CLUBS.PENDING_CLUB_BADGE' | translate }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Hội nhóm: chủ đề + duyệt mở hội -->
+            <div *ngIf="group.type === 2" class="mt-5 rounded-xl bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-400">{{ 'ADMIN.CLUBS.TOPIC' | translate }}</p>
+                <p class="mt-1 font-semibold text-slate-800">{{ group.topic || '--' }}</p>
+
+                <div class="mt-4 flex flex-wrap items-center gap-3">
+                    <app-button variant="success" [loading]="clubApproving" [disabled]="clubApproving"
+                        (onClick)="approveClub()">
+                        <i class="fas fa-check mr-2"></i>{{ 'ADMIN.CLUBS.APPROVE_CLUB' | translate }}
+                    </app-button>
+                    <app-button variant="danger" [disabled]="clubApproving" (onClick)="clubRejectVisible = true">
+                        <i class="fas fa-xmark mr-2"></i>{{ 'ADMIN.CLUBS.REJECT_CLUB' | translate }}
+                    </app-button>
+
+                    <span *ngIf="group.rejectedReason" class="text-xs font-semibold text-rose-600">
+                        {{ 'ADMIN.CLUBS.REJECT_REASON' | translate }}: {{ group.rejectedReason }}
                     </span>
                 </div>
             </div>
@@ -226,6 +260,24 @@
             </div>
         </section>
     </ng-container>
+
+    <!-- Modal từ chối mở hội nhóm -->
+    <app-modal [visible]="clubRejectVisible" [title]="'ADMIN.CLUBS.REJECT_CLUB' | translate" [showFooter]="false"
+        (cancel)="clubRejectVisible = false">
+        <form [formGroup]="clubRejectForm" (ngSubmit)="onRejectClub()" class="space-y-4">
+            <div>
+                <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'ADMIN.CLUBS.REJECT_REASON' | translate }}</label>
+                <textarea formControlName="reason" rows="3"
+                    class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none"></textarea>
+            </div>
+            <div class="flex justify-end gap-2">
+                <app-button variant="secondary" type="button" (onClick)="clubRejectVisible = false">
+                    {{ 'COMMON.BUTTON.CANCEL' | translate }}
+                </app-button>
+                <app-button variant="danger" type="submit">{{ 'ADMIN.CLUBS.REJECT_CLUB' | translate }}</app-button>
+            </div>
+        </form>
+    </app-modal>
 
     <!-- Modal lý do từ chối -->
     <app-modal [visible]="rejectVisible" [title]="'ADMIN.GROUPS.REJECT' | translate"
