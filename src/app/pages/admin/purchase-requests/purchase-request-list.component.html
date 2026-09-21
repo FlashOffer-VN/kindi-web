@@ -80,45 +80,47 @@
                     </tr>
 
                     <!-- Data rows -->
-                    <tr *ngFor="let request of requests; let i = index"
-                        class="hover:bg-gray-50 transition-colors cursor-pointer" (click)="navigateToDetail(request.id)">
-                        <td class="px-4 py-3 text-sm text-gray-500">
-                            {{ (pageNumber - 1) * pageSize + i + 1 }}
-                        </td>
-                        <td class="px-4 py-3 text-sm font-mono text-gray-600">
-                            {{ request.purchaseRequestCode || formatId(request.id) }}
-                        </td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                            {{ request.productName }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ request.fullName }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
-                            {{ request.phone }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <app-badge [status]="getStatusKey(request.status)" [variant]="getStatusVariant(request.status)">
-                            </app-badge>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-500">
-                            {{ formatDate(request.createdAt) }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex items-center justify-end gap-2">
-                                <app-share-to-group [iconOnly]="true" [multi]="true" [allGroups]="true" [refId]="request.id"
-                                    [refCode]="request.purchaseRequestCode"
-                                    [postType]="groupPostType.SupplierRequest"
-                                    [targetTitle]="request.productName"
-                                    [refLabelKey]="'SHARE_TO_GROUP.FROM_SUPPLIER'"></app-share-to-group>
-
-                                <app-button variant="primary" size="sm"
-                                    (click)="$event.stopPropagation(); navigateToDetail(request.id)">
-                                    {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
-                                </app-button>
-                            </div>
-                        </td>
-                    </tr>
+                    <ng-container *ngIf="!isLoading">
+    <tr *ngFor="let request of requests; let i = index"
+                            class="hover:bg-gray-50 transition-colors cursor-pointer" (click)="navigateToDetail(request.id)">
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                {{ (pageNumber - 1) * pageSize + i + 1 }}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-mono text-gray-600">
+                                {{ request.purchaseRequestCode || formatId(request.id) }}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                                {{ request.productName }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ request.fullName }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ request.phone }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <app-badge [status]="getStatusKey(request.status)" [variant]="getStatusVariant(request.status)">
+                                </app-badge>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                {{ formatDate(request.createdAt) }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end gap-2">
+                                    <app-share-to-group [iconOnly]="true" [multi]="true" [allGroups]="true" [refId]="request.id"
+                                        [refCode]="request.purchaseRequestCode"
+                                        [postType]="groupPostType.SupplierRequest"
+                                        [targetTitle]="request.productName"
+                                        [refLabelKey]="'SHARE_TO_GROUP.FROM_SUPPLIER'"></app-share-to-group>
+    
+                                    <app-button variant="primary" size="sm"
+                                        (click)="$event.stopPropagation(); navigateToDetail(request.id)">
+                                        {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
+                                    </app-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
                 </tbody>
             </table>
         </div>

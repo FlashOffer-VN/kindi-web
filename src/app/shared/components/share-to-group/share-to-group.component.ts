@@ -9,6 +9,7 @@ import { BusinessGroup, ForwardedGroup, GroupPostType } from '@core/models/busin
 import { ButtonComponent, ButtonSize } from '@shared/components/button/button.component';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
+import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wrapper.component';
 
 /**
  * Nút "Chuyển tiếp vào nhóm ngành": gửi 1 yêu cầu của hệ thống (mua chung / tìm nhà cung cấp)
@@ -18,7 +19,7 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
 @Component({
     selector: 'app-share-to-group',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent, LoadingComponent, ModalComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslateModule, ButtonComponent, LoadingComponent, ModalComponent, NgSelectWrapperComponent],
     templateUrl: './share-to-group.component.html',
     host: {
         // Component thường nằm trong row/card có (click) điều hướng (bảng admin, card bảng tin).
@@ -54,6 +55,11 @@ export class ShareToGroupComponent implements OnDestroy {
     submitting = false;
     groups: BusinessGroup[] = [];
     form: FormGroup;
+
+    /** Danh sách nhóm cho select của app (label/value) */
+    get groupOptions(): { label: string; value: string }[] {
+        return this.groups.map(g => ({ label: g.name, value: g.id }));
+    }
 
     /** Nhóm đã chọn khi gửi nhiều nhóm */
     selectedGroupIds: string[] = [];

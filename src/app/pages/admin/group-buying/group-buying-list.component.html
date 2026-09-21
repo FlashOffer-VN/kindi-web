@@ -58,42 +58,44 @@
                             {{ 'PAGINATION.NO_ITEMS' | translate }}
                         </td>
                     </tr>
-                    <tr *ngFor="let request of requests; let i = index"
-                        class="hover:bg-gray-50 transition-colors cursor-pointer" (click)="navigateToDetail(request.id)">
-                        <td class="px-4 py-3 text-sm text-gray-500">{{ (pageNumber - 1) * pageSize + i + 1 }}</td>
-                        <td class="px-4 py-3">
-                            <div class="text-sm font-medium text-gray-900">{{ request.productName }}</div>
-                            <div class="text-xs text-gray-400">#{{ request.groupBuyingRequestCode || formatId(request.id) }}</div>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-700">{{ formatPrice(request.targetPrice) }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-700">
-                            <span class="font-semibold text-primary">{{ request.currentPeopleCount }}</span>
-                            / {{ request.targetPeopleCount }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="text-sm text-gray-900">{{ request.fullName }}</div>
-                            <div class="text-xs text-gray-500">{{ request.phone }}</div>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(request.createdAt) }}</td>
-                        <td class="px-4 py-3">
-                            <app-badge [status]="getStatusKey(request.status)" [variant]="getStatusVariant(request.status)"
-                                [label]="getStatusKey(request.status) | translate"></app-badge>
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <app-share-to-group [iconOnly]="true" [multi]="true" [allGroups]="true" [refId]="request.id"
-                                    [refCode]="request.groupBuyingRequestCode"
-                                    [postType]="groupPostType.GroupBuyingRequest"
-                                    [targetTitle]="request.productName"
-                                    [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
-
-                                <app-button variant="secondary" size="sm"
-                                    (onClick)="$event.stopPropagation(); navigateToDetail(request.id)">
-                                    {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
-                                </app-button>
-                            </div>
-                        </td>
-                    </tr>
+                    <ng-container *ngIf="!isLoading">
+    <tr *ngFor="let request of requests; let i = index"
+                            class="hover:bg-gray-50 transition-colors cursor-pointer" (click)="navigateToDetail(request.id)">
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ (pageNumber - 1) * pageSize + i + 1 }}</td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm font-medium text-gray-900">{{ request.productName }}</div>
+                                <div class="text-xs text-gray-400">#{{ request.groupBuyingRequestCode || formatId(request.id) }}</div>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ formatPrice(request.targetPrice) }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                <span class="font-semibold text-primary">{{ request.currentPeopleCount }}</span>
+                                / {{ request.targetPeopleCount }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm text-gray-900">{{ request.fullName }}</div>
+                                <div class="text-xs text-gray-500">{{ request.phone }}</div>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(request.createdAt) }}</td>
+                            <td class="px-4 py-3">
+                                <app-badge [status]="getStatusKey(request.status)" [variant]="getStatusVariant(request.status)"
+                                    [label]="getStatusKey(request.status) | translate"></app-badge>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <app-share-to-group [iconOnly]="true" [multi]="true" [allGroups]="true" [refId]="request.id"
+                                        [refCode]="request.groupBuyingRequestCode"
+                                        [postType]="groupPostType.GroupBuyingRequest"
+                                        [targetTitle]="request.productName"
+                                        [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
+    
+                                    <app-button variant="secondary" size="sm"
+                                        (onClick)="$event.stopPropagation(); navigateToDetail(request.id)">
+                                        {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
+                                    </app-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
                 </tbody>
             </table>
         </div>

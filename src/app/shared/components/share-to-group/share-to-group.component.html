@@ -28,11 +28,10 @@
         <!-- Gửi vào 1 nhóm -->
         <div *ngIf="!multi">
             <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUP' | translate }}</label>
-            <select formControlName="groupId"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none">
-                <option value="" disabled>{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
-                <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
-            </select>
+            <app-ng-select-wrapper formControlName="groupId" [items]="groupOptions" [searchable]="true"
+                [clearable]="true" [placeholder]="'COMMON.SELECT_PLACEHOLDER' | translate"
+                [isInvalid]="form.get('groupId')?.invalid === true && form.get('groupId')?.touched === true"
+                [errorMessage]="'SHARE_TO_GROUP.REQUIRED_GROUP' | translate"></app-ng-select-wrapper>
         </div>
 
         <!-- Admin: gửi cùng lúc vào nhiều nhóm -->

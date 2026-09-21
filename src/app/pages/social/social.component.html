@@ -72,14 +72,16 @@
             </div>
             }
 
+            @if (!isLoadingGroupBuyings) {
             <div class="group-buying-grid">
                 @for (item of groupBuyings; track item.id) {
                 <app-group-buying-card [item]="item" (open)="openGroupBuying($event)"
                     (join)="joinGroupBuying($event)"></app-group-buying-card>
                 }
             </div>
+            }
 
-            @if (groupBuyings.length >= groupBuyingPageSize) {
+            @if (!isLoadingGroupBuyings && groupBuyings.length >= groupBuyingPageSize) {
             <div class="load-more">
                 <button class="btn-load-more" (click)="loadMoreGroupBuyings()">
                     <i class="fas fa-chevron-down"></i> {{ 'COMMON.BUTTON.SEE_MORE' | translate }}
