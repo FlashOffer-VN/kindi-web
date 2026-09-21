@@ -1,4 +1,4 @@
-// shared/components/layouts/admin-layout/admin-sidebar/admin-sidebar.component.ts
+﻿// shared/components/layouts/admin-layout/admin-sidebar/admin-sidebar.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -22,6 +22,7 @@ export class AdminSidebarComponent {
         { path: '/admin/offers', icon: 'fa-solid fa-tags', label: 'ADMIN.SIDEBAR.OFFERS' },
         { path: '/admin/purchase-requests', icon: 'fa-solid fa-cart-shopping', label: 'ADMIN.SIDEBAR.PURCHASE_REQUESTS' },
         { path: '/admin/group-buying', icon: 'fa-solid fa-people-group', label: 'ADMIN.SIDEBAR.GROUP_BUYING' },
+        { path: '/admin/groups', icon: 'fa-solid fa-people-roof', label: 'ADMIN.SIDEBAR.GROUPS' },
         { path: '/admin/collaborator', icon: 'fa-solid fa-users', label: 'ADMIN.SIDEBAR.COLLABORATOR' },
         { path: '/admin/social-posts', icon: 'fa-solid fa-clipboard-check', label: 'ADMIN.SIDEBAR.SOCIAL_POSTS' },
         { path: '/admin/partner', icon: 'fa-solid fa-building', label: 'ADMIN.SIDEBAR.PARTNER' },

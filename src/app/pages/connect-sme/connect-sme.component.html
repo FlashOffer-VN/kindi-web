@@ -1,4 +1,4 @@
-<!-- src/app/pages/connect-sme/connect-sme.component.html -->
+﻿<!-- src/app/pages/connect-sme/connect-sme.component.html -->
 <div class="connect-sme-container">
     <!-- Hero Section -->
     <div class="connect-sme-hero">
@@ -63,6 +63,23 @@
                 <li>{{ 'CONNECT_SME.GROUP_FEATURE_1' | translate }}</li>
                 <li>{{ 'CONNECT_SME.GROUP_FEATURE_2' | translate }}</li>
                 <li>{{ 'CONNECT_SME.GROUP_FEATURE_3' | translate }}</li>
+            </ul>
+            <span class="connect-card__arrow">
+                {{ 'CONNECT_SME.START' | translate }} <i class="fas fa-arrow-right"></i>
+            </span>
+        </a>
+
+        <!-- Card: Nhóm theo lĩnh vực kinh doanh -->
+        <a routerLink="/groups" class="connect-card connect-card--group">
+            <div class="connect-card__icon-wrapper">
+                <i class="fas fa-people-roof"></i>
+            </div>
+            <h3>{{ 'CONNECT_SME.CARD_GROUPS' | translate }}</h3>
+            <p>{{ 'CONNECT_SME.CARD_GROUPS_DESC' | translate }}</p>
+            <ul class="connect-card__features">
+                <li>{{ 'CONNECT_SME.GROUPS_FEATURE_1' | translate }}</li>
+                <li>{{ 'CONNECT_SME.GROUPS_FEATURE_2' | translate }}</li>
+                <li>{{ 'CONNECT_SME.GROUPS_FEATURE_3' | translate }}</li>
             </ul>
             <span class="connect-card__arrow">
                 {{ 'CONNECT_SME.START' | translate }} <i class="fas fa-arrow-right"></i>

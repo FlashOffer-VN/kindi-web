@@ -203,7 +203,7 @@ export class AuthService {
         const roleValue = data.role || 'GUEST';
 
         const user: User = {
-            id: data.id || 0,
+            id: data.id ?? '',
             username: data.username || '',
             email: data.email || data.username || '',
             role: roleValue as UserRole,

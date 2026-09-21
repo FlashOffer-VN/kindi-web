@@ -49,7 +49,7 @@ export interface AuthResponse {
     success: boolean;
     message: string;
     data: {
-        id?: number;
+        id?: string;
         token: string;
         refreshToken?: string;
         expiresAt: string;

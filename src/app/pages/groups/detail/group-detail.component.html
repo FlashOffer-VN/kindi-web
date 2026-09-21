@@ -1,0 +1,225 @@
+<main class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 px-4 py-8">
+    <div class="mx-auto max-w-4xl">
+        <a routerLink="/groups" class="mb-4 inline-flex items-center text-sm font-semibold text-primary hover:text-secondary">
+            <i class="fas fa-arrow-left mr-2"></i>{{ 'GROUPS.BACK' | translate }}
+        </a>
+
+        <div *ngIf="isLoading" class="flex justify-center py-16">
+            <app-loading></app-loading>
+        </div>
+
+        <div *ngIf="!isLoading && loadError"
+            class="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-16 text-center text-slate-500">
+            <i class="fas fa-circle-exclamation mb-3 text-3xl text-amber-400"></i>
+            <p class="font-medium">{{ loadError }}</p>
+        </div>
+
+        <ng-container *ngIf="!isLoading && group">
+            <!-- Thông tin nhóm -->
+            <section class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100">
+                <div class="bg-gradient-to-r from-secondary to-primary px-6 py-8 text-white sm:px-10">
+                    <div class="mb-3 flex flex-wrap items-center gap-2">
+                        <span *ngIf="group.businessFieldName"
+                            class="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
+                            {{ group.businessFieldName }}
+                        </span>
+                        <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
+                            {{ 'GROUPS.MEMBERS' | translate }}: {{ group.membersCount }}
+                        </span>
+                        <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
+                            {{ 'GROUPS.POSTS' | translate }}: {{ group.postsCount }}
+                        </span>
+                    </div>
+
+                    <h1 class="text-2xl font-bold sm:text-3xl">{{ group.name }}</h1>
+                    <p class="mt-2 max-w-2xl text-cyan-50">{{ group.description || '--' }}</p>
+
+                    <p class="mt-4 text-xs font-semibold text-cyan-100">
+                        <i class="fas fa-lock mr-1"></i>
+                        {{ group.requiresApproval ? ('GROUPS.REQUIRES_APPROVAL' | translate) : ('GROUPS.OPEN_JOIN' | translate) }}
+                    </p>
+                </div>
+
+                <!-- Trạng thái của người đang xem -->
+                <div class="space-y-4 p-6 sm:p-8">
+                    <div *ngIf="isMember"
+                        class="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+                        <i class="fas fa-circle-check mr-2"></i>{{ 'GROUPS.YOU_ARE_MEMBER' | translate }}
+                    </div>
+
+                    <div *ngIf="isPending"
+                        class="rounded-2xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">
+                        <i class="fas fa-clock mr-2"></i>{{ 'GROUPS.YOU_ARE_PENDING' | translate }}
+                    </div>
+
+                    <!-- Khối thông tin đăng nhập vừa tạo -->
+                    <app-account-created-notice *ngIf="joinResult"
+                        [isNewAccount]="joinResult.account?.isNewAccount === true"
+                        [accountAlreadyExisted]="joinResult.account?.accountAlreadyExisted === true"
+                        [username]="joinResult.account?.username"
+                        [passwordIsPhone]="joinResult.account?.passwordIsPhone !== false"
+                        (loginClick)="goToLogin()">
+                    </app-account-created-notice>
+
+                    <!-- Xin vào nhóm -->
+                    <div *ngIf="canJoin && !joinResult">
+                        <h2 class="mb-1 text-lg font-bold text-slate-800">{{ 'GROUPS.JOIN_TITLE' | translate }}</h2>
+                        <p class="mb-4 text-sm text-slate-500">{{ 'GROUPS.JOIN_DESC' | translate }}</p>
+
+                        <!-- Đã đăng nhập: vào nhóm bằng 1 nút -->
+                        <app-button *ngIf="isAuthenticated; else guestJoinForm" variant="primary" [loading]="joining" (onClick)="onJoin()">
+                            <i class="fas fa-user-plus mr-2"></i>{{ 'GROUPS.JOIN' | translate }}
+                        </app-button>
+
+                        <ng-template #guestJoinForm>
+                            <form [formGroup]="joinForm" (ngSubmit)="onJoin()" class="space-y-4">
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <app-input formControlName="fullName" icon="fas fa-user"
+                                        [label]="'GROUPS.FULL_NAME' | translate"
+                                        [placeholder]="'GROUPS.FULL_NAME_PLACEHOLDER' | translate" [required]="true">
+                                    </app-input>
+                                    <app-input formControlName="phone" icon="fas fa-phone"
+                                        [label]="'GROUPS.PHONE' | translate"
+                                        [placeholder]="'GROUPS.PHONE_PLACEHOLDER' | translate" [required]="true">
+                                    </app-input>
+                                    <app-input formControlName="zalo" icon="fas fa-comment"
+                                        [label]="'GROUPS.ZALO' | translate" [placeholder]="'GROUPS.ZALO_PLACEHOLDER' | translate">
+                                    </app-input>
+                                    <app-input formControlName="email" type="email" icon="fas fa-envelope"
+                                        [label]="'GROUPS.EMAIL' | translate" [placeholder]="'GROUPS.EMAIL_PLACEHOLDER' | translate">
+                                    </app-input>
+                                </div>
+                                <app-input formControlName="note" icon="fas fa-pen"
+                                    [label]="'GROUPS.NOTE' | translate" [placeholder]="'GROUPS.NOTE_PLACEHOLDER' | translate">
+                                </app-input>
+
+                                <app-button type="submit" variant="primary" [loading]="joining" [disabled]="joining">
+                                    <i class="fas fa-paper-plane mr-2"></i>{{ 'GROUPS.JOIN_SUBMIT' | translate }}
+                                </app-button>
+                            </form>
+                        </ng-template>
+                    </div>
+
+                    <app-button *ngIf="isMember" variant="danger" size="sm" (onClick)="confirmLeave()">
+                        <i class="fas fa-right-from-bracket mr-2"></i>{{ 'GROUPS.LEAVE' | translate }}
+                    </app-button>
+                </div>
+            </section>
+
+            <!-- Trao đổi trong nhóm -->
+            <section class="mt-6 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-100 sm:p-8">
+                <h2 class="mb-4 text-lg font-bold text-slate-800">
+                    <i class="fas fa-comments mr-2 text-primary"></i>{{ 'GROUPS.DISCUSSIONS' | translate }}
+                </h2>
+
+                <div *ngIf="!group.canViewPosts"
+                    class="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
+                    <i class="fas fa-lock mb-2 block text-2xl text-slate-300"></i>
+                    {{ 'GROUPS.JOIN_TO_VIEW' | translate }}
+                </div>
+
+                <ng-container *ngIf="group.canViewPosts">
+                    <!-- Viết bài -->
+                    <form [formGroup]="postForm" (ngSubmit)="onCreatePost()" class="mb-6 rounded-2xl bg-slate-50 p-4">
+                        <app-input formControlName="title" icon="fas fa-heading"
+                            [label]="'GROUPS.POST_TITLE' | translate" [placeholder]="'GROUPS.POST_TITLE_PLACEHOLDER' | translate">
+                        </app-input>
+
+                        <div class="mt-3">
+                            <textarea formControlName="content" rows="3"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none"
+                                [placeholder]="'GROUPS.POST_PLACEHOLDER' | translate"></textarea>
+                        </div>
+
+                        <label class="mt-3 flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+                            <input type="checkbox" [checked]="postingAsPrivate" (change)="postingAsPrivate = !postingAsPrivate"
+                                class="h-4 w-4 rounded border-slate-300 text-primary">
+                            <span><i class="fas fa-user-shield mr-1 text-amber-500"></i>{{ 'GROUPS.PRIVATE_REQUEST' | translate }}</span>
+                        </label>
+                        <p class="mt-1 text-xs text-slate-400">{{ 'GROUPS.PRIVATE_REQUEST_HINT' | translate }}</p>
+
+                        <div class="mt-4">
+                            <app-button type="submit" variant="primary" [loading]="posting" [disabled]="posting">
+                                <i class="fas fa-paper-plane mr-2"></i>{{ 'GROUPS.POST_SUBMIT' | translate }}
+                            </app-button>
+                        </div>
+                    </form>
+
+                    <div *ngIf="postsLoading" class="flex justify-center py-8"><app-loading></app-loading></div>
+
+                    <div *ngIf="!postsLoading && posts.length === 0"
+                        class="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
+                        {{ 'GROUPS.NO_POSTS' | translate }}
+                    </div>
+
+                    <!-- Danh sách bài -->
+                    <div class="space-y-4">
+                        <article *ngFor="let post of posts" class="rounded-2xl border border-slate-100 p-4 shadow-sm">
+                            <div class="mb-2 flex flex-wrap items-center gap-2">
+                                <span class="rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
+                                    {{ typeLabelKey(post.type) | translate }}
+                                </span>
+                                <span *ngIf="post.isPinned" class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                                    <i class="fas fa-thumbtack mr-1"></i>{{ 'GROUPS.PINNED' | translate }}
+                                </span>
+                                <span *ngIf="post.isPrivateToAdmin" class="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
+                                    <i class="fas fa-user-shield mr-1"></i>{{ 'GROUPS.PRIVATE_BADGE' | translate }}
+                                </span>
+                                <span *ngIf="post.refCode" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                                    {{ post.refCode }}
+                                </span>
+                                <span class="ml-auto text-xs text-slate-400">{{ post.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                            </div>
+
+                            <h3 *ngIf="post.title" class="text-base font-bold text-slate-800">{{ post.title }}</h3>
+                            <p class="mt-1 whitespace-pre-line text-sm text-slate-600">{{ post.content }}</p>
+
+                            <div class="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+                                <span><i class="fas fa-user mr-1"></i>{{ post.authorName }}</span>
+                                <button type="button" class="font-semibold text-primary hover:text-secondary"
+                                    (click)="toggleComments(post)">
+                                    <i class="fas fa-comment mr-1"></i>{{ 'GROUPS.COMMENTS' | translate }} ({{ post.commentsCount }})
+                                </button>
+                                <button *ngIf="isAdmin() || isOwnPost(post)" type="button" class="font-semibold text-red-500 hover:text-red-600"
+                                    (click)="deletePost(post)">
+                                    <i class="fas fa-trash mr-1"></i>{{ 'GROUPS.DELETE_POST' | translate }}
+                                </button>
+                            </div>
+
+                            <!-- Bình luận -->
+                            <div *ngIf="expandedPostId === post.id" class="mt-4 space-y-3 border-t border-slate-100 pt-4">
+                                <div *ngIf="commentsLoading" class="flex justify-center py-3"><app-loading size="sm"></app-loading></div>
+
+                                <p *ngIf="!commentsLoading && (comments[post.id] || []).length === 0"
+                                    class="text-sm text-slate-400">{{ 'GROUPS.NO_COMMENTS' | translate }}</p>
+
+                                <div *ngFor="let comment of comments[post.id] || []" class="rounded-xl bg-slate-50 px-4 py-3">
+                                    <p class="text-sm font-semibold text-slate-700">{{ comment.authorName }}</p>
+                                    <p class="text-sm text-slate-600">{{ comment.content }}</p>
+                                    <p class="mt-1 text-xs text-slate-400">{{ comment.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+                                </div>
+
+                                <div *ngIf="group.canViewPosts" class="flex gap-2">
+                                    <input type="text" [value]="commentDrafts[post.id] || ''"
+                                        (input)="commentDrafts[post.id] = $any($event.target).value"
+                                        (keyup.enter)="onComment(post)"
+                                        class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+                                        [placeholder]="'GROUPS.COMMENT_PLACEHOLDER' | translate">
+                                    <app-button variant="primary" size="sm" [loading]="commentSubmitting" (onClick)="onComment(post)">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </app-button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </ng-container>
+            </section>
+        </ng-container>
+    </div>
+
+    <!-- Xác nhận rời nhóm -->
+    <app-modal [visible]="leaveModalVisible" [title]="'GROUPS.LEAVE_CONFIRM_TITLE' | translate"
+        [message]="'GROUPS.LEAVE_CONFIRM_MESSAGE' | translate" [confirmVariant]="'danger'"
+        [confirmText]="'GROUPS.LEAVE' | translate" (confirm)="onLeave()" (cancel)="leaveModalVisible = false">
+    </app-modal>
+</main>
