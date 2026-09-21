@@ -25,24 +25,19 @@
             {{ refLabelKey | translate }}<span *ngIf="refCode"> · {{ refCode }}</span>
         </p>
 
-        <!-- Gửi vào 1 nhóm -->
-        <div *ngIf="!multi">
-            <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUP' | translate }}</label>
-            <app-ng-select-wrapper formControlName="groupId" [items]="groupOptions" [searchable]="true"
-                [clearable]="true" [placeholder]="'COMMON.SELECT_PLACEHOLDER' | translate"
-                [isInvalid]="form.get('groupId')?.invalid === true && form.get('groupId')?.touched === true"
-                [errorMessage]="'SHARE_TO_GROUP.REQUIRED_GROUP' | translate"></app-ng-select-wrapper>
-        </div>
-
-        <!-- Admin: gửi cùng lúc vào nhiều nhóm -->
-        <div *ngIf="multi" class="space-y-2">
-            <label class="block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUPS' | translate }}</label>
+        <!-- Chọn nhóm: danh sách có ô tìm kiếm (không dùng dropdown nổi — panel của select
+             bị overlay của modal chặn click khi appendTo=body) -->
+        <div class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-700">
+                {{ (multi ? 'SHARE_TO_GROUP.PICK_GROUPS' : 'SHARE_TO_GROUP.PICK_GROUP') | translate }}
+            </label>
 
             <input type="text" [(ngModel)]="searchText" [ngModelOptions]="{ standalone: true }"
                 [placeholder]="'SHARE_TO_GROUP.SEARCH_GROUP_PLACEHOLDER' | translate"
                 class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-primary focus:outline-none">
 
-            <div class="flex items-center justify-between text-xs">
+            <!-- Gửi nhiều nhóm: số nhóm đã chọn + chọn tất cả -->
+            <div *ngIf="multi" class="flex items-center justify-between text-xs">
                 <span class="font-semibold text-primary">
                     {{ 'SHARE_TO_GROUP.SELECTED_COUNT' | translate:{ count: selectedGroupIds.length } }}
                 </span>
@@ -55,6 +50,12 @@
                     </button>
                 </span>
             </div>
+
+            <!-- Gửi 1 nhóm: lỗi bắt buộc chọn -->
+            <p *ngIf="!multi && form.get('groupId')?.invalid === true && form.get('groupId')?.touched === true"
+                class="text-xs font-medium text-red-500">
+                {{ 'SHARE_TO_GROUP.REQUIRED_GROUP' | translate }}
+            </p>
 
             <!-- Cảnh báo: nhóm đã có bản ghi này sẽ KHÔNG gửi lại -->
             <div *ngIf="sentGroups.length > 0" class="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-700">
@@ -72,12 +73,16 @@
             <div class="max-h-64 space-y-1 overflow-y-auto rounded-xl border border-slate-200 p-2">
                 <label *ngFor="let group of filteredGroups"
                     class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-50"
+                    [class.bg-slate-100]="!multi && isChosen(group.id)"
                     [class.opacity-60]="isAlreadySent(group.id)"
                     [class.cursor-pointer]="!isAlreadySent(group.id)"
                     [class.cursor-not-allowed]="isAlreadySent(group.id)">
-                    <input type="checkbox" class="h-4 w-4" [checked]="isSelected(group.id)"
-                        [disabled]="isAlreadySent(group.id)" (change)="toggleGroup(group.id)">
-                    <span class="text-sm text-slate-700">
+                    <input [type]="multi ? 'checkbox' : 'radio'" name="shareGroup" class="h-4 w-4"
+                        [checked]="multi ? isSelected(group.id) : isChosen(group.id)"
+                        [disabled]="isAlreadySent(group.id)"
+                        (change)="multi ? toggleGroup(group.id) : selectGroup(group.id)">
+                    <span class="text-sm" [class.font-semibold]="!multi && isChosen(group.id)"
+                        [class.text-primary]="!multi && isChosen(group.id)" [class.text-slate-700]="multi || !isChosen(group.id)">
                         {{ group.name }}
                         <span *ngIf="group.businessFieldName" class="text-xs text-slate-400">· {{ group.businessFieldName }}</span>
                     </span>

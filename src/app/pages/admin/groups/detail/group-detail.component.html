@@ -1,4 +1,4 @@
-﻿<div class="space-y-6">
+﻿<div class="space-y-8">
     <a routerLink="/admin/groups" class="inline-flex items-center text-sm font-semibold text-primary hover:text-secondary">
         <i class="fas fa-arrow-left mr-2"></i>{{ 'ADMIN.GROUPS.BACK' | translate }}
     </a>
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="mt-5 grid gap-4 sm:grid-cols-4">
+            <div class="mt-6 grid gap-6 sm:grid-cols-4">
                 <div class="rounded-xl bg-slate-50 px-4 py-3">
                     <p class="text-xs uppercase tracking-wide text-slate-400">{{ 'ADMIN.GROUPS.MEMBERS' | translate }}</p>
                     <p class="mt-1 text-xl font-bold text-slate-800">{{ group.membersCount }}</p>
@@ -88,7 +88,7 @@
             <app-status-tabs [items]="tabs" [active]="activeTab" (change)="onTabChange($event)"></app-status-tabs>
 
             <!-- Thành viên -->
-            <div *ngIf="activeTab === 'members'" class="mt-6">
+            <div *ngIf="activeTab === 'members'" class="mt-8">
                 <app-status-tabs [items]="memberStatusTabs" [active]="memberStatusFilter"
                     (change)="onMemberTabChange($event)"></app-status-tabs>
 
@@ -148,7 +148,7 @@
             </div>
 
             <!-- Bài trong nhóm -->
-            <div *ngIf="activeTab === 'posts'" class="mt-6">
+            <div *ngIf="activeTab === 'posts'" class="mt-8">
                 <form [formGroup]="postForm" (ngSubmit)="onCreatePost()" class="rounded-2xl bg-slate-50 p-4">
                     <p class="mb-3 text-sm font-semibold text-slate-700">{{ 'ADMIN.GROUPS.POST_COMPOSER_TITLE' | translate }}</p>
 
@@ -226,7 +226,7 @@
             </div>
 
             <!-- Yêu cầu kín -->
-            <div *ngIf="activeTab === 'private'" class="mt-6">
+            <div *ngIf="activeTab === 'private'" class="mt-8">
                 <p class="mb-4 text-sm text-slate-500">{{ 'ADMIN.GROUPS.PRIVATE_HINT' | translate }}</p>
 
                 <div *ngIf="privateLoading" class="flex justify-center py-10"><app-loading></app-loading></div>
