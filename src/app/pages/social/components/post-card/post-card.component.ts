@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, HostListener, ElementRef, ViewChild } from '@angular/core';
+﻿import { Component, EventEmitter, Input, Output, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { SocialPost } from '@core/models/social.model';
@@ -9,10 +9,13 @@ import { SanitizeHtmlPipe } from '@shared/pipes/sanitize-html.pipe';
 import { FormatHtmlPipe } from '@shared/pipes/format-html.pipe';
 import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
 
+import { MediaUrlPipe } from '@shared/pipes/media-url.pipe';
+
 @Component({
     selector: 'app-post-card',
     standalone: true,
-    imports: [CommonModule, TranslateModule, AvatarPipe, SanitizeHtmlPipe, TimeAgoPipe],
+    imports: [CommonModule, TranslateModule, AvatarPipe, SanitizeHtmlPipe, TimeAgoPipe,
+        MediaUrlPipe,],
     templateUrl: './post-card.component.html',
     styleUrls: ['./post-card.component.scss']
 })

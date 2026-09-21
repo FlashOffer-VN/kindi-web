@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,9 @@ import { BadgeComponent, BadgeVariant } from '@shared/components/badge/badge.com
 import { StatusTabsComponent } from '@shared/components/status-tabs/status-tabs.component';
 import { NgxFilterDaterangeComponent } from '@shared/components/filter-daterange/ngx-filter-daterange.component';
 
+import { GroupPostType } from '@core/models/business-group.model';
+import { ShareToGroupComponent } from '@shared/components/share-to-group/share-to-group.component';
+
 @Component({
     selector: 'app-admin-purchase-request-list',
     standalone: true,
@@ -30,12 +33,15 @@ import { NgxFilterDaterangeComponent } from '@shared/components/filter-daterange
         PaginationComponent,
         BadgeComponent,
         StatusTabsComponent,
-        NgxFilterDaterangeComponent
-    ],
+        NgxFilterDaterangeComponent,
+        ShareToGroupComponent,],
     templateUrl: './purchase-request-list.component.html',
     styleUrls: ['./purchase-request-list.component.css']
 })
 export class AdminPurchaseRequestListComponent implements OnInit {
+    /** Loại bài khi chuyển tiếp vào nhóm ngành */
+    readonly groupPostType = GroupPostType;
+
     // Data
     requests: PurchaseRequest[] = [];
     isLoading = true;

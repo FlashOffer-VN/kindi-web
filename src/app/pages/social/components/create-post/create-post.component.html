@@ -1,4 +1,4 @@
-<div class="create-post" [class.loading]="isLoading">
+﻿<div class="create-post" [class.loading]="isLoading">
     <div class="create-post__avatar">
         <img src="assets/avatars/avatar.jpg" alt="Avatar">
     </div>
@@ -9,7 +9,7 @@
                 class="create-post__title" [disabled]="isLoading" autocomplete="off">
 
             <quill-editor *ngIf="showEditor" #quillEditor [(ngModel)]="content" [modules]="editorConfig"
-                [readOnly]="isLoading" (onFocus)="showOptions = true" class="create-post__editor"
+                [readOnly]="isLoading" (onFocus)="showOptions = true" (onEditorCreated)="onEditorCreated($event)" class="create-post__editor"
                 placeholder="{{ 'SOCIAL.WHATS_NEW' | translate }}">
             </quill-editor>
 

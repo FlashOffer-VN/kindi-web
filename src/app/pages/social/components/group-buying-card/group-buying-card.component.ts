@@ -1,13 +1,15 @@
-// components/group-buying-card/group-buying-card.component.ts
+﻿// components/group-buying-card/group-buying-card.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { GroupBuyingFeedItem, GroupBuyingStatus } from '@core/models/group-buying-request.model';
+import { GroupPostType } from '@core/models/business-group.model';
+import { ShareToGroupComponent } from '@shared/components/share-to-group/share-to-group.component';
 
 @Component({
     selector: 'app-group-buying-card',
     standalone: true,
-    imports: [CommonModule, TranslateModule],
+    imports: [CommonModule, TranslateModule, ShareToGroupComponent],
     template: `
         <div class="gb-card" (click)="open.emit(item)">
             <div class="gb-head">
@@ -66,10 +68,20 @@ import { GroupBuyingFeedItem, GroupBuyingStatus } from '@core/models/group-buyin
                     {{ 'GROUP_BUYING.JOIN' | translate }}
                 </button>
                 }
+                <span class="share-wrap" (click)="$event.stopPropagation()">
+                    <app-share-to-group [refId]="item.id" [refCode]="item.groupBuyingRequestCode"
+                        [postType]="groupPostType.GroupBuyingRequest" [targetTitle]="item.productName"
+                        [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
+                </span>
             </div>
         </div>
     `,
     styles: [`
+        .share-wrap {
+            display: inline-flex;
+            margin-left: auto;
+        }
+
         .gb-card {
             background: white;
             border: 1px solid #e5e7eb;
@@ -223,6 +235,9 @@ import { GroupBuyingFeedItem, GroupBuyingStatus } from '@core/models/group-buyin
     `]
 })
 export class GroupBuyingCardComponent {
+    /** Loại bài khi chuyển tiếp vào nhóm ngành */
+    readonly groupPostType = GroupPostType;
+
     @Input() item!: GroupBuyingFeedItem;
 
     @Output() open = new EventEmitter<GroupBuyingFeedItem>();

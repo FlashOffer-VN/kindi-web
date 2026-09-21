@@ -1,4 +1,4 @@
-<div class="p-6">
+﻿<div class="p-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
@@ -105,10 +105,18 @@
                             {{ formatDate(request.createdAt) }}
                         </td>
                         <td class="px-4 py-3">
-                            <app-button variant="primary" size="sm"
-                                (click)="$event.stopPropagation(); navigateToDetail(request.id)">
-                                {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
-                            </app-button>
+                            <div class="flex items-center justify-end gap-2">
+                                <app-share-to-group [refId]="request.id"
+                                    [refCode]="request.purchaseRequestCode"
+                                    [postType]="groupPostType.SupplierRequest"
+                                    [targetTitle]="request.productName"
+                                    [refLabelKey]="'SHARE_TO_GROUP.FROM_SUPPLIER'"></app-share-to-group>
+
+                                <app-button variant="primary" size="sm"
+                                    (click)="$event.stopPropagation(); navigateToDetail(request.id)">
+                                    {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
+                                </app-button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

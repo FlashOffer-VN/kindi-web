@@ -1486,5 +1486,21 @@
         "PENDING_HINT": "Hội của bạn đang chờ admin duyệt — duyệt xong mọi người sẽ thấy và xin vào hội.",
         "REJECTED_HINT": "Hội của bạn bị từ chối mở.",
         "LOGIN_REQUIRED": "Vui lòng đăng nhập để tạo hội nhóm"
+    },
+    "SHARE_TO_GROUP": {
+        "BUTTON": "Chuyển tiếp vào nhóm ngành",
+        "TITLE": "Chuyển tiếp vào nhóm ngành",
+        "PICK_GROUP": "Chọn nhóm ngành để gửi",
+        "NOTE_LABEL": "Lời nhắn kèm theo",
+        "NOTE_PLACEHOLDER": "Ví dụ: Anh em trong nhóm ai có nguồn hàng này thì liên hệ giúp nhé",
+        "SUBMIT": "Gửi vào nhóm",
+        "SUCCESS": "Đã gửi thông tin vào nhóm ngành",
+        "LOGIN_REQUIRED": "Vui lòng đăng nhập để chuyển tiếp vào nhóm ngành",
+        "NO_GROUP": "Bạn chưa tham gia nhóm ngành nào",
+        "NO_GROUP_HINT": "Tham gia một nhóm ngành trước khi gửi thông tin cho nhóm.",
+        "VIEW_GROUPS": "Xem danh sách nhóm ngành",
+        "FROM_REQUEST": "Chuyển tiếp yêu cầu",
+        "FROM_GROUP_BUYING": "Chuyển tiếp yêu cầu mua chung",
+        "FROM_SUPPLIER": "Chuyển tiếp yêu cầu tìm nhà cung cấp"
     }
 }

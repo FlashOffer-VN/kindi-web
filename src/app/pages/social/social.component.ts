@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { QUILL_MODULES } from '@core/configs/quill.config';
+import { apiOrigin } from '@shared/pipes/media-url.pipe';
 import { QuillModule } from 'ngx-quill';
 import { AppService } from '@core/services/app.service';
 import { SocialPost, SocialMember, SocialGroup } from '@core/models/social.model';
@@ -221,6 +222,43 @@ export class SocialComponent implements OnInit, AfterViewInit {
     /**
      * Tab "Hội nhóm": hội đã được admin duyệt + hội của chính mình (kèm trạng thái chờ duyệt / bị từ chối).
      */
+
+    /**
+     * Nút "chèn ảnh" trong Quill của bảng tin: upload ảnh lên API rồi chèn URL tuyệt đối vào bài viết
+     * (không nhồi base64 vào nội dung — tránh vượt giới hạn ký tự của API).
+     */
+    onEditorCreated(quill: any): void {
+        quill?.getModule('toolbar')?.addHandler('image', () => this.pickAndUploadImage(quill));
+    }
+
+    private pickAndUploadImage(quill: any): void {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = () => {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            this._appService.socialService.uploadImage(file, file.name).subscribe({
+                next: (result: { url: string }) => {
+                    if (!result?.url) {
+                        this._appService.showError(this._appService.trans('SOCIAL.IMAGE_UPLOAD_FAILED'));
+                        return;
+                    }
+
+                    const range = quill.getSelection(true);
+                    const index = range?.index ?? 0;
+                    quill.insertEmbed(index, 'image', `${apiOrigin()}${result.url}`, 'user');
+                    quill.setSelection(index + 1);
+                },
+                error: () => this._appService.showError(this._appService.trans('SOCIAL.IMAGE_UPLOAD_FAILED'))
+            });
+        };
+
+        input.click();
+    }
+
     loadClubs(): void {
         this.clubsLoading = true;
         this._appService.businessGroupService.getCommunity({

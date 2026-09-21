@@ -1523,5 +1523,21 @@
         "PENDING_HINT": "Your club is waiting for admin approval — once approved, everyone can see and join it.",
         "REJECTED_HINT": "Your club request was rejected.",
         "LOGIN_REQUIRED": "Please sign in to create a club"
+    },
+    "SHARE_TO_GROUP": {
+        "BUTTON": "Forward to an industry group",
+        "TITLE": "Forward to industry group",
+        "PICK_GROUP": "Choose an industry group",
+        "NOTE_LABEL": "Message (optional)",
+        "NOTE_PLACEHOLDER": "E.g. Anyone in the group who can supply this, please reach out",
+        "SUBMIT": "Send to group",
+        "SUCCESS": "Sent to the industry group",
+        "LOGIN_REQUIRED": "Please sign in to forward to an industry group",
+        "NO_GROUP": "You have not joined any industry group",
+        "NO_GROUP_HINT": "Join an industry group before forwarding.",
+        "VIEW_GROUPS": "View industry groups",
+        "FROM_REQUEST": "Forwarded request",
+        "FROM_GROUP_BUYING": "Forwarded group-buying request",
+        "FROM_SUPPLIER": "Forwarded supplier request"
     }
 }

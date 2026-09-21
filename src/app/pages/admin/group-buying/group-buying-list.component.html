@@ -1,4 +1,4 @@
-<div class="p-6">
+﻿<div class="p-6">
     <!-- Header -->
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-800">{{ 'ADMIN.GROUP_BUYING.TITLE' | translate }}</h1>
@@ -80,10 +80,18 @@
                                 [label]="getStatusKey(request.status) | translate"></app-badge>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <app-button variant="secondary" size="sm"
-                                (onClick)="$event.stopPropagation(); navigateToDetail(request.id)">
-                                {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
-                            </app-button>
+                            <div class="flex items-center justify-end gap-2">
+                                <app-share-to-group [refId]="request.id"
+                                    [refCode]="request.groupBuyingRequestCode"
+                                    [postType]="groupPostType.GroupBuyingRequest"
+                                    [targetTitle]="request.productName"
+                                    [refLabelKey]="'SHARE_TO_GROUP.FROM_GROUP_BUYING'"></app-share-to-group>
+
+                                <app-button variant="secondary" size="sm"
+                                    (onClick)="$event.stopPropagation(); navigateToDetail(request.id)">
+                                    {{ 'COMMON.BUTTON.VIEW_DETAIL' | translate }}
+                                </app-button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

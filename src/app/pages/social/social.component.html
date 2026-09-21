@@ -206,7 +206,7 @@
             <div class="form-group">
                 <label>{{ 'SOCIAL.CONTENT' | translate }}</label>
                 <quill-editor *ngIf="showQuillEditor" [(ngModel)]="editPostData.content" [modules]="editorConfig"
-                    class="edit-post-editor" placeholder="{{ 'SOCIAL.WHATS_NEW' | translate }}">
+                    (onEditorCreated)="onEditorCreated($event)" class="edit-post-editor" placeholder="{{ 'SOCIAL.WHATS_NEW' | translate }}">
                 </quill-editor>
             </div>
 

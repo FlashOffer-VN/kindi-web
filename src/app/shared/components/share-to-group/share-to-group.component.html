@@ -1,0 +1,50 @@
+<!-- Nút chuyển tiếp yêu cầu vào nhóm ngành (dùng chung cho trang quản trị + cộng đồng) -->
+<app-button [variant]="variant" size="sm" (onClick)="open()">
+    <i class="fas fa-share mr-1"></i>{{ 'SHARE_TO_GROUP.BUTTON' | translate }}
+</app-button>
+
+<app-modal [visible]="visible" [title]="'SHARE_TO_GROUP.TITLE' | translate" [showFooter]="false"
+    (cancel)="close()">
+    <div *ngIf="loadingGroups" class="flex justify-center py-6">
+        <app-loading size="sm"></app-loading>
+    </div>
+
+    <!-- Chưa tham gia nhóm ngành nào -->
+    <div *ngIf="!loadingGroups && groups.length === 0" class="py-2 text-center">
+        <p class="text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.NO_GROUP' | translate }}</p>
+        <p class="mt-1 text-sm text-slate-500">{{ 'SHARE_TO_GROUP.NO_GROUP_HINT' | translate }}</p>
+        <a routerLink="/groups" class="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
+            {{ 'SHARE_TO_GROUP.VIEW_GROUPS' | translate }}
+        </a>
+    </div>
+
+    <form *ngIf="!loadingGroups && groups.length > 0" [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+        <p class="text-sm text-slate-500">
+            {{ refLabelKey | translate }}<span *ngIf="refCode"> · {{ refCode }}</span>
+        </p>
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.PICK_GROUP' | translate }}</label>
+            <select formControlName="groupId"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none">
+                <option value="" disabled>{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
+                <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-slate-700">{{ 'SHARE_TO_GROUP.NOTE_LABEL' | translate }}</label>
+            <textarea formControlName="note" rows="3" [placeholder]="'SHARE_TO_GROUP.NOTE_PLACEHOLDER' | translate"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <app-button variant="secondary" type="button" (onClick)="close()">
+                {{ 'COMMON.BUTTON.CANCEL' | translate }}
+            </app-button>
+            <app-button variant="primary" type="submit" [loading]="submitting" [disabled]="submitting">
+                <i class="fas fa-paper-plane mr-1"></i>{{ 'SHARE_TO_GROUP.SUBMIT' | translate }}
+            </app-button>
+        </div>
+    </form>
+</app-modal>

@@ -1,4 +1,4 @@
-// src/app/pages/admin/group-buying/group-buying-list.component.ts
+﻿// src/app/pages/admin/group-buying/group-buying-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -16,18 +16,24 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
 import { BadgeComponent, BadgeVariant } from '@shared/components/badge/badge.component';
 import { StatusTabsComponent } from '@shared/components/status-tabs/status-tabs.component';
 
+import { GroupPostType } from '@core/models/business-group.model';
+import { ShareToGroupComponent } from '@shared/components/share-to-group/share-to-group.component';
+
 @Component({
     selector: 'app-admin-group-buying-list',
     standalone: true,
     imports: [
         CommonModule, RouterModule, FormsModule, TranslateModule,
         ButtonComponent, InputComponent, LoadingComponent, PaginationComponent,
-        BadgeComponent, StatusTabsComponent
-    ],
+        BadgeComponent, StatusTabsComponent,
+        ShareToGroupComponent,],
     templateUrl: './group-buying-list.component.html',
     styleUrls: ['./group-buying-list.component.css']
 })
 export class AdminGroupBuyingListComponent implements OnInit {
+    /** Loại bài khi chuyển tiếp vào nhóm ngành */
+    readonly groupPostType = GroupPostType;
+
     requests: GroupBuyingRequest[] = [];
     isLoading = true;
 

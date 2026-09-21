@@ -1,4 +1,4 @@
-<div class="post-card" tabindex="0" (focus)="isFocused = true" (blur)="isFocused = false">
+﻿<div class="post-card" tabindex="0" (focus)="isFocused = true" (blur)="isFocused = false">
     <div class="post-header">
         <div class="post-author">
             <img [src]="post.author.avatar | avatar" [alt]="post.author.fullName" class="author-avatar">
@@ -68,7 +68,7 @@
         </button>
 
         <div class="post-images" *ngIf="post.images?.length">
-            <img *ngFor="let img of post.images" [src]="img" alt="" class="post-image"
+            <img *ngFor="let img of post.images" [src]="img | mediaUrl" alt="" class="post-image"
                 loading="lazy">
         </div>
 
