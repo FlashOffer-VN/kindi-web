@@ -1,4 +1,4 @@
-/* styles.css */
+﻿/* styles.css */
 @import '@ng-select/ng-select/themes/default.theme.css';
 @tailwind base;
 @tailwind components;
@@ -180,11 +180,13 @@ body {
     letter-spacing: -0.01em;
 }
 
-/* Font cho blockquote (trích dẫn) */
+/* Font cho blockquote (trích dẫn) — GIỮ ĐÚNG FONT CỦA APP (trước đây ép sang Georgia/Times serif
+   nên đoạn trích dẫn hiển thị khác hẳn font Inter của bài viết và khác cả editor Quill) */
 .post-text blockquote {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 16px;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-style: normal;
     color: #4B5563;
     border-left: 4px solid var(--primary);
     padding-left: 16px;
