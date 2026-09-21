@@ -6,12 +6,10 @@ import { ToastService } from './toast.service';
 import { ToastType } from './toast.service';
 import { Observable } from 'rxjs';
 import { PartnerRegisterService } from './partner-register.service';
-import { CtvRegistrationService } from './ctv-registration.service';
 import { PurchaseRequestService } from './purchase-request.service';
 import { GroupBuyingRequestService } from './group-buying-request.service';
 import { OfferRequestService } from './offer-request.service';
 import { PartnerService } from './partner.service';
-import { CtvService } from './ctv.service';
 import { SocialService } from './social.service';
 import { UserRole } from '@core/models/auth.model';
 import { storageSet } from '../utils/storage';
@@ -31,11 +29,9 @@ export class AppService {
         public modal: ModalService,
         public partnerRegister: PartnerRegisterService,
         private translate: TranslateService,
-        public ctvRegistration: CtvRegistrationService,
         public purchaseRequest: PurchaseRequestService,
         public groupBuyingRequest: GroupBuyingRequestService,
         public offerRequest: OfferRequestService,
-        public ctvService: CtvService,
         public partnerService: PartnerService,
         public socialService: SocialService,
         public collaboratorService: CollaboratorService,

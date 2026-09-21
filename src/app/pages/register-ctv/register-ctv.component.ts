@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '@core/services/app.service';
-import { CtvRegistrationRequest, SalesChannelOption } from '@core/models/ctv-registration.model';
+import { CreateCollaboratorRequest, SalesChannelOption } from '@core/models/collaborator.model';
 import { NgSelectWrapperComponent } from '@shared/components/select/ng-select-wrapper.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class RegisterCtvComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.salesChannels = this._appService.ctvRegistration.getSalesChannels();
+        this.salesChannels = this._appService.collaboratorService.getSalesChannels();
         this.ctvForm = this.fb.group({
             fullName: ['', [Validators.required, Validators.minLength(2)]],
             phone: ['', [Validators.required, Validators.pattern(/^0[0-9]{9,10}$/)]],
@@ -130,9 +130,19 @@ export class RegisterCtvComponent implements OnInit {
         }
 
         this.isSubmitting = true;
-        const request: CtvRegistrationRequest = this.ctvForm.value;
+        const value = this.ctvForm.value;
+        const request: CreateCollaboratorRequest = {
+            fullName: value.fullName,
+            phone: value.phone,
+            zalo: value.zalo || undefined,
+            email: value.email || undefined,
+            salesChannel: value.salesChannel ?? undefined,
+            experience: value.experience || undefined,
+            agreeTerms: value.agreeTerms === true
+        };
 
-        this._appService.ctvRegistration.register(request).subscribe({
+
+        this._appService.collaboratorService.register(request).subscribe({
             next: (response: any) => {
                 this.isSubmitting = false;
                 this._appService.showSuccess(this._appService.trans('CTV_FORM.SUCCESS_REGISTER'));

@@ -59,7 +59,7 @@ export class AdminCollaboratorDetailComponent implements OnInit {
     /**
      * Chi tiết lấy từ CollaboratorService (`GET /Collaborators/{id}`) — trả đủ field
      * để form sửa có dữ liệu (position, skills, interests, goals...). Các thao tác
-     * khác (danh sách, duyệt/từ chối, xóa/khôi phục) vẫn đi qua CtvService.
+     * khác (danh sách, duyệt/từ chối, xóa/khôi phục) vẫn đi qua CollaboratorService.
      */
     loadData(): void {
         const id = this._route.snapshot.paramMap.get('id');
@@ -146,7 +146,7 @@ export class AdminCollaboratorDetailComponent implements OnInit {
     confirmApprove(): void {
         if (!this.collaborator) return;
         this.isActionLoading = true;
-        this._appService.ctvService.approve(this.collaborator.id).subscribe({
+        this._appService.collaboratorService.approve(this.collaborator.id).subscribe({
             next: () => {
                 this.isActionLoading = false;
                 this.showApproveModal = false;
@@ -169,7 +169,7 @@ export class AdminCollaboratorDetailComponent implements OnInit {
     confirmReject(): void {
         if (!this.collaborator) return;
         this.isActionLoading = true;
-        this._appService.ctvService.reject(this.collaborator.id).subscribe({
+        this._appService.collaboratorService.reject(this.collaborator.id).subscribe({
             next: () => {
                 this.isActionLoading = false;
                 this.showRejectModal = false;

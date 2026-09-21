@@ -7,7 +7,7 @@ import { AppService } from '@core/services/app.service';
 import { BusinessFieldOption, BusinessFieldService } from '@core/services/business-field.service';
 import { BUSINESS_SIZES, Collaborator, UpdateCollaboratorRequest } from '@core/models/collaborator.model';
 import { toBusinessInfo } from '@core/models/business-info.model';
-import { getSalesChannelLabel, SalesChannel } from '@core/models/ctv.model';
+import { getSalesChannelLabel, SalesChannel } from '@core/models/collaborator.model';
 
 /** 5 kênh bán hàng (SalesChannel) — label lấy từ i18n. */
 const SALES_CHANNELS = [
@@ -19,7 +19,7 @@ const SALES_CHANNELS = [
 ];
 
 /**
- * Form sửa CTV (PUT /Collaborators/{id}) — partial update.
+ * Form sửa cộng tác viên (PUT /Collaborators/{id}) — partial update.
  *
  * Dữ liệu đọc từ `CollaboratorService.getById()` (`GET /Collaborators/{id}`) nên
  * có đủ field để điền sẵn form: position, skills, interests, goals, zalo...

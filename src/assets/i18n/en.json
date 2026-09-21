@@ -396,7 +396,7 @@
     },
     "CTV_FORM": {
         "TITLE": "Register as Collaborator",
-        "DESCRIPTION": "Become a Kindi CTV to earn commissions and benefits",
+        "DESCRIPTION": "Become a Kindi collaborator to earn commissions and benefits",
         "FULL_NAME": "Full name",
         "FULL_NAME_PLACEHOLDER": "Enter full name",
         "PHONE": "Phone number",
@@ -429,7 +429,7 @@
         "ERROR_EMAIL_INVALID": "Invalid email (e.g., example@gmail.com)",
         "ERROR_FORM_INVALID": "Please check your information",
         "ERROR_REGISTER_FAILED": "Registration failed, please try again",
-        "SUCCESS_REGISTER": "CTV registration successful!",
+        "SUCCESS_REGISTER": "collaborator registration successful!",
         "REGISTER_CTV_SECURE_NOTE": "Your information is completely secure"
     },
     "SELECT_COMPONENT": {
@@ -1145,11 +1145,11 @@
             "DELETED_SUCCESS": "Post deleted successfully"
         },
         "CTV": {
-            "TITLE": "CTV Management",
-            "LIST_TITLE": "CTV List",
+            "TITLE": "collaborator Management",
+            "LIST_TITLE": "collaborator List",
             "SEARCH_PLACEHOLDER": "Search by name, email, phone, field...",
             "FILTER_STATUS": "Filter by status",
-            "CODE": "CTV Code",
+            "CODE": "collaborator Code",
             "FULL_NAME": "Full Name",
             "EMAIL": "Email",
             "PHONE": "Phone",
@@ -1159,20 +1159,20 @@
             "PERSONAL_INFO": "Personal Information",
             "REGISTRATION_INFO": "Registration Information",
             "SYSTEM_INFO": "System Information",
-            "DETAIL_TITLE": "CTV Detail",
+            "DETAIL_TITLE": "collaborator Detail",
             "ZALO": "Zalo",
             "EXPERIENCE": "Experience",
             "SKILLS": "Skills",
             "INTERESTS": "Interests",
             "GOALS": "Goals",
             "APPROVED_AT": "Approved At",
-            "APPROVE": "Approve CTV",
-            "REJECT": "Reject CTV",
-            "RESTORED_SUCCESS": "CTV restored successfully",
-            "DELETE_CONFIRM": "Are you sure you want to delete CTV \"{{name}}\"?",
-            "DELETED_SUCCESS": "CTV deleted successfully",
-            "EDIT_TITLE": "Edit CTV",
-            "UPDATED_SUCCESS": "CTV updated successfully"
+            "APPROVE": "Approve collaborator",
+            "REJECT": "Reject collaborator",
+            "RESTORED_SUCCESS": "collaborator restored successfully",
+            "DELETE_CONFIRM": "Are you sure you want to delete collaborator \"{{name}}\"?",
+            "DELETED_SUCCESS": "collaborator deleted successfully",
+            "EDIT_TITLE": "Edit collaborator",
+            "UPDATED_SUCCESS": "collaborator updated successfully"
         },
         "BUSINESS_INFO": {
             "TITLE": "Business Information",
