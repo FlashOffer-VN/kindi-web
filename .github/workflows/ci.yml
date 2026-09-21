@@ -1,4 +1,4 @@
-name: CI - FlashOffer UI
+name: CI - Kindi UI
 
 on:
   push:
@@ -54,7 +54,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flashoffer-ui-build
+          name: kindi-ui-build
           path: dist/
 
       - name: Deploy to Vercel
